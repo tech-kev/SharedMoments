@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script type="text/javascript" src="/js/endpoints.js"></script>
+      <script type="text/javascript" src="/js/locales_scripts.js"></script>
+      <script type="text/javascript" src="/js/loginUtils.js"></script>
+      <script type="text/javascript" src="/js/mainUtils.js"></script>
+      <script type="text/javascript" src="/js/settingsUtils.js"></script>
+      <link href="/css/style.css" rel="stylesheet">
+      <title></title>
+   </head>
+   <body style="display: none;">
+      <nav>
+         <div class="pink-bar">
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <h6 class="brand-logo center truncate"><a href="/" id="settingsTitle"></a></h6>
+         </div>
+      </nav>
+      <ul class="sidenav" id="mobile-menu">
+         <li>
+            <p class="subheader" id="sidemenuOverview"></p>
+         </li>
+         <li>
+            <div class="divider"></div>
+         </li>
+         <li><a href="/"><i class="material-icons">home</i><span id="sidemenuHome"></span></a></li>
+         <li><a href="/filmlist"><i class="material-icons">movie</i><span id="sidemenuFilmlist"></span></a></li>
+         <li><a href="/bucketlist"><i class="material-icons">format_list_bulleted</i><span id="sidemenuBucketlist"></span></a></li>
+         <div id="customMenu"></div>
+         <li class="nav-settings"><a href="/settings"><i class="material-icons">settings</i><span id="sidemenuSettings"></span></a></li>
+      </ul>
+      <br>
+      <div class="container">
+      <div class="row">
+         <div class="col s12">
+            <!-- Allgemein -->
+            <span class="card-title" id="settingsMenuTitle1"></span>
+            <div class="card">
+               <div class="card-content">
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Main Title -->
+                           <p id="settingsSubTitle1"></p>
+                           <p class="subtext" id="settingsSubText1"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <input type="text" id="mainTitle" onblur="updateMainTitle()">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Passwort -->
+                           <p id="settingsSubTitle6"></p>
+                           <p class="subtext" id="settingsSubText6"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <input type="password" id="password" placeholder="Passwort">
+                           <input type="password" id="confirmPassword" placeholder="Passwort bestätigen">
+                           <button class="btn" onclick="updateUser()" id="settingsSub6Button"></button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Über euch -->
+            <span class="card-title" id="settingsMenuTitle2"></span>
+            <div class="card">
+               <div class="card-content">
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Geburtstag A -->
+                           <p><span id="settingsSubTitle4"></span> <span id="nameUserA"></span></p>
+                           <p class="subtext" id="settingsSubText4"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <input type="date" id="birthdayUserA" onblur="updateSetting('UserA')">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Geburtstag B -->
+                           <p><span id="settingsSubTitle5"></span> <span id="nameUserB"></span></p>
+                           <p class="subtext" id="settingsSubText5"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <input type="date" id="birthdayUserB" onblur="updateSetting('UserB')">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Jahrestag -->
+                           <p id="settingsSubTitle2"></p>
+                           <p class="subtext" id="settingsSubText2"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <input type="date" id="anniversary_date" onblur="updateAnniversaryDate()">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Beziehungsstatus -->
+                           <p id="settingsSubTitle3"></p>
+                           <p class="subtext" id="settingsSubText3"></p>
+                        </div>
+                        <div class="col s6">
+                           <select id="relationship" onchange="updateSetting('relationship_status')">
+                              <option selected disabled></option>
+                              <option value="" id="relationship_state1"></option>
+                              <option value="" id="relationship_state2"></option>
+                              <option value="" id="relationship_state3"></option>
+                              <option value="" id="relationship_state4"></option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Banner ändern -->
+                           <p id="settingsSubTitle7"></p>
+                           <p class="subtext" id="settingsSubText7"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <button class="btn" onclick="uploadStockItem('banner')" id="settingsSub7Button"></button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Music -->
+                           <p id="settingsSubTitle8"></p>
+                           <p class="subtext" id="settingsSubText8"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <button class="btn" onclick="uploadStockItem('music')" id="settingsSub8Button"></button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Switch Music -->
+                           <p id="settingsSubTitle9"></p>
+                           <p class="subtext" id="settingsSubText9"></p>
+                           <p class="subtext" id="settingsSubText10"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <div class="switch">
+                              <label>
+                              <input type="checkbox" id="useSong" onclick="changeSongUse(this.checked)">
+                              <span class="lever"></span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Import und Export -->
+            <span class="card-title" id="settingsMenuTitle3"></span>
+            <div class="card">
+               <div class="card-content">
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Import -->
+                           <p id="settingSubTitle12"></p>
+                           <p class="subtext" id="settingSubText12"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <button class="btn" onclick="importHandler()" id="settingSubButton12"></button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="section">
+                     <div class="row">
+                        <div class="col s6 truncate-wrap">
+                           <!-- Export -->
+                           <p id="settingSubTitle13"></p>
+                           <p class="subtext" id="settingSubText13"></p>
+                        </div>
+                        <div class="col s6 right-align">
+                           <button class="btn" onclick="exportHandler()" id="settingSubButton13"></button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <p style="text-align: center;">Made with ❤️ by techkev</p>
+      <script type="text/javascript" src="/js/locales_html.js"></script>
+      <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             // Hier kommt der Code, der nach dem vollständigen Laden des DOM ausgeführt werden soll
+             fetchMainTitle();
+             loadCustomMenu();
+             fetchAnniversaryDate();
+             fechtUseSongState();
+             getBirthdays();
+             getRelationship();
+         })
+         
+      </script>
+   </body>
+</html>

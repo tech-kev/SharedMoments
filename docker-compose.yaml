@@ -1,0 +1,61 @@
+version: '3.9'
+services:
+  
+  flask:
+    image: techkev/sharedmoments:latest
+    container_name: sharedmoments
+    ports:
+    - '5000:5000'
+    restart: always
+    volumes:
+    - '<path-to-feed_items-folder>:/app/upload/feed_items/'
+    - '<path-to-stock_items-folder>:/app/upload/stock_items/'
+    - '<path-to-data_transfer-folder>:/app/data_transfer/'
+    - '<path-to-keys-folder>:/app/keys/'
+    - '<path-to-logs-folder>:/app/logs/'
+    - '/etc/localtime:/etc/localtime:ro'
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: sharedmoments
+      MYSQL_USER: input
+      MYSQL_PASSWORD: supersecretpassword
+
+      LOCALE: 'en_US'
+
+      # --- Optional --- #
+
+      #DEBUG_MODE: 'False' # Set this to 'True' for enable debug-logging
+      #BW_TIME: "6, 0, 0" # Time when background worker should start. See wiki for more details
+      
+      # WebPush Config 
+      #DOMAIN_URL: "https://www.example.com" # Click action for webpush notification
+
+      # Telegram Bot Config, see https://clickalgo.com/how-to-create-a-telegram-messenger-bot for more informations
+      #TG_BOT_TOKEN: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+      #TG_CHAT_IDS: '{"chat_ids": ["123456789"]}'
+
+      # E-Mail Config
+      #MAIL_SENDER_MAIL: "mail@example.com"
+      #MAIL_SMTP_SERVER: "smtp.gmail.com"
+      #MAIL_SMTP_PORT: 587
+      #MAIL_USERNAME: "mail@example.com"
+      #MAIL_PASSWORD: "your_password"
+      #MAIL_RECEIVER_MAILS: '{"receiver_mails": ["mail1@example.com", "mail2@example2.com"]}' # For reciving mail on special days. You can add emails separated by commas.
+      #MAIL_ADMIN: '{"admin_mails": ["urgent@example.com"]}' # For warning mails. You can add emails separated by commas.
+
+    depends_on:
+    - db
+
+  db:
+    image: mysql:latest
+    container_name: sharedmoments-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecretpassword
+      MYSQL_DATABASE: sharedmoments
+      MYSQL_USER: input
+      MYSQL_PASSWORD: supersecretpassword
+    volumes:
+      - 'db:/var/lib/mysql'
+      - '/etc/localtime:/etc/localtime:ro'

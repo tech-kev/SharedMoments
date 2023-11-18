@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script type="text/javascript" src="/js/endpoints.js"></script>
+      <script type="text/javascript" src="/js/locales_scripts.js"></script>
+      <script type="text/javascript" src="/js/loginUtils.js"></script>
+      <script type="text/javascript" src="/js/mainUtils.js"></script>
+      <script type="text/javascript" src="/js/settingsUtils.js"></script>
+      <link href="/css/style.css" rel="stylesheet">
+      <title></title>
+   </head>
+   <body>
+      <nav>
+         <div class="pink-bar">
+            <h6 class="brand-logo center truncate">SharedMoments <span id="setupTitle"></span></h6>
+         </div>
+      </nav>
+      <br>
+      <div class="container">
+         <div class="row">
+            <div class="col s12">
+               <!-- Allgemein -->
+               <span class="card-title" id="setupMenuTitle1"></span>
+               <div class="card">
+                  <div class="card-content">
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Main Title -->
+                              <p id="setupSubTitle1"></p>
+                              <p class="subtext" id="setupSubText1"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <input type="text" id="mainTitle" onblur="updateMainTitle()" placeholder="">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Passwort -->
+                              <p id="setupSubTitle7"></p>
+                              <p class="subtext" id="setupSubText7"></p>
+                              <p class="subtext" id="setupSubText8"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <input type="password" id="password" placeholder="">
+                              <input type="password" id="confirmPassword" placeholder="">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Über euch -->
+               <span class="card-title" id="setupMenuTitle2"></span>
+               <div class="card">
+                  <div class="card-content">
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Name & Geburtstag A -->
+                              <p id="setupSubTitle4"></p>
+                              <p class="subtext" id="setupSubText5"></p>
+                           </div>
+                           <div class="col s6">
+                              <input type="text" id="nameUserA" placeholder="">
+                              <label for="nameUserA" id="setupNameOfPatner1"></label>
+                              <input type="date" id="birthdayUserA" onblur="updateSetting('UserA')">
+                              <label for="birthdayUserA" id="setupBirthdayOfPatner1"></label>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Name & Geburtstag B -->
+                              <p id="setupSubTitle6"></p>
+                              <p class="subtext" id="setupSubText6"></p>
+                           </div>
+                           <div class="col s6">
+                              <input type="text" id="nameUserB" placeholder="">
+                              <label for="nameUserB" id="setupNameOfPatner2"></label>
+                              <input type="date" id="birthdayUserB" onblur="updateSetting('UserB')">
+                              <label for="birthdayUserB" id="setupBirthdayOfPatner2"></label>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Jahrestag -->
+                              <p id="setupSubTitle2"></p>
+                              <p class="subtext" id="setupSubText2"></p>
+                              <p class="subtext" id="setupSubText3"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <input type="date" id="anniversary_date" onblur="updateAnniversaryDate()">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Beziehungsstatus -->
+                              <p id="setupSubTitle3"></p>
+                              <p class="subtext" id="setupSubText4"></p>
+                           </div>
+                           <div class="col s6">
+                              <select id="relationship" onchange="updateSetting('relationship_status')">
+                                 <option selected disabled></option>
+                                 <option value="" id="relationship_state1"></option>
+                                 <option value="" id="relationship_state2"></option>
+                                 <option value="" id="relationship_state3"></option>
+                                 <option value="" id="relationship_state4"></option>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Banner ändern -->
+                              <p id="setupSubTitle9"></p>
+                              <p class="subtext" id="setupSubText9"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <button class="btn" onclick="uploadStockItem('banner')" id="setupButtonChoose1"></button>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Music -->
+                              <p id="setupSubTitle10"></p>
+                              <p class="subtext" id="setupSubText10"></p>
+                              <p class="subtext" id="setupSubText11"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <button class="btn" onclick="uploadStockItem('music')" id="setupButtonChoose2"></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Import und Export -->
+               <span class="card-title" id="setupMenuTitle3"></span>
+               <div class="card">
+                  <div class="card-content">
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Import -->
+                              <p id="settingSubTitle12"></p>
+                              <p class="subtext" id="settingSubText12"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <button class="btn" onclick="importHandler('setup')" id="settingSubButton12"></button>
+                           </div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                           <div class="col s12 center-align">
+                              <br>
+                              <button class="btn" onclick="exitSetup()" id="setupButtonSave1"></button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <p style="text-align: center;">Made with ❤️ by techkev</p>
+      <script type="text/javascript" src="/js/locales_html.js"></script>
+      <script>
+         document.addEventListener('DOMContentLoaded', function() {
+            
+            function waitForSetupSession() {
+               // Prüfen, ob das Cookie bereits den gewünschten Wert hat
+               if (document.cookie.includes('session_id=setup_session')) {
+                  
+                  fetchMainTitle();
+                  fetchAnniversaryDate();
+                  getBirthdays(); 
+                  getRelationship();
+                  $(document).ready(function(){
+                     $('select').formSelect();
+                     });
+                  
+               } else {
+                  setTimeout(waitForSetupSession, 10);
+               }
+               }
+         
+               waitForSetupSession();
+            });
+      </script>
+   </body>
+</html>

@@ -1,0 +1,17 @@
+/logs
+
+/tests
+
+/data_transfer
+
+/upload
+
+/venv
+
+/keys
+
+__pycache__
+
+my.env
+
+.vscode

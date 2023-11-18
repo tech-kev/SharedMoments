@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <link href="/css/style.css" rel="stylesheet">
+      <script type="text/javascript" src="/js/endpoints.js"></script>
+      <script type="text/javascript" src="/js/locales_scripts.js"></script>
+      <script type="text/javascript" src="/js/loginUtils.js"></script>
+      <script type="text/javascript" src="/js/mainUtils.js"></script>
+      <script type="text/javascript" src="/js/bucketlistUtils.js"></script>
+      <title id="headTitle"></title>
+   </head>
+   <body style="display: none;">
+      <nav>
+         <div class="pink-bar">
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <h6 id="mainTitle" class="brand-logo center truncate"></h6>
+         </div>
+      </nav>
+      <ul class="sidenav" id="mobile-menu">
+         <li>
+            <p class="subheader" id="sidemenuOverview"></p>
+         </li>
+         <li>
+            <div class="divider"></div>
+         </li>
+         <li><a href="/"><i class="material-icons">home</i><span id="sidemenuHome"></span></a></li>
+         <li><a href="/filmlist"><i class="material-icons">movie</i><span id="sidemenuFilmlist"></span></a></li>
+         <li><a href="/bucketlist"><i class="material-icons">format_list_bulleted</i><span id="sidemenuBucketlist"></span></a></li>
+         <div id="customMenu"></div>
+         <li class="nav-settings"><a href="/settings"><i class="material-icons">settings</i><span id="sidemenuSettings"></span></a></li>
+      </ul>
+      <br>
+      <div class="container">
+         <div class="row">
+            <div class="card">
+               <div class="card-image">
+                  <img src="" alt="Banner" id="bannersrc">
+               </div>
+               <div class="card-content">
+                  <center>
+                     <p class="card-title" id="anniversary_date"></p>
+                     <p class="pink lighten-3 anniversary_day" id="specialDayText"></p>
+                     <p class="finalText" id="tage_zusammen"></p>
+                  </center>
+               </div>
+            </div>
+         </div>
+         <!-- bucketliste Karte -->
+         <div class="row">
+            <div class="card" style="border-radius: 0px;">
+               <div class="card-content">
+                  <center>
+                     <span class="card-title" id="bucketlistTitle"></span>
+                  </center>
+                  <ul class="collection bucketlist_col"></ul>
+                  <!-- Hier werden die Einträge dynamisch aus ladeBucketlistItems() hinzugefügt -->
+                  <div class="row center-align">
+                     <div class="col s12 m6 offset-m3">
+                        <a id="add-btn" class="waves-effect waves-light btn-small modal-trigger" style="width: 75%;" href="#newbucketlistitemmodal"></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Modal-Fenster für Bucketliste -->
+         <div id="newbucketlistitemmodal" class="modal">
+            <div class="modal-content">
+               <h5 id="newBucketlistEntryTitle"></h5>
+               <div class="row">
+                  <form class="col s12">
+                     <div class="row">
+                        <div class="input-field col s12">
+                           <input id="bucketlist_titel" type="text" class="validate" required>
+                           <label for="bucketlist_titel" id="bucketlistTitleLabel"></label>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="cancelButton"></a>
+               <a href="#!" class="waves-effect waves-green btn bucketlist_save_button" id="saveButton"></a>
+            </div>
+         </div>
+         <script type="text/javascript" src="/js/locales_html.js"></script>
+         <script>
+            window.addEventListener('load', function() {
+                //Funktionen, die aufgerufen werden sollen
+                fetchMainTitle();
+                loadCustomMenu();
+                fetchBannerPicture();
+                fetchAnniversaryDate();
+                fetchSpecialDays();
+                fetchDaysTogether();
+                fetchBucketListItems();
+                initNewBucketListItemModal();
+            });
+         </script>
+      </div>
+   </body>
+</html>

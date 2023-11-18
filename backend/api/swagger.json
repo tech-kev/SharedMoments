@@ -1,0 +1,1129 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "SharedMoments API",
+    "description": "API-Endpunkte für die SharedMoments API",
+    "version": "1.0"
+  },
+  "basePath": "/api/v1",
+  "schemes": ["http", "https"],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "API-Endpunkte für Authentifizierung"
+    },
+    {
+      "name": "Bucketlist",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "Filmlist",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "Feedeinträge",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "momentseinträge",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "stockeinträge",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "utilseinträge",
+      "description": "API-Endpunkte für die Bucketlist"
+    },
+    {
+      "name": "sidemenu",
+      "description": "API-Endpunkte für das Seitenmenü"
+    },
+    {
+      "name": "locales",
+      "description": "API-Endpunkte für die Locales"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Neuen Benutzer erstellen",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Benutzer erfolgreich erstellt"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Benutzerdaten aktualisieren",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Benutzer erfolgreich geändert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login erfolgreich"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/session": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Session überprüfen",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session-ID ist gültig"
+          },
+          "401": {
+            "description": "Session-ID ist ungültig oder abgelaufen"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Auth"],
+        "summary": "Session beenden",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session erfolgreich beendet"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/setup": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Setup-Status überprüfen",
+        "responses": {
+          "200": {
+            "description": "Setup ist abgeschlossen"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/bucketlist": {
+      "get": {
+        "tags": ["Bucketlist"],
+        "summary": "Bucketlist-Items abrufen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Anfrage"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Bucketlist"],
+        "summary": "Bucketlist-Item erstellen",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Anfrage"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/bucketlist/{item_id}": {
+      "put": {
+        "tags": ["Bucketlist"],
+        "summary": "Bucketlist-Item aktualisieren",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "done",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "enum": [0, 1]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Anfrage"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Bucketlist"],
+        "summary": "Bucketlist-Item löschen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Anfrage"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "filmlist": {
+      "get": {
+        "tags": ["Filmlist"],
+        "summary": "Filmlist Items abrufen",
+        "responses": {
+          "200": {
+            "description": "Filmlist Items erfolgreich abgerufen"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Filmlist"],
+        "summary": "Filmlist Item erstellen",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filmlist Item erfolgreich erstellt"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "filmlist/{item_id}": {
+      "put": {
+        "tags": ["Filmlist"],
+        "summary": "Filmlist Item aktualisieren",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "done",
+            "in": "formData",
+            "required": true,
+            "type": "integer",
+            "enum": [0, 1]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filmlist Item erfolgreich aktualisiert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Filmlist"],
+        "summary": "Filmlist Item löschen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filmlist Item erfolgreich gelöscht"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/moments": {
+      "get": {
+        "tags": ["momentseinträge"],
+        "summary": "Moment Items abrufen",
+        "responses": {
+          "200": {
+            "description": "Moment Items erfolgreich abgerufen"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "post": {
+        "tags": ["momentseinträge"],
+        "summary": "Neuen Moment erstellen",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moment erfolgreich erstellt"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/moments/{item_id}": {
+      "get": {
+        "tags": ["momentseinträge"],
+        "summary": "Moment Item abrufen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moment Item erfolgreich abgerufen"
+          },
+          "400": {
+            "description": "Ungültige Anfrage"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "put": {
+        "tags": ["momentseinträge"],
+        "summary": "Moment Item aktualisieren",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moment Item erfolgreich aktualisiert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["momentseinträge"],
+        "summary": "Moment Item löschen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moment Item erfolgreich aktualisiert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/upload/stock_items/{filename}": {
+      "get": {
+        "tags": ["stockeinträge"],
+        "summary": "Stock-Items hochladen",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiches Hochladen des Stock-Items"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/settings/{option}": {
+      "get": {
+        "tags": ["stockeinträge"],
+        "summary": "Einstellungen abrufen",
+        "parameters": [
+          {
+            "name": "option",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiches Abrufen der Einstellungen"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "put": {
+        "tags": ["stockeinträge"],
+        "summary": "Einstellungen aktualisieren",
+        "parameters": [
+          {
+            "name": "option",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "specialvalue",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreiches Aktualisieren der Einstellungen"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/days_together": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Tage zusammen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Abfrage der Tage zusammen"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/anniversary_date": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Jahrestag",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Abfrage des Jahrestags"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "put": {
+        "tags": ["utilseinträge"],
+        "summary": "Jahrestag aktualisieren",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jahrestag erfolgreich aktualisiert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/main_title": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Haupttitel",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Abfrage des Haupttitels"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      },
+      "put": {
+        "tags": ["utilseinträge"],
+        "summary": "Haupttitel aktualisieren",
+        "parameters": [
+          {
+            "name": "value",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Haupttitel erfolgreich aktualisiert"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/special_day": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Besonderer Tag",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Abfrage des besonderen Tages"
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": ["utilseinträge"],
+        "summary": "Datei hochladen",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "item_type",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "option",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datei erfolgreich hochgeladen"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Fehler beim Datenbankzugriff"
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Get statistics",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of statistics"
+          },
+          "500": {
+            "description": "Error accessing the database"
+          }
+        }
+      }
+    },
+    "/import/{method}": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Import data from CSV",
+        "parameters": [
+          {
+            "name": "method",
+            "in": "path",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The import method"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful CSV import"
+          },
+          "500": {
+            "description": "Error accessing the database"
+          }
+        }
+      }
+    },
+    "/export": {
+      "get": {
+        "tags": ["utilseinträge"],
+        "summary": "Export data to CSV",
+        "responses": {
+          "200": {
+            "description": "Successful CSV export"
+          },
+          "500": {
+            "description": "Error accessing the database"
+          }
+        }
+      }
+    },
+    "/upload/feed_items/{filename}": {
+      "get": {
+        "tags": ["Feedeinträge"],
+        "summary": "Feed-Item-Datei herunterladen",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      }
+    },
+    "/feed": {
+      "get": {
+        "tags": ["Feedeinträge"],
+        "summary": "Feedeinträge abrufen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Feedeinträge"],
+        "summary": "Neuen Feedeintrag erstellen",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentType",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentURL",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateCreated",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      }
+    },
+    "/feed/{item_id}": {
+      "get": {
+        "tags": ["Feedeinträge"],
+        "summary": "Feedeintrag abrufen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "400": {
+            "description": "Keine Feed-Item ID angegeben!"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Feedeinträge"],
+        "summary": "Feedeintrag aktualisieren",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentType",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentURL",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateCreated",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Feedeinträge"],
+        "summary": "Feedeintrag löschen",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "400": {
+            "description": "Keine Feed-Item ID angegeben!"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      }
+    },
+    "/sidemenu": {
+      "get": {
+        "tags": ["sidemenu"],
+        "summary": "Sidemenu abrufen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      },
+      "post": {
+        "tags": ["sidemenu"],
+        "summary": "Neuen Menüeintrag erstellen",
+        "parameters": [
+          {
+            "name": "custom_id",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "menu",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "href",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "icon",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "400": {
+            "description": "Es sind nicht alle Werte gefüllt worden."
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      },
+      "/sidemenu/{item_id}": {
+        "put": {
+          "tags": ["Sidemenu"],
+          "summary": "Menüeintrag aktualisieren",
+          "parameters": [
+            {
+              "name": "item_id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "custom_id",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "menu",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "href",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "icon",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Erfolgreich"
+            },
+            "400": {
+              "description": "Es sind nicht alle Werte gefüllt worden."
+            },
+            "500": {
+              "description": "Interner Serverfehler"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Sidemenu"],
+          "summary": "Menüeintrag löschen",
+          "parameters": [
+            {
+              "name": "item_id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Erfolgreich"
+            },
+            "400": {
+              "description": "Keine Menüeintrag ID angegeben!"
+            },
+            "500": {
+              "description": "Interner Serverfehler"
+            }
+          }
+        }
+      }
+    },
+    "/locales": {
+      "get": {
+        "tags": ["locales"],
+        "summary": "Sprachdatei abrufen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreiche Abfrage der Locales"
+          },
+          "500": {
+            "description": "Interner Serverfehler"
+          }
+        }
+      }
+    }
+  }
+}

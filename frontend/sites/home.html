@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title id="headTitle"></title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Update all requests to https -->
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <link href="/css/style.css" rel="stylesheet">
+      <script type="text/javascript" src="/js/endpoints.js"></script>
+      <script type="text/javascript" src="/js/locales_scripts.js"></script>
+      <script type="text/javascript" src="/js/loginUtils.js"></script>
+      <script type="text/javascript" src="/js/mainUtils.js"></script>
+      <script type="text/javascript" src="/js/feedUtils.js"></script>
+      <script type="text/javascript" src="/js/countdownUtils.js"></script>
+      <script type="text/javascript" src="/js/momentsUtils.js"></script>
+      <script type="text/javascript" src="/js/handle_sw.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script>
+      
+   </head>
+   <body style="display: none;">
+      <nav>
+         <div class="pink-bar">
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <h6 id="mainTitle" class="brand-logo center truncate"></h6>
+         </div>
+      </nav>
+      <ul class="sidenav" id="mobile-menu">
+         <li>
+            <p class="subheader" id="sidemenuOverview"></p>
+         </li>
+         <li>
+            <div class="divider"></div>
+         </li>
+         <li><a href="/"><i class="material-icons">home</i><span id="sidemenuHome"></span></a></li>
+         <li><a href="/filmlist"><i class="material-icons">movie</i><span id="sidemenuFilmlist"></span></a></li>
+         <li><a href="/bucketlist"><i class="material-icons">format_list_bulleted</i><span id="sidemenuBucketlist"></span></a></li>
+         <div id="customMenu"></div>
+         <li class="nav-settings"><a href="/settings"><i class="material-icons">settings</i><span id="sidemenuSettings"></span></a></li>
+      </ul>
+      <br>
+      <div class="container">
+      <div id="render_image" class="row">
+         <div class="card">
+            <div class="card-image">
+               <img src="" alt="Banner" id="bannersrc">
+               <a id="share_fab" class="btn-floating btn-large halfway-fab waves-effect waves-light orange" onclick="generatePicture()""><i class=" material-icons">share</i></a>
+            </div>
+            <div class="card-content">
+               <center>
+                  <p class="card-title" id="anniversary_date"></p>
+                  <p class="pink lighten-3 anniversary_day" id="specialDayText"></p>
+                  <p class="finalText" id="tage_zusammen"></p>
+               </center>
+            </div>
+         </div>
+      </div>
+      <!-- Moments Karte -->
+      <div class="row">
+         <div class="card" style="border-radius: 0px;">
+            <div class="card-content">
+               <center>
+                  <span class="card-title" id="moments_title"></span>
+               </center>
+               <ul class="timeline" id="timeline" style="overflow: auto">
+                  <!-- Hier werden die Einträge dynamisch aus ladeMomentItems() hinzugefügt -->
+               </ul>
+            </div>
+         </div>
+      </div>
+      <!-- Countdown Karte -->
+      <div class="row">
+         <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+               <a class="modal-trigger" style="color: white;" href="#updateCountdownItemmodal"><span class="card-title countdown-title"></span></a>
+               <p>
+               <p id="countdown-date"></p>
+               <div id="countdown">
+                  <div class="cd-box">
+                     <p class="numbers days">00</p>
+                     <br>
+                     <p class="strings timeRefDays" id="countdownDays"></p>
+                  </div>
+                  <div class="cd-box">
+                     <p class="numbers hours">00</p>
+                     <br>
+                     <p class="strings timeRefHours" id="countdownHours"></p>
+                  </div>
+                  <div class="cd-box">
+                     <p class="numbers minutes">00</p>
+                     <br>
+                     <p class="strings timeRefMinutes" id="countdownMinutes"></p>
+                  </div>
+                  <div class="cd-box">
+                     <p class="numbers seconds">00</p>
+                     <br>
+                     <p class="strings timeRefSeconds" id="countdownSeconds"></p>
+                  </div>
+                  </p>
+               </div>
+            </div>
+            <br>
+         </div>
+      </div>
+      <!-- Floating-Button for Scroll to Top-->
+      <div class="fixed-action-btn" style="left: 23px;">
+         <a class="btn-floating btn-small pink" id="backToTop" style="display: none;">
+         <i class="large material-icons">keyboard_arrow_up</i>
+         </a>
+      </div>
+      <div class="container">
+         <div class="row">
+         </div>
+      </div>
+      <!-- Floating-Button for Music -->
+      <div class="fixed-action-btn" id="musicFAB" style="bottom:90px; display: none;">
+         <a class="btn-floating btn-large blue" onclick="togglePlay()">
+         <i class="large material-icons" id="music-icon">music_off</i>
+         </a>
+      </div>
+      <!-- Floating-Button for addfeeditem modal-->
+      <div class="fixed-action-btn toolbar" id="addfab">
+         <a class="btn-floating btn-large red">
+         <i class="large material-icons">edit</i>
+         </a>
+         <ul>
+            <li class="waves-effect waves-light">
+               <a class="icon-center" onclick="changeEditMode('buttonklick')">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512">
+                     <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                     <style>svg{fill:#ffffff}</style>
+                     <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/>
+                  </svg>
+               </a>
+            </li>
+            <li class="waves-effect waves-light">
+               <a href="#newfeeditemmodal" class="modal-trigger icon-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 448 512">
+                     <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                     <style>svg{fill:#ffffff}</style>
+                     <path d="M64 80c-8.8 0-16 7.2-16 16V416c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V96c0-8.8-7.2-16-16-16H64zM0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM200 344V280H136c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H248v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+                  </svg>
+               </a>
+            </li>
+         </ul>
+      </div>
+      <!-- Alle Modal-Fenster -->
+      <!-- Modal-Fenster für neuen Feed Eintrag-->
+      <div id="newfeeditemmodal" class="modal modal-fixed-footer">
+         <div class="modal-content">
+            <h5 id="newFeedEntry"></h5>
+            <div class="row">
+               <form class="col s12">
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="feed_titel" type="text" class="validate" required>
+                        <label for="feed_titel" id="newFeedEntryTitle"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <textarea id="feed_inhalt" class="materialize-textarea" required></textarea>
+                        <label for="feed_inhalt" id="newFeedEntryDescription"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="feed_datum" type="date" class="validate">
+                        <label for="feed_datum" id="newFeedEntryDate"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="file-field input-field">
+                        <div class="btn">
+                           <span id="newFeedEntryFile"></span>
+                           <input type="file" id="feed_file" accept="image/png,image/jpeg,video/mp4" multiple>
+                        </div>
+                        <div class="file-path-wrapper">
+                           <input class="file-path validate" type="text" placeholder="" id="newFeedEntryInputMedia">
+                        </div>
+                        <div class="row">
+                           <div class="input-field col s12">
+                              <h6 id="file-list-text" style="display: none;"></h6>
+                              <br>
+                              <div id="file-list"></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="newFeedEntryCancelButton"></a>
+            <a href="#!" class="waves-effect waves-green btn feed_save_button" id="newFeedEntrySaveButton"></a>
+         </div>
+      </div>
+      <!-- Modal-Fenster für Update Feed Eintrag-->
+      <div id="updatefeeditemmodal" class="modal modal-fixed-footer">
+         <div class="modal-content">
+            <h5 id="updateFeedEntry"></h5>
+            <div class="row">
+               <form class="col s12">
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="feed_titel_update" type="text" class="validate" required>
+                        <label for="feed_titel_update" id="updateFeedEntryTitle"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <textarea id="feed_inhalt_update" class="materialize-textarea" required></textarea>
+                        <label for="feed_inhalt_update" id="updateFeedEntryDescription"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="feed_datum_update" type="date" class="validate">
+                        <label for="feed_datum_update" id="updateFeedEntryDate"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="file-field input-field">
+                        <div class="btn">
+                           <span id="updateFeedEntryFile"></span>
+                           <input type="file" id="feed_file_update" accept=".jpg,.png,.mp4" multiple>
+                        </div>
+                        <div class="file-path-wrapper">
+                           <input class="file-path validate" type="text" placeholder="" id="updateFeedEntryInputMedia">
+                        </div>
+                        <div class="row">
+                           <div class="input-field col s12">
+                              <h6 id="update_file-list-text" style="display: none;"></h6>
+                              <br>
+                              <div id="update_file-list"></div>
+                           </div>
+                        </div>
+                        <input type="hidden" id="update_feedItemID">
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#!" class="waves-effect waves-red btn updatefeed_delete_button red left" id="updateFeedEntryDeleteButton"></a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="updateFeedEntryCancelButton"></a>
+            <a href="#!" class="waves-effect waves-green btn updatefeed_save_button" id="updateFeedEntrySaveButton"></a>
+         </div>
+      </div>
+      <!-- Modal-Fenster für neuen Moment-->
+      <div id="newmomentitemmodal" class="modal">
+         <div class="modal-content">
+            <h5 id="newMomentsEntry"></h5>
+            <div class="row">
+               <form class="col s12">
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="moment_titel" type="text" class="validate" required>
+                        <label for="moment_titel" id="newMomentsEntryDescription"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="moment_datum" type="date" class="validate" required>
+                        <label for="moment_datum" id="newMomentsEntryDate"></label>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="newMomentsEntryCancelButton"></a>
+            <a href="#!" class="waves-effect waves-green btn moment_save_button" id="newMomentsEntrySaveButton"></a>
+         </div>
+      </div>
+      <!-- Modal-Fenster für update Moment-->
+      <div id="updatemomentitemmodal" class="modal">
+         <div class="modal-content">
+            <h5 id="updateMomentsEntry"></h5>
+            <div class="row">
+               <form class="col s12">
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="update_moment_titel" type="text" class="validate" required>
+                        <label for="update_moment_titel" id="updateMomentsEntryDescription"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="update_moment_datum" type="date" class="validate" required>
+                        <label for="update_moment_datum" id="updateMomentsEntryDate"></label>
+                     </div>
+                  </div>
+                  <input type="hidden" id="update_momentItemID">
+               </form>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#!" class="waves-effect waves-red btn update_moment_delete_button red left" id="updateMomentsEntryDeleteButton"></a>
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="updateMomentsEntryCancelButton"></a>
+            <a href="#!" class="waves-effect waves-green btn update_moment_save_button" id="updateMomentsEntrySaveButton"></a>
+         </div>
+      </div>
+      <!-- Modal-Fenster um Countdown zu ändern-->
+      <div id="updateCountdownItemmodal" class="modal">
+         <div class="modal-content">
+            <h5 id="updateCountdownEntry"></h5>
+            <div class="row">
+               <form class="col s12">
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="countdown_titel" type="text" class="validate" required>
+                        <label for="countdown_titel" id="updateCountdownEntryDescription"></label>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="input-field col s12">
+                        <input id="countdown_datum" type="date" class="validate" required>
+                        <label for="countdown_datum" id="updateCountdownEntryDate"></label>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="updateCountdownEntryCancelButton"></a>
+            <a href="#!" class="waves-effect waves-green btn countdown_save_button" id="updateCountdownEntrySaveButton"></a>
+         </div>
+      </div>
+      <div class="loader-container">
+         <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-blue">
+               <div class="circle-clipper left">
+                  <div class="circle"></div>
+               </div>
+               <div class="gap-patch">
+                  <div class="circle"></div>
+               </div>
+               <div class="circle-clipper right">
+                  <div class="circle"></div>
+               </div>
+            </div>
+            <div class="spinner-layer spinner-red">
+               <div class="circle-clipper left">
+                  <div class="circle"></div>
+               </div>
+               <div class="gap-patch">
+                  <div class="circle"></div>
+               </div>
+               <div class="circle-clipper right">
+                  <div class="circle"></div>
+               </div>
+            </div>
+            <div class="spinner-layer spinner-yellow">
+               <div class="circle-clipper left">
+                  <div class="circle"></div>
+               </div>
+               <div class="gap-patch">
+                  <div class="circle"></div>
+               </div>
+               <div class="circle-clipper right">
+                  <div class="circle"></div>
+               </div>
+            </div>
+            <div class="spinner-layer spinner-green">
+               <div class="circle-clipper left">
+                  <div class="circle"></div>
+               </div>
+               <div class="gap-patch">
+                  <div class="circle"></div>
+               </div>
+               <div class="circle-clipper right">
+                  <div class="circle"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript" src="/js/locales_html.js"></script>
+      <script>
+         window.addEventListener('load', function() {
+         
+             //Scroll Sidebar from Moments to right
+             //Hier wird in 100 ms-Schritt die Scrollbar nach rechts gescrollt, falls bspw. das Laden der Seite länger dauert
+             const timeline = document.getElementById("timeline");
+             const totalDelay = 2000; //Gesamte Verzögerung in Millisekunden
+             const stepDelay = 100; //Verzögerung pro Schritt in Millisekunden
+             let currentDelay = 0;
+         
+             const scrollLoop = setInterval(function() {
+                 timeline.scrollTo(timeline.scrollWidth, 0);
+                 currentDelay += stepDelay;
+                 if (currentDelay >= totalDelay) {
+                     clearInterval(scrollLoop);
+                     changeEditMode();
+                     initializeNotifications();
+                 }
+             }, stepDelay);
+         
+             //Funktionen, die aufgerufen werden sollen
+             fetchMainTitle();
+             loadCustomMenu();
+             fetchBannerPicture();
+             fetchAnniversaryDate();
+             fetchDaysTogether();
+             fetchSpecialDays();
+             fetchFeedItems();
+             fetchMomentsItems();
+             initNewFeedItemModal();
+             initNewMomentItemModal();
+             initUpdateCountdownItemModal();
+             musicAvailable();
+             initUpdateFeedItemModal();
+             initUpdateMomentItemModal();
+             
+         
+         });
+         
+         // Funktion zum Scrollen nach oben
+         function scrollToTop() {
+             window.scrollTo({
+                 top: 0,
+                 behavior: "smooth"
+             });
+         }
+         
+         // Event-Listener für den Button
+         document.getElementById("backToTop").addEventListener("click", function(event) {
+             event.preventDefault(); // Verhindert das Standardverhalten des Links
+             scrollToTop();
+         });
+         
+         // Event-Listener für das Scroll-Verhalten
+         window.addEventListener("scroll", function() {
+             var backToTopButton = document.getElementById("backToTop");
+             if (window.scrollY >= 400) {
+                 backToTopButton.style.display = "block";
+             } else {
+                 backToTopButton.style.display = "none";
+             }
+         });
+         
+         document.addEventListener('DOMContentLoaded', function() {
+             var elems = document.getElementById("addfab");
+             var instances = M.FloatingActionButton.init(elems, {
+             toolbarEnabled: true
+             });
+         });
+      </script>
+   </body>
+</html>

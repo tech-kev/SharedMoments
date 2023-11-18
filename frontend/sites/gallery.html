@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <link href="/css/style.css" rel="stylesheet">
+      <script type="text/javascript" src="/js/endpoints.js"></script>
+      <script type="text/javascript" src="/js/locales_scripts.js"></script>
+      <script type="text/javascript" src="/js/loginUtils.js"></script>
+      <script type="text/javascript" src="/js/mainUtils.js"></script>
+      <!-- nanogallery2 -->
+      <link href="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/css/nanogallery2.min.css" rel="stylesheet" type="text/css">
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/jquery.nanogallery2.min.js"></script>
+      <title id="headTitle"></title>
+   </head>
+   <body style="display: none;">
+      <nav>
+         <div class="pink-bar">
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <h6 id="mainTitle" class="brand-logo center truncate"></h6>
+         </div>
+      </nav>
+      <ul class="sidenav" id="mobile-menu">
+         <li>
+            <p class="subheader" id="sidemenuOverview"></p>
+         </li>
+         <li>
+            <div class="divider"></div>
+         </li>
+         <li><a href="/"><i class="material-icons">home</i><span id="sidemenuHome"></span></a></li>
+         <li><a href="/filmlist"><i class="material-icons">movie</i><span id="sidemenuFilmlist"></span></a></li>
+         <li><a href="/bucketlist"><i class="material-icons">format_list_bulleted</i><span id="sidemenuBucketlist"></span></a></li>
+         <div id="customMenu"></div>
+         <li class="nav-settings"><a href="/settings"><i class="material-icons">settings</i><span id="sidemenuSettings"></span></a></li>
+      </ul>
+      <div class="container">
+         <div class="card gallery-card">
+            <div class="card-content">
+               <a class="waves-effect waves-light btn-small" href="/"><i class="material-icons left">arrow_back</i><span id="backButton"></a>
+               <br>
+               <br>
+               <span class="card-title" id="galleryTitle"></span>
+               <p id="galleryDesc"></p>
+            </div>
+            <div class="card-image">
+               <div id="nanogallery2"></div>
+               <script>
+                  function getFileNameFromURL(url) {
+                      return url.substring(url.lastIndexOf('/') + 1);
+                  }
+                  
+                  jQuery(document).ready(function() {
+                      // ID-Parameter aus der URL abrufen
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const id = urlParams.get('id');
+                  
+                      // API-Aufruf
+                      fetch(API_ENDPOINTS.feed + '/' + id)
+                          .then(response => response.json())
+                          .then(data => {
+                  
+                              if (data.status === "success") {
+                  
+                                  const galleryTitle = document.getElementById('galleryTitle');
+                                  const galleryDesc = document.getElementById('galleryDesc');
+                                  const nanogallery2 = document.getElementById('nanogallery2');
+                  
+                                  // Titel aktualisieren
+                                  galleryTitle.innerText = LCgalleryTitle + ': ' + data.data[0].title;
+                                  galleryDesc.innerText = data.data[0].content;
+                  
+                  
+                                  // Dateien hinzufügen
+                                  const fileURLs = data.data[0].contentURL.split(';');
+                                  const items = fileURLs.map(url => {
+                                      const fileName = getFileNameFromURL(url);
+                                      return {
+                                          src: fileName,
+                                          srct: fileName,
+                                          title: ''
+                                      };
+                                  });
+                  
+                                  // Galerie erstellen
+                                  jQuery(nanogallery2).nanogallery2({
+                                      thumbnailHeight: 150,
+                                      thumbnailWidth: 150,
+                                      itemsBaseURL: '/upload/feed_items/',
+                                      items: items
+                                  });
+                              } else {
+                                  const message = data.message;
+                                  callToast('error', message);
+                              }
+                              })
+                          .catch(error => {
+                              const errmessage = error + '! ' + LCcheckConsole;
+                              callToast('error', errmessage);
+                              console.error(error);
+                          });
+                  });
+               </script>
+            </div>
+         </div>
+      </div>
+   </body>
+   <script type="text/javascript" src="/js/locales_html.js"></script>
+   <script>
+      window.addEventListener('load', function() {
+          //Funktionen, die aufgerufen werden sollen
+          fetchMainTitle();
+          loadCustomMenu();
+      })
+   </script>
+</html>

@@ -1,0 +1,316 @@
+{
+  "locale": "de_DE",
+
+  "password_saved_successful": "Passwort erfolgreich gespeichert.",
+  "password_updated_successful": "Passwort erfolgreich aktualisiert.",
+  "wrong_password": "Falsches Passwort! Das passiert jedem mal. Versuch es nochmal!",
+  "username_or_password_wrong": "Benutzername oder Passwort falsch!",
+  "enter_password": "Passwort eingeben",
+  "password": "Passwort",
+  "confirm_password": "Passwort bestätigen",
+  "no_password_entered": "Bitte gib ein Passwort ein.",
+  "password_no_match": "Die Passwörter stimmen nicht überein!",
+
+  "login_successful": "Login erfolgreich",
+  "login_failed": "Fehler beim Login",
+
+  "check_serverlogs": "Bitte prüfe die Serverlogs!",
+
+  "setup_completed": "Setup ist abgeschlossen",
+  "setup_finished": "Setup erfolgreich abgeschlossen",  
+  "setup_incomplete": "Setup ist nicht abgeschlossen",
+  "setup_state_not_available": "Setup Status konnte nicht gelesen werden!",
+  "checkSetupStateError": "Fehler beim Prüfen des Setup-Status!",
+  "setup_finish_error": "Fehler beim Beenden des Setups!",
+  "complete_setup": "Setup abschließen",
+
+  "session_id_is_valid": "Session-ID ist gültig",
+  "session_id_is_invalid": "Session-ID ist ungültig oder abgelaufen",
+  "session_id_deleted_successful": "Session-ID erfolgreich gelöscht",
+  "session_id_error": "Fehler beim Überprüfen der Session-ID",
+
+  "not_all_values_set": "Es wurden nicht alle Werte gefüllt! Vielleicht hast du einen übersehen?",
+  "no_database_env_set": "Datenbank Umgebungsvariablen nicht vollständig angegeben! Das ist wie ein Puzzle mit fehlenden Teilen.",
+
+  "bucketlist_items_loaded_successful": "Bucketlist-Items erfolgreich geladen",
+  "bucketlist_item_saved_successful": "Bucketlist-Item erfolgreich erstellt",
+  "bucketlist_item_updated_successful": "Bucketlist-Item erfolgreich aktualisiert",
+  "bucketlist_item_deleted_successful": "Bucketlist-Item erfolgreich gelöscht",
+  "bucketlist_title": "Bucketliste",
+  "new_bucketlist_entry": "Was wollt ihr mal zusammen machen?",
+  "loadBucketlistError": "Fehler beim Laden der Bucketliste!",
+  "enter_name_for_entry": "Bitte gib einen Namen für deinen Eintrag ein.",
+
+  "feed_items_loaded_successful": "Feed-Items erfolgreich geladen",
+  "feed_item_loaded_successful": "Feed-Item erfolgreich geladen",
+  "feed_item_saved_successful": "Feed-Item erfolgreich erstellt",
+  "feed_item_updated_successful": "Feed-Item erfolgreich aktualisiert",
+  "feed_item_deleted_successful": "Feed-Item erfolgreich gelöscht",
+  "no_feed_item_id": "Keine Feed-Item-ID angegeben.",
+  "loadFeedItemsError": "Fehler beim Laden der Feed-Items!",
+  "enter_title": "Bitte gib einen Titel ein!",
+  "enter_desc_for_feed_entry": "Bitte gib eine Beschreibung ein.",
+  "adapt_order_of_files_with_arrows": "Passe die Reihenfolge der Bilder über die Pfeile an.",
+  "our_moments": "Unsere gemeinsamen Momente",
+
+  "filmlist_items_loaded_successful": "Filmlist-Items erfolgreich geladen",
+  "filmlist_item_saved_successful": "Filmlist-Item erfolgreich erstellt",
+  "filmlist_item_updated_successful": "Filmlist-Item erfolgreich aktualisiert",
+  "filmlist_item_deleted_successful": "Filmlist-Item erfolgreich gelöscht",
+  "filmlist_title": "Filmliste",
+  "new_filmlist_entry": "Welcher Film darf es sein?",
+  "loadFilmlistError": "Fehler beim Laden der Filmliste!",
+  "enter_filmname": "Bitte gib einen Filmnamen ein!",
+
+  "moments_items_loaded_successful": "Moment-Items erfolgreich geladen",
+  "moments_item_loaded_successful": "Moment-Item erfolgreich geladen",
+  "moments_item_saved_successful": "Moment-Item erfolgreich erstellt",
+  "moments_item_updated_successful": "Moment-Item erfolgreich aktualisiert",
+  "moments_item_deleted_successful": "Moment-Item erfolgreich gelöscht",
+  "no_moments_item_id": "Keine Moment-Item-ID angegeben!",
+  "moments_title": "Unsere besonderen Momente",
+  "loadMomentsError": "Fehler beim Laden der Moments!",
+
+  "token_loaded_successful": "Pushtoken erfolgreich geladen",
+  "token_available": "Pushtoken vorhanden",
+  "token_saved_successful": "Pushtoken erfolgreich erstellt",
+  "token_deleted_successful": "Pushtoken erfolgreich gelöscht",
+  "token_loaded_failed": "Fehler beim Prüfen der Pushtoken.",
+  "token_found": "Token vorhanden",
+  "token_not_found": "Token nicht gefunden!",
+  "token_deleted": "Gelöschter Token",
+  "load_push_key_error": "Fehler beim Laden des Push-Keys",
+  "webpush_response_code": "WebPush Response-Code",
+  "status": "Status",
+
+
+  "menu_loaded_successful": "Menü erfolgreich geladen",
+  "menuentry_saved_successful": "Seitenmenü-Eintrag erfolgreich erstellt",
+  "menuentry_updated_successful": "Seitenmenü-Eintrag erfolgreich aktualisiert",
+  "menuentry_deleted_successful": "Seitenmenü-Eintrag erfolgreich gelöscht",
+
+  "setting_loaded_successful": "Einstellung erfolgreich geladen",
+  "setting_updated_successful": "Einstellung erfolgreich aktualisiert",
+  "setting_updated_failed": "Fehler beim Aktualisieren der Einstellung",
+
+  "days_together_text_loaded_sucessful": "Tage zusammen-Text erfolgreich geladen",
+
+  "aniversary_date_loaded_sucessful": "Jahrestag erfolgreich geladen",
+  "aniversary_date_updated_sucessful": "Jahrestag erfolgreich aktualisiert",
+  "anniversary_date_loaded_failed": "Konnte den Jahrestag nicht laden!",  
+  "loadAnniversaryDateError": "Fehler beim Laden des Jahrestags!",
+  "updateAnniversaryDateError": "Fehler beim Aktualisieren des Jahrestag!",
+  "enterAnniversaryDate": "Bitte gib einen Jahrestag ein!",
+
+  
+  "today_is_a_special_day": "Heute ist ein besonderer Tag!",
+  "anniversary_name_year": "Jahrestag",
+  "anniversary_name_halfyear": "Halbjahrestag",
+  "anniversary_name_month": "Monatstag",
+  "anniversary_today_is_text": "Heute ist unser",
+  "loadSpecialDayError": "Fehler beim Laden des besonderen Tages!",
+  "special_day_loaded_sucessful": "Besonderen Tag erfolgreich geladen",
+
+  "main_title_loaded_sucessful": "Haupttitel erfolgreich geladen",
+  "main_title_updated_sucessful": "Haupttitel erfolgreich geändert",
+  "main_title_loaded_failed": "Haupttitel konnte nicht geladen werden!",
+  "loadMainTitleError": "Fehler beim Laden des Haupttitel!",
+  "updateMainTitleError": "Fehler beim Aktualiseren des Haupttitel!",
+  "enterMainTitle": "Bitte gib einen Haupttitel ein!",
+
+  "file_upload_sucessful": "Datei erfolgreich hochgeladen",
+  "wrong_upload_type": "Falscher Upload-Typ!",
+  "invalid_filetype": "Ungültiger Dateityp!",
+
+  "stats_loaded_sucessful": "Stats erfolgreich geladen",
+
+  "database_connection_failed": "Fehler beim Verbinden mit der Datenbank!",
+  "option_not_found": "Option nicht gefunden!",
+  "user_not_found": "Benutzer nicht gefunden!",
+
+  "sleep_for": "Schlafe für",
+  "cleaning_script_number_of_deleted_files": "Aufräum-Skript: Anzahl gelöschter Mediendateien",
+  "cleaning_script_number_of_missing_files": "Anzahl fehlender Mediendateien",
+  "missing_mediafiles": "Fehlende Mediendateien",
+  "no_admin_mails_set": "Keine Admin-Mails angegeben!",
+  "admin_mails_format_invalid": "Ungültiges Format für MAIL_ADMIN. Stelle sicher, dass es sich um eine gültige JSON-Liste von E-Mail-Adressen handelt!",
+  "mail_tile_missing_files": "[WARNING] Fehlende Mediendateien gefunden!",
+  "handle_missing_mediafiles": "Scheinbar wurden die nachfolgend genannten Mediendateien aus dem Upload-Ordner entfernt. Heißt in der Anzeige bspw. im Feed kann es zu fehlenden Mediendateien kommen. Bitte prüfe und ergänze diese ggf. wieder oder lösche sie aus dem Eintrag!",
+
+  "mail_send_successful": "E-Mail erfolgreich versendet",
+  "mail_send_failed": "Fehler beim E-Mail Versand",
+  "mail_not_configured": "E-Mail nicht eingerichtet!",
+  "receiver_mails_format_invalid": "Ungültiges Format für MAIL_RECEIVER_MAILS. Stelle sicher, dass es sich um eine gültige JSON-Liste von E-Mail-Adressen handelt!",
+
+  "telegrambot_token_not_found": "Telegram-Bot Token nicht gefunden. Stelle sicher, dass die Umgebungsvariable 'TELEGRAM_BOT_TOKEN' gesetzt ist!",
+  "chat_id_format_invalid": "Ungültiges Format für TG_CHAT_ID. Stelle sicher, dass es sich um eine gültige JSON-Liste von Chat-IDs handelt und die Umgebungsvariable 'TG_CHAT_IDS' gesetzt ist!",
+  "telegrambot_message_send_successful": "Telegram-Nachrichten erfolgreich versendet!",
+  "telegrambot_token_found": "Telegram-Bot Token gefunden",
+  "telegrambot_not_configured": "Telegram-Bot nicht eingerichtet!",
+
+  "days_together_text_loaded_failed": "Konnte Tage zusammen-Text nicht laden!",
+  "day": "Tag",
+  "days": "Tagen",
+  "month": "Monat",
+  "months": "Monaten",
+  "year": "Jahr",
+  "years": "Jahren",
+  "text1": "Wir sind seit",
+  "text2": "und",
+  "text3": "Das entspricht",
+  "text4": "oder",
+  "weeks": "Wochen",
+  "text": "Wir sind seit {years_count}, {months_count} und {days_count} {relationship_status}. Das entspricht {diffInMonthsTotal} Monaten oder {diffInWeeksTotal} Wochen oder {diffInDays} Tagen.",
+  "_text": "Wir sind seit 1 Jahr, 8 Monaten und 10 Tagen zusammen. Das entspricht 20 Monaten oder 88 Wochen oder 617 Tagen.",
+  "loadDaysTogetherError": "Fehler beim Laden des Tage zusammen-Textes",
+
+  "usera_loading_failed": "Konnte UserA nicht laden!",
+  "userb_loading_failed": "Konnte UserB nicht laden!",
+  "enter_relationship": "Seid nicht schüchtern! Bitte wählt einen Beziehungsstatus aus!",
+
+  "overview": "Übersicht",
+  "home": "Home",
+  "filmlist": "Filmliste",
+  "bucketlist": "Bucketliste",
+  "settings": "Einstellungen",
+
+  "add": "Hinzufügen",
+  "cancel": "Abbrechen",
+  "save": "Speichern",
+  "delete": "Löschen",
+  "back": "Zurück",
+
+  "title": "Titel",
+  "movie_name": "Filmname",
+  "description": "Beschreibung",
+  "file": "Datei",
+  "example": "Beispiel",
+  "name": "Name",
+  "gallery": "Galerie",
+
+  "check_console": "Bitte prüfe die Console!",
+
+  "login": "Login",
+  "confirm": "Bestätigen",
+  "choose": "Auswählen",
+  "setup": "Einrichten",
+
+  "loadCountdownError": "Fehler beim Laden des Countdowns",
+  "countdown_days": "Tage",
+  "countdown_hours": "Std.",
+  "countdown_minutes": "Min.",
+  "countdown_seconds": "Sek.",
+
+  "create_new_entry": "Neuen Eintrag erstellen",
+  "create_new_moment": "Neuen Moment erstellen",
+
+  "update_moment": "Moment aktualisieren",
+  "update_countdown": "Countdown ändern",
+  "update_entry": "Eintrag aktualisieren",
+
+  "date_of_entry": "Datum des Eintrags (optional).",
+  "picture_or_videos": "Bilder oder Videos",
+  
+  "date": "Datum",
+  "change_settings": "Einstellungen ändern",
+
+  "general": "Allgemein",
+  "about_us": "Über euch",
+  "import_export": "Import und Export",
+  "only_import": "Import",
+
+  "settingsSubTitle1": "Eure Geschichte, euer Titel",
+  "settingsSubText1": "Der rote Teppich für eure unvergesslichen Momente.",
+
+  "settingsSubTitle2": "Euer gemeinsamer Jahrestag",
+  "settingsSubText2": "Habt ihr ein neues Datum für euren Jahrestag? Dann passt es hier an!",
+  "settingsSubTitle3": "Euer Beziehungsstatus",
+  "settingsSubText3": "Von 'verliebt' bis 'es ist kompliziert'. Hier könnt ihr euren Beziehungsstatus aktualisieren. Keine Panik, es wird niemand urteilen!",
+
+  "settingsSubTitle4": "Geburtstag von",
+  "settingsSubText4": "Geburtstag falsch eingegeben? Dann ändere ihn hier!",
+
+  "settingsSubTitle6": "Zeit für ein neues Passwort",
+  "settingsSubText6": "Das Passwort ist der Schlüssel zu eurer Liebesfestung. Wählt weise!",
+
+  "settingsSubTitle7": "Frischer Anblick für eure Momente",
+  "settingsSubText7": "Dieses Bild ist mehr als nur Dekoration. Es erzählt eure Geschichte. Aber bitte nichts, was euch Albträume bereitet.",
+  
+  "settingsSubTitle8": "Der Soundtrack eurer Liebe",
+  "settingsSubText8": "Lasst uns den DJ spielen und ein neues Lieblingslied für eure Beziehung aussuchen. 'Baby Shark' ist immer noch tabu!",
+
+  "settingsSubTitle9": "Musik verbindet",
+  "settingsSubText9": "Ihr könnt euer gemeinsames Lied nicht mehr ertragen?",
+  "settingsSubText10": "Schaltet es hier aus und lasst die Stille für sich sprechen oder vielleicht das leise Knistern eurer Chips-Tüte?",
+
+  "relationship_state1": "In einer Beziehung",
+  "relationship_state2": "Verheiratet",
+  "relationship_state3": "In einer offenen Beziehung",
+  "relationship_state4": "In einer komplizierten Beziehung",
+  
+  "setupSubText2": "Dieses besondere Datum markiert den Beginn eurer gemeinsamen Reise.",
+  "setupSubText3": "Es ist nicht nur wichtig für euch, sondern auch für verschiedene Funktionen!",
+  "setupSubTitle4": "Partnerprofil",
+  "setupSubText5": "Hier kannst du den ersten Partner erstellen. Nein, keinen Ersatzpartner!",
+  
+  "setupNameOfPatner1": "Name des ersten Partners",
+  "setupBirthdayOfPatner1": "Geburtstag des ersten Partners",
+
+  "setupSubText6": "Und hier kannst du den zweiten Partner erstellen. Nein, immer noch kein Ersatzpartner!",
+  "setupNameOfPatner2": "Name des zweiten Partners",
+  "setupBirthdayOfPatner2": "Geburtstag des zweiten Partners",
+  "setupSubTitle7": "Sichert eure Erinnerungen mit einem Passwort",
+  "setupSubText7": "Das Passwort ist der Schlüssel zu eurer Liebesfestung. Wählt also weise!",
+  "setupSubText8": "Ihr könnt das Passwort später in den Einstellungen ändern.",
+
+  "setupSubTitle9": "Ein Bild von euch",
+  "setupSubText9": "Dieses Bild schmückt jede Seite und erzählt eure Geschichte. Aber bitte nichts, was euch Albträume bereitet.",
+
+  "setupSubTitle10": "Musik, die eure Erinnerungen untermalt",
+  "setupSubText10": "Habt ihr ein gemeinsames Lied, das eure Geschichte erzählt? 'Baby Shark' ist allerdings tabu!",
+  
+  "setupSubText11": "",
+
+  "settingSubTitle12": "Importiert eure Daten ",
+  "settingSubText12": "Ihr habt eure Daten schon mal exportiert? Dann legt diese in den 'data_transfer'-Ordner und achtet auf die richtige Benennung.",
+
+  "settingSubTitle13": "Exportiert eure Daten",
+  "settingSubText13": "Mit einem Klick werden all eure Daten in den 'data_transfer'-Ordner exportiert. Eure Mediendateien müsst ihr selbst sichern. Luxus gibt es hier nicht!",
+  
+  "edit_mode_on": "Bearbeitungsmodus aktiviert!",
+  "edit_mode_off": "Bearbeitungsmodus deaktiviert!",
+  
+  "want_delete_entry": "Bist du sicher, dass du diesen Eintrag löschen möchtest? Es gibt kein Zurück!",
+  
+  "loading_music_setting_failed": "Ups, es gab Probleme beim Laden der Musik Einstellung. Vielleicht hat der DJ eine Pause eingelegt?",
+  
+  "loading_music_failed": "Fehler beim Laden eures Songs! Vielleicht hat der DJ eine Pause eingelegt?",
+  
+  "enter_date": "Bitte wähle ein Datum aus!",
+  "invalid_date": "Ungültiges Datum!",
+  
+  "loadBannerError": "Ups, es gab Probleme beim Laden des Banners.",
+
+  "no_name_or_birthday_set": "Kein Partnername + Geburtstag angegeben! Ohne diese Infos können wir leider nicht weitermachen!",
+  
+  "loadBirthdayError": "Ups, es gab Probleme beim Laden des Geburtstags.",
+  
+  "loadRelationshipError": "Ups, es gab Probleme beim Laden des Beziehungsstatus.",
+  
+  "import_successful": "Import abgeschlossen. Gut gemacht, Sherlock!",
+  "export_successful": "Export abgeschlossen. Die Dateien liegen im 'data_transfer'-Verzeichnis. Bitte beachte, dass du die Mediendateien aus dem Upload-Ordner separat speichern musst! Und nein, wir können das nicht für dich tun!",
+  
+  "import_failed": "Fehler beim Import.",
+  "export_failed": "Fehler beim Export.",
+
+  "import": "Importieren",
+  "export": "Exportieren",
+  
+  "want_import": "Hierbei werden alle bestehenden Inhalte überschrieben! Dies kann nicht rückgängig gemacht werden! Bist du wirklich sicher, dass du das tun möchtest? Denk daran, es gibt kein Zurück!",
+  
+  "want_export": "Hierbei werden zuvor exportierte Dateien im 'data_transfer'-Verzeichnis überschrieben. Dies kann nicht rückgängig gemacht werden! Bist du wirklich sicher, dass du das tun möchtest? Denk daran, es gibt kein Zurück!",
+  
+  "no_valid_import_files": "Keine gültigen Dateien zum Import gefunden!",
+  
+  "import_files_missing": "Import fehlgeschlagen! Folgende CSV-Dateien fehlen für den Import"
+}
