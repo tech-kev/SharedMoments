@@ -8,11 +8,11 @@ services:
     - '5000:5000'
     restart: always
     volumes:
-    - '<path-to-feed_items-folder>:/app/upload/feed_items/'
-    - '<path-to-stock_items-folder>:/app/upload/stock_items/'
-    - '<path-to-data_transfer-folder>:/app/data_transfer/'
-    - '<path-to-keys-folder>:/app/keys/'
-    - '<path-to-logs-folder>:/app/logs/'
+    - '<path-to-feed_items-folder>/upload/feed_items:/app/upload/feed_items/'
+    - '<path-to-stock_items-folder>/upload/stock_items:/app/upload/stock_items/'
+    - '<path-to-data_transfer-folder>/data_transfer:/app/data_transfer/'
+    - '<path-to-keys-folder>/keys:/app/keys/'
+    - '<path-to-logs-folder>/logs:/app/logs/'
     - '/etc/localtime:/etc/localtime:ro'
     environment:
       MYSQL_HOST: db
