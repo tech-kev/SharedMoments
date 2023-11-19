@@ -30,7 +30,7 @@ Translations are currently available for the following languages:
 - de_DE
 - en_US
 
-If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#translation) for more informations.
+If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#-translation) for more informations.
 
 ## 📥 Installation
 
@@ -49,7 +49,7 @@ Originally, I had no intention of publishing it. But as the website got more and
 
 You can import and export all of your data.
 
-Please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#import-and-export-your-data) for more details.
+Please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#-import-and-export-your-data) for more details.
 
 ## 📝 Feature Requests
 
