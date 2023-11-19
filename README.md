@@ -41,9 +41,9 @@ If you would like to help with the translation, please see the [wiki](https://gi
 
 ## 💪 Motivation
 
-I initially sought a website where my girlfriend and I could document our shared moments and milestones. However, when I couldn't find anything that met our needs, I decided to take matters into my own hands. With the assistance of ChatGPT, I began programming such a website myself.
+At first, I was looking for a website where my girlfriend and I could capture our moments together. However, I couldn't find anything that met our needs, so I took matters into my own hands. With the help of ChatGPT, I started to develop my own website.
 
-Initially, I had no plans of making it public, but as the website evolved, gaining more features and exceeding my expectations, I decided to redevelop everything to make it accessible to others: SharedMoments was born.
+Originally, I had no intention of publishing it. But as the website got more and more features and exceeded my expectations, I decided to rebuilding the website and make it accessible to everyone. That's how SharedMoments was born.
 
 ## 🚚 Import and Export
 
