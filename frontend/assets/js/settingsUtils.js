@@ -537,8 +537,9 @@ async function getRelationship() {
 						selectElement.classList.add("browser-default");
 					}
 
-					var instance = M.FormSelect.init(selectElement);	
 					selectElement.value = relationship_status;
+					var instance = M.FormSelect.init(selectElement);	
+					
 				}
 
 			} else if (data.status === 'error') {
