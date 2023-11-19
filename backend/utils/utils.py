@@ -384,7 +384,7 @@ def create_push_notifications():
         message = json.loads(days_together())['text']
         click_action = os.environ.get('DOMAIN_URL')
 
-        if click_action == "":
+        if not click_action:
             click_action = "https://github.com/tech-kev/sharedmoments"
         
 
