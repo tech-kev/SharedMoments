@@ -30,34 +30,34 @@ Translations are currently available for the following languages:
 - de_DE
 - en_US
 
-If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#-translation) for more informations.
+If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/SharedMoments/wiki#-translation) for more informations.
 
 ## 📥 Installation
 
 1. Download docker-compose.yaml
 2. Map volumes and set optional settings
-3. Run `docker compose up` (The first start take a few minutes, so don't worry)
+3. Run `docker compose up` (The first start takes a few minutes, so don't worry)
 4. Visit `<your-ip-address>:port`, finish the setup and enjoy!
 
 ## 💪 Motivation
 
 At first, I was looking for a website where my girlfriend and I could capture our moments together. However, I couldn't find anything that met our needs, so I took matters into my own hands. With the help of ChatGPT, I started to develop my own website.
 
-Originally, I had no intention of publishing it. But as the website got more and more features and exceeded my expectations, I decided to rebuilding the website and make it accessible to everyone. That's how SharedMoments was born.
+Originally, I had no intention of publishing it. But as the website got more and more features and exceeded my expectations, I decided to rebuild the website and make it accessible to everyone. That's how SharedMoments was born.
 
 ## 🚚 Import and Export
 
 You can import and export all of your data.
 
-Please see the [wiki](https://github.com/tech-kev/sharedmoments/wiki#-import-and-export-your-data) for more details.
+Please see the [wiki](https://github.com/tech-kev/SharedMoments/wiki#-import-and-export-your-data) for more details.
 
 ## 📝 Feature Requests
 
-Please submit feature requests via the issue section.
+Please submit feature requests via the [issue section](https://github.com/tech-kev/SharedMoments/issues).
 
 ## 🐞 Bugs
 
-For bugs please open an issue and descibe your problem. 
+For bugs, please open an [issue](https://github.com/tech-kev/SharedMoments/issues) and describe your problem.
 
 ## 📜 License
 
