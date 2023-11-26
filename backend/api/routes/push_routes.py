@@ -168,7 +168,7 @@ def push_routes(app):
                 create_logentry('applog', 'error', 'push_routes.py', str(e))
                 return jsonify({'status': 'error', 'message': str(e)}), 500
         
-    @app.route("/api/v1/push_public_key/", methods=["GET"])
+    @app.route("/api/v1/push_public_key", methods=["GET"])
     def push_public_key():
         
         return jsonify({"public_key": VAPID_PUBLIC_KEY}), 200
