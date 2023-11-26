@@ -84,14 +84,14 @@ def check_session():
                 # Session-ID ist ungültig oder abgelaufen
                 ip_addr = request.remote_addr
                 user_agent = request.headers.get('User-Agent')
-                message = locale['session_id_invalid']
+                message = locale['session_id_is_invalid']
                 create_logentry('applog', 'error', 'app.py', message + " - IP: " + ip_addr + " - User-Agent: "+ user_agent)
                 return jsonify({'status': 'error', 'message': message}), 401
         else:
             # Session-ID ist ungültig oder abgelaufen
             ip_addr = request.remote_addr
             user_agent = request.headers.get('User-Agent')
-            message = locale['session_id_invalid']
+            message = locale['session_id_is_invalid']
             create_logentry('applog', 'error', 'app.py', message + " - IP: " + ip_addr + " - User-Agent: "+ user_agent)
             return jsonify({'status': 'error', 'message': message}), 401
         
