@@ -385,7 +385,7 @@ def create_push_notifications():
         click_action = os.environ.get('DOMAIN_URL')
 
         if not click_action:
-            click_action = "https://github.com/tech-kev/sharedmoments"
+            click_action = "https://github.com/tech-kev/SharedMoments"
         
 
         DER_BASE64_ENCODED_PRIVATE_KEY_FILE_PATH = os.path.abspath("keys/private_key.txt")
