@@ -668,3 +668,34 @@ async function exportHandler() {
 			console.error(error);
 		});
 }
+
+async function testNotifications() {
+
+	fetch(API_ENDPOINTS.sendPushNotifications, {
+			method: 'GET',
+		})
+		.then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error(response.status + ": " + LCtestNotificationError + " " + LCcheckConsole);
+			}
+		})
+		.then(data => {
+			if (data.status === 'success') {
+
+				const message = data.message;
+				callToast('info', message);
+
+			} else if (data.status === 'error') {
+
+				const errmessage = data.message;
+				callToast('error', errmessage);
+			}
+		})
+		.catch(error => {
+			var errmessage = LCtestNotificationError + " " + LCcheckConsole;
+			callToast('error', errmessage);
+			console.error(error);
+		});
+}

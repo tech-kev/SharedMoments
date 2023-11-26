@@ -30,6 +30,7 @@ from utils import calculate_special_day
 from utils import create_logentry
 from utils import save_file
 from utils import calculate_stats
+from utils import create_push_notifications
 
 # Import db_controller
 database_dir = os.path.join(current_dir, '..', '..', 'database')
@@ -342,4 +343,25 @@ def utils_routes(app):
         except Exception as e: 
             # Internal Server Error
             create_logentry('applog', 'error', 'utils_routes.py', str(e))
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+        
+    
+    @app.route('/api/v1/send_push_notifications', methods=['GET'])
+    def send_push_notifications():
+        try:
+
+            response = create_push_notifications()
+    
+            if isinstance(response, Exception):
+                create_logentry('applog', 'error', 'utils_routes.py', str(response))
+                return jsonify({'status': 'error', 'message': str(response)}), 500
+            else:
+                message = locale['send_push_done']
+                if app.config['DEBUG']:
+                    create_logentry('mainlog', 'debug', 'utils_routes.py', message)
+                return jsonify({'status': 'success', 'message': message}), 200
+
+        except Exception as e: 
+            # Internal Server Error
+            create_logentry('applog', 'error', 'utils_routes.py', str(e))               
             return jsonify({'status': 'error', 'message': str(e)}), 500

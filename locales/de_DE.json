@@ -312,5 +312,12 @@
   
   "no_valid_import_files": "Keine gültigen Dateien zum Import gefunden!",
   
-  "import_files_missing": "Import fehlgeschlagen! Folgende CSV-Dateien fehlen für den Import"
+  "import_files_missing": "Import fehlgeschlagen! Folgende CSV-Dateien fehlen für den Import",
+
+  "send_push_done": "Benachrichtigungen erfolgreich versendet",
+  "devtools": "Entwicklertools",
+  "notificationtest": "Benachrichtigungstest",
+  "settingSubText14": "Hier kannst du die Benachrichtigungen testen. Diese werden an alle eingerichteten Dienste gesendet.",
+  "push_me": "Drück mich",
+  "test_Notification_Error": "Scheinbar gab es einen Fehler beim Testen der Benachrichtigungen."
 }

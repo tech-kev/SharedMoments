@@ -36,5 +36,6 @@ const API_ENDPOINTS = {
     locales: "/api/v1/locales",
     import: "/api/v1/import",
     export: "/api/v1/export",
-    pushPublicKey: "/api/v1/push_public_key"
+    pushPublicKey: "/api/v1/push_public_key",
+    sendPushNotifications: "/api/v1/send_push_notifications"
 };

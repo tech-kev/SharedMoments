@@ -266,6 +266,12 @@
   "want_import": "This will overwrite all existing content! This action cannot be undone! Are you really, really sure? Remember, there's no Ctrl+Z!",
   "want_export": "This will overwrite previously exported files in the 'data_transfer' directory. This action cannot be undone! Are you really, really sure? Remember, there's no Ctrl+Z!",
   "no_valid_import_files": "No valid files found for import!",
-  "import_files_missing": "Import failed! The following CSV files are playing hide and seek"
+  "import_files_missing": "Import failed! The following CSV files are playing hide and seek",
+  "send_push_done": "Notifications send successfully!",
+  "devtools": "Developer tools",
+  "notificationtest": "Notification test",
+  "settingSubText14": "Here you can test the notifications. These are sent to all configured services.",
+  "push_me": "Push me",
+  "test_Notification_Error": "There was an error when testing the notifications."
 
 }

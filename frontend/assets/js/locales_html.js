@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('settingsMenuTitle1').textContent = data.general;
             document.getElementById('settingsMenuTitle2').textContent = data.about_us;
             document.getElementById('settingsMenuTitle3').textContent = data.import_export;
+            document.getElementById('settingsMenuTitle4').textContent = data.devtools;
             document.getElementById('settingsSubTitle1').textContent = data.settingsSubTitle1;
             document.getElementById('settingsSubText1').textContent = data.settingsSubText1;
             document.getElementById('settingsSubTitle2').textContent = data.settingsSubTitle2;
@@ -138,6 +139,9 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('settingSubTitle13').textContent = data.settingSubTitle13;
             document.getElementById('settingSubText13').textContent = data.settingSubText13;
             document.getElementById('settingSubButton13').textContent = data.export;
+            document.getElementById('settingSubTitle14').textContent = data.notificationtest;
+            document.getElementById('settingSubText14').textContent = data.settingSubText14;
+            document.getElementById('settingSubButton14').textContent = data.push_me;
             document.getElementById('password').placeholder = data.password;
             document.getElementById('confirmPassword').placeholder = data.confirm_password;
 

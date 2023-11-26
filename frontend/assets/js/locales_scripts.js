@@ -66,6 +66,7 @@ let LCenterMainTitle
 let LCenterAnniversaryDate
 let LCenterRelationship
 let LCloadPushKeyError
+let LCtestNotificationError
 
 fetch(API_ENDPOINTS.locales, {
 		method: 'GET'
@@ -124,6 +125,7 @@ fetch(API_ENDPOINTS.locales, {
 		LCenterAnniversaryDate = data.enterAnniversaryDate;
 		LCenterRelationship = data.enter_relationship;
 		LCloadPushKeyError = data.load_push_key_error;
+		LCtestNotificationError = data.test_Notification_Error;
 
 
 	})
