@@ -32,6 +32,8 @@ async function fetchFilmListItems() {
 		.then(data => {
 			if (data.status === 'success') {
 
+				filmlist.innerHTML = ''; // Leere Filmlist
+
 				data.data.forEach((item, index) => {
 					const listItem = document.createElement("li");
 					listItem.classList.add("collection-item");
@@ -72,16 +74,29 @@ async function fetchFilmListItems() {
 						removeFilmListItem(itemId);
 					});
 				});
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
+
 			} else if (data.status === 'error') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
 			}
 		})
 		.catch(error => {
 			var errmessage = LCloadFilmlistError + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+			document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
 		});
 }
 
@@ -102,12 +117,16 @@ function initNewFilmListItemModal() {
 
 async function createNewFilmListItem(event) {
 	event.preventDefault();
+
 	const title = document.querySelector('#filmlist_titel').value;
 
 	if (title.trim() === '') {
 		callToast('error', LCenterFilmname);
 		return false;
 	}
+
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
 
 	const formdata = new FormData();
 	formdata.append('title', title);
@@ -122,18 +141,28 @@ async function createNewFilmListItem(event) {
 
 			if (status === "success") {
 
-				location.reload();
+				fetchFilmListItems();
+				const modalElement = document.querySelector('#newfilmlistitemmodal');
+				const modalInstance = M.Modal.init(modalElement);
+				modalInstance.close();
+
+				document.getElementById('filmlist_titel').value = ''; // Titel leeren
+				document.body.style.overflow = "auto";
 
 			} else {
 				const message = data.message;
 				callToast('error', message);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
 			}
 		})
 		.catch(error => {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }
 
@@ -165,7 +194,6 @@ async function updateFilmListItem(itemId, title, done) {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
 		});
 }
 
@@ -176,6 +204,9 @@ async function removeFilmListItem(itemId) {
 		return;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	fetch(API_ENDPOINTS.filmlist + "/" + itemId, {
 			method: "DELETE",
 		})
@@ -185,19 +216,21 @@ async function removeFilmListItem(itemId) {
 
 			if (status === "success") {
 
-				//const message = data.message;
-				//callToast('info', message);
-				location.reload();
+				fetchFilmListItems();
 
 			} else {
 				const message = data.message;
 				callToast('error', message);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
 			}
 		})
 		.catch(error => {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }

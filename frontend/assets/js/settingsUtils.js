@@ -562,6 +562,9 @@ async function importHandler(mode = 'normal') {
 		return;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	fetch(API_ENDPOINTS.import+"/" + mode, {
 			method: 'GET',
 		})
@@ -577,6 +580,9 @@ async function importHandler(mode = 'normal') {
 
 				const errmessage = data.message;
 				callToast('info', errmessage)
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
 
 				if (window.location.pathname === "/setup") {
 
@@ -612,6 +618,8 @@ async function importHandler(mode = 'normal') {
 							var errmessage = LCSetupFinishError + " " + LCcheckConsole;
 							callToast('error', errmessage);
 							console.error(error);
+							const loaderContainer = document.querySelector('.loader-container');
+							loaderContainer.classList.remove('active');
 						});
 
 				} else {
@@ -624,12 +632,16 @@ async function importHandler(mode = 'normal') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
 			}
 		})
 		.catch(error => {
 			var errmessage = LCimportFailed + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }
 
@@ -639,6 +651,9 @@ async function exportHandler() {
 	if (!confirmed) {
 		return;
 	}
+
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
 
 	fetch(API_ENDPOINTS.export, {
 			method: 'GET',
@@ -656,20 +671,30 @@ async function exportHandler() {
 				const errmessage = data.message;
 				callToast('info', errmessage)
 
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+
 			} else if (data.status === 'error') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
 			}
 		})
 		.catch(error => {
 			var errmessage = LCexportFailed + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }
 
 async function testNotifications() {
+
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
 
 	fetch(API_ENDPOINTS.sendPushNotifications, {
 			method: 'GET',
@@ -687,15 +712,24 @@ async function testNotifications() {
 				const message = data.message;
 				callToast('info', message);
 
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+
 			} else if (data.status === 'error') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+				
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+
 			}
 		})
 		.catch(error => {
 			var errmessage = LCtestNotificationError + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }

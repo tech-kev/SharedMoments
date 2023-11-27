@@ -180,6 +180,9 @@ async function uploadStockItem(option) {
 
 		if (file) {
 
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.add('active');
+
 			let filename;
 
 			if (option === 'banner') {
@@ -214,18 +217,25 @@ async function uploadStockItem(option) {
 							document.getElementById("useSong").checked = true;
 						}
 
+						const loaderContainer = document.querySelector('.loader-container');
+						loaderContainer.classList.remove('active');
+
 						const message = data.message;
 						callToast('info', message);
 					} else {
 						const message = data.message;
 						callToast('error', message);
+						
+						const loaderContainer = document.querySelector('.loader-container');
+						loaderContainer.classList.remove('active');
 					}
 				})
 				.catch(error => {
 					const errmessage = error + "! " + LCcheckConsole;
 					callToast('error', errmessage);
 					console.error(error);
-					reject(false);
+					const loaderContainer = document.querySelector('.loader-container');
+					loaderContainer.classList.remove('active');
 				});
 		}
 

@@ -31,6 +31,8 @@ async function fetchBucketListItems() {
 		.then(data => {
 			if (data.status === 'success') {
 
+				bucketlist.innerHTML = ''; // Leere Bucketlist
+
 				data.data.forEach((item, index) => {
 					const listItem = document.createElement("li");
 					listItem.classList.add("collection-item");
@@ -71,16 +73,29 @@ async function fetchBucketListItems() {
 						removeBucketListItem(itemId);
 					});
 				});
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
+
 			} else if (data.status === 'error') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
 			}
 		})
 		.catch(error => {
 			var errmessage = LCloadBucketlistError + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+			document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
 		});
 }
 
@@ -101,6 +116,7 @@ function initNewBucketListItemModal() {
 
 async function createNewBucketListItem(event) {
 	event.preventDefault();
+
 	const title = document.querySelector('#bucketlist_titel')
 		.value;
 
@@ -108,6 +124,9 @@ async function createNewBucketListItem(event) {
 		callToast('error', LCenterNameForEntry);
 		return false;
 	}
+
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
 
 	const formdata = new FormData();
 	formdata.append('title', title);
@@ -122,7 +141,13 @@ async function createNewBucketListItem(event) {
 
 			if (status === "success") {
 
-				location.reload();
+				fetchBucketListItems();
+				const modalElement = document.querySelector('#newbucketlistitemmodal');
+				const modalInstance = M.Modal.init(modalElement);
+				modalInstance.close();
+
+				document.getElementById('bucketlist_titel').value = ''; // Titel leeren
+				document.body.style.overflow = "auto";
 
 			} else {
 				const message = data.message;
@@ -133,7 +158,8 @@ async function createNewBucketListItem(event) {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }
 
@@ -164,7 +190,6 @@ async function updateBucketListItem(itemId, title, done) {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
 		});
 }
 
@@ -175,6 +200,9 @@ async function removeBucketListItem(itemId) {
 		return;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	fetch(API_ENDPOINTS.bucketlist + "/" + itemId, {
 			method: "DELETE",
 		})
@@ -184,9 +212,7 @@ async function removeBucketListItem(itemId) {
 
 			if (status === "success") {
 
-				//const message = data.message;
-				//callToast('info', message);
-				location.reload();
+				fetchBucketListItems();
 
 			} else {
 				const message = data.message;
@@ -197,7 +223,8 @@ async function removeBucketListItem(itemId) {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
 		});
 }
 

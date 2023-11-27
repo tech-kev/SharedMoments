@@ -31,6 +31,8 @@ async function fetchMomentsItems() {
 		.then(data => {
 			if (data.status === 'success') {
 
+				timeline.innerHTML = '';
+
 				if (data.data.length === 0) {
 					timeline.style.justifyContent = "center";
 					timeline.innerHTML = `
@@ -77,16 +79,29 @@ async function fetchMomentsItems() {
 						});
 					});
 				}
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
+
 			} else if (data.status === 'error') {
 
 				const errmessage = data.message;
 				callToast('error', errmessage);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+				document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt
 			}
 		})
 		.catch(error => {
 			var errmessage = LCloadMomentsError + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
+
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active'); // Loader schließen, falls aktiv
+			document.body.style.overflow = "auto"; // Overflow auf auto, da beim Modal Close dieser auf hidden bleibt	
 		});
 }
 
@@ -129,6 +144,9 @@ async function createNewMomentItem(event) {
 		return false;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	const formData = new FormData();
 	formData.append('title', title);
 	formData.append('date', date);
@@ -142,18 +160,34 @@ async function createNewMomentItem(event) {
 			const status = data.status;
 
 			if (status === "success") {
-				location.reload();
+
+				fetchMomentsItems();
+				const modalElement = document.querySelector('#newmomentitemmodal');
+				const modalInstance = M.Modal.init(modalElement);
+				modalInstance.close();
+
+				document.getElementById('moment_titel').value = ''; // Titel leeren
+				document.getElementById('moment_datum').value = ''; // Datum leeren
+				document.body.style.overflow = "auto";
+				scrollMoments();
 
 			} else {
 				const message = data.message;
 				callToast('error', message);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+				document.body.style.overflow = "auto";
 			}
 		})
 		.catch(error => {
 			const errmessage = error + "! " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
-			reject(false);
+
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
+			document.body.style.overflow = "auto";
 		});
 }
 
@@ -239,6 +273,9 @@ async function updateMomentItem(event) {
 		return false;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	const formdata = new FormData();
 	formdata.append('title', title);
 	formdata.append('date', date);
@@ -252,10 +289,22 @@ async function updateMomentItem(event) {
 			const status = data.status;
 
 			if (status === 'success') {
-				location.reload();
+
+				fetchMomentsItems();
+				const modalElement = document.querySelector('#updatemomentitemmodal');
+				const modalInstance = M.Modal.init(modalElement);
+				modalInstance.close();
+
+				document.body.style.overflow = "auto";
+				scrollMoments();
+
 			} else {
 				const message = data.message;
 				callToast('error', message);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+				document.body.style.overflow = "auto";
 			}
 
 		})
@@ -264,6 +313,9 @@ async function updateMomentItem(event) {
 			callToast('error', errmessage);
 			console.error(error);
 
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
+			document.body.style.overflow = "auto";
 		});
 }
 
@@ -276,6 +328,9 @@ async function deleteMomentItem(event) {
 		return;
 	}
 
+	const loaderContainer = document.querySelector('.loader-container');
+	loaderContainer.classList.add('active');
+
 	fetch(API_ENDPOINTS.moments + '/' + itemId, {
 			method: 'DELETE',
 		})
@@ -284,10 +339,22 @@ async function deleteMomentItem(event) {
 			const status = data.status;
 
 			if (status === 'success') {
-				location.reload();
+
+				fetchMomentsItems();
+				const modalElement = document.querySelector('#updatemomentitemmodal');
+				const modalInstance = M.Modal.init(modalElement);
+				modalInstance.close();
+
+				document.body.style.overflow = "auto";
+				scrollMoments();
+
 			} else {
 				const message = data.message;
 				callToast('error', message);
+
+				const loaderContainer = document.querySelector('.loader-container');
+				loaderContainer.classList.remove('active');
+				document.body.style.overflow = "auto";
 			}
 
 		})
@@ -296,5 +363,8 @@ async function deleteMomentItem(event) {
 			callToast('error', errmessage);
 			console.error(error);
 
+			const loaderContainer = document.querySelector('.loader-container');
+			loaderContainer.classList.remove('active');
+			document.body.style.overflow = "auto";
 		});
 }

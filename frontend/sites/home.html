@@ -381,24 +381,30 @@
       </div>
       <script type="text/javascript" src="/js/locales_html.js"></script>
       <script>
+
+         function scrollMoments() {
+            //Scroll Sidebar from Moments to right
+            //Hier wird in 100 ms-Schritt die Scrollbar nach rechts gescrollt, falls bspw. das Laden der Seite länger dauert
+            const timeline = document.getElementById("timeline");
+            const totalDelay = 2000; //Gesamte Verzögerung in Millisekunden
+            const stepDelay = 100; //Verzögerung pro Schritt in Millisekunden
+            let currentDelay = 0;
+      
+            const scrollLoop = setInterval(function() {
+                timeline.scrollTo(timeline.scrollWidth, 0);
+                currentDelay += stepDelay;
+                if (currentDelay >= totalDelay) {
+                    clearInterval(scrollLoop);
+                    changeEditMode();
+                    initializeNotifications();
+                }
+            }, stepDelay);
+         }
+
          window.addEventListener('load', function() {
-         
-             //Scroll Sidebar from Moments to right
-             //Hier wird in 100 ms-Schritt die Scrollbar nach rechts gescrollt, falls bspw. das Laden der Seite länger dauert
-             const timeline = document.getElementById("timeline");
-             const totalDelay = 2000; //Gesamte Verzögerung in Millisekunden
-             const stepDelay = 100; //Verzögerung pro Schritt in Millisekunden
-             let currentDelay = 0;
-         
-             const scrollLoop = setInterval(function() {
-                 timeline.scrollTo(timeline.scrollWidth, 0);
-                 currentDelay += stepDelay;
-                 if (currentDelay >= totalDelay) {
-                     clearInterval(scrollLoop);
-                     changeEditMode();
-                     initializeNotifications();
-                 }
-             }, stepDelay);
+            
+            scrollMoments();
+             
          
              //Funktionen, die aufgerufen werden sollen
              fetchMainTitle();
