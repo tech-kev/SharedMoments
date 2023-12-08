@@ -126,6 +126,9 @@ class DBController:
 
                             self.cursor.execute(f"DELETE FROM {table_name}")
 
+                            if not data:
+                                break # If Import-File is empty, stop with this table
+
                             columns = data[0]  # First row contains column names
                             placeholders = ', '.join(['%s'] * len(columns))
                             query = f"INSERT INTO {table_name} VALUES ({placeholders})"
