@@ -135,6 +135,11 @@ class DBController:
                             self.cursor.executemany(query, data[1:])  # Pass data starting from the second row
                             counter += 1
 
+                            if table_name == 'settings': # Since Version 1.1.1 there is a new setting. If it isn't in the import-file, we add it here.
+                                query = "INSERT IGNORE INTO `settings` (`id`, `option`, `value`, `specialvalue`, `dateCreated`, `dateModified`) VALUES (%s, %s, %s, %s, %s, %s)"
+                                values = (10, 'wedding_date', '', '', '2023-09-29 22:10:08', '2023-10-03 21:04:29')
+                                self.cursor.execute(query, values)
+
             self.connection.commit()
 
             if counter == 0:

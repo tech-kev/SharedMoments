@@ -101,6 +101,15 @@
   "updateAnniversaryDateError": "Error updating anniversary date!",
   "enterAnniversaryDate": "Please enter an anniversary date!",
 
+  "wedding_date_loaded_sucessful": "Wedding date loaded successfully",
+  "wedding_date_updated_sucessful": "Wedding date updated successfully",
+  "wedding_date_loaded_failed": "Failed to load the wedding date!",
+  "loadWeddingDateError": "Error loading the wedding date!",
+  "updateWeddingDateError": "Error updating the wedding date!",
+  "enterWeddingDate": "Please enter a wedding date!",
+
+  "loadMainDateError": "Error loading the main date!",
+
   "today_is_a_special_day": "Today is a special day!",
   "anniversary_name_year": "Anniversary",
   "anniversary_name_halfyear": "Half Anniversary",
@@ -108,6 +117,8 @@
   "anniversary_today_is_text": "Today is our",
   "loadSpecialDayError": "Error loading special day!",
   "special_day_loaded_sucessful": "Special day loaded successfully",
+
+  "wedding_name_year": "Wedding Day",
 
   "main_title_loaded_sucessful": "Main title loaded successfully",
   "main_title_updated_sucessful": "Main title changed successfully",
@@ -221,6 +232,8 @@
   "settingsSubTitle9": "The Ties That Bind Through Music",
   "settingsSubText9": "Tired of your tune?",
   "settingsSubText10": "Turn it off here and let the silence (or the crunch of your snack) do the talking.",
+  "settingsSubTitle11": "Your Wedding Anniversary",
+  "settingsSubText11": "Did you get married? Set your wedding date here!",
   "relationship_state1": "In a relationship",
   "relationship_state2": "Married",
   "relationship_state3": "In an open relationship",

@@ -18,7 +18,6 @@
 
 const API_ENDPOINTS = {
     mainTitle: "/api/v1/main_title",
-    anniversaryDate: "/api/v1/anniversary_date",
     specialDay: "/api/v1/special_day",
     moments: "/api/v1/moments",
     filmlist: "/api/v1/filmlist",
@@ -37,5 +36,6 @@ const API_ENDPOINTS = {
     import: "/api/v1/import",
     export: "/api/v1/export",
     pushPublicKey: "/api/v1/push_public_key",
-    sendPushNotifications: "/api/v1/send_push_notifications"
+    sendPushNotifications: "/api/v1/send_push_notifications",
+    mainDate: "/api/v1/main_date"
 };

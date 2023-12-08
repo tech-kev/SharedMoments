@@ -31,6 +31,8 @@ from utils import create_logentry
 from utils import save_file
 from utils import calculate_stats
 from utils import create_push_notifications
+from utils import wedding_date
+from utils import relationship
 
 # Import db_controller
 database_dir = os.path.join(current_dir, '..', '..', 'database')
@@ -76,7 +78,7 @@ def utils_routes(app):
 
     @app.route('/api/v1/anniversary_date', methods=['GET', 'PUT'])
     def anniversary_date_text():
-        if request.method == 'GET':
+        if request.method == 'GET': # Not in use
             try:
 
                 date = anniversary_date()
@@ -365,3 +367,36 @@ def utils_routes(app):
             # Internal Server Error
             create_logentry('applog', 'error', 'utils_routes.py', str(e))               
             return jsonify({'status': 'error', 'message': str(e)}), 500
+        
+        
+    @app.route('/api/v1/main_date', methods=['GET'])
+    def main_date():
+        if request.method == 'GET':
+            try:
+
+                relationship()
+
+                if os.environ.get('WEDDING') == 'True': # Der Status ist verheiratet
+                    date = json.loads(wedding_date())['wedding_date']
+                else:
+                    date = json.loads(anniversary_date())['anniversary_date']
+        
+                if isinstance(date, Exception):
+                    # Fehler beim Datenbankzugriff
+                    create_logentry('applog', 'error', 'utils_routes.py', str(date))
+                    return jsonify({'status': 'error', 'message': str(date)}), 500
+                else:
+                    if 'Error' in date:
+                        error_message = json.loads(date)['Error']
+                        create_logentry('mainlog', 'error', 'utils_routes.py', error_message)
+                        return jsonify({'status': 'error', 'message': error_message}), 200
+                    else:
+                        message = locale['wedding_date_loaded_sucessful']
+                        if app.config['DEBUG']:
+                            create_logentry('mainlog', 'debug', 'utils_routes.py', message + " - date: " + date)
+                        return jsonify({'status': 'success', 'message': message, 'date': date}), 200
+        
+            except Exception as e: 
+                # Internal Server Error
+                create_logentry('applog', 'error', 'utils_routes.py', str(e))               
+                return jsonify({'status': 'error', 'message': str(e)}), 500

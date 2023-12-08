@@ -67,6 +67,10 @@ let LCenterAnniversaryDate
 let LCenterRelationship
 let LCloadPushKeyError
 let LCtestNotificationError
+let LCrelationship_state2
+let LCloadWeddingDateError
+let LCloadMainDateError
+let LCenterWeddingDate
 
 fetch(API_ENDPOINTS.locales, {
 		method: 'GET'
@@ -126,6 +130,10 @@ fetch(API_ENDPOINTS.locales, {
 		LCenterRelationship = data.enter_relationship;
 		LCloadPushKeyError = data.load_push_key_error;
 		LCtestNotificationError = data.test_Notification_Error;
+		LCrelationship_state2 = data.relationship_state2;
+		LCloadWeddingDateError = data.loadWeddingDateError;
+		LCloadMainDateError = data.loadMainDateError;
+		LCenterWeddingDate = data.enterWeddingDate;
 
 
 	})

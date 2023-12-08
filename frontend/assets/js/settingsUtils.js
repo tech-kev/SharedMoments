@@ -55,45 +55,6 @@ function updateMainTitle() {
 		});
 }
 
-function updateAnniversaryDate() {
-	const value = document.getElementById("anniversary_date").value;
-
-	if (!value) {
-		return callToast('error', LCenterAnniversaryDate)
-	}
-
-	const formData = new FormData();
-	formData.append("value", value);
-
-	fetch(API_ENDPOINTS.anniversaryDate, {
-			method: "PUT",
-			body: formData
-		})
-		.then(response => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				errmessage = response.status + ": " + LCupateAnniversaryDateError + " " + LCcheckConsole;
-				throw new Error(errmessage);
-			}
-		})
-		.then(data => {
-			if (data.status === 'success') {
-
-				//callToast('info', data.message);
-
-			} else {
-				errmessage = data.message;
-				callToast('error', errmessage);
-			}
-		})
-		.catch(error => {
-			errmessage = LCupateAnniversaryDateError + " " + LCcheckConsole;
-			callToast('error', errmessage);
-			console.error(error);
-		});
-}
-
 function createUser() {
 	return new Promise((resolve, reject) => {
 		const password = document.getElementById("password").value;
@@ -197,7 +158,9 @@ function checkInputFields() {
 
 		mainTitle = document.getElementById('mainTitle').value;
 
-		relationship = document.getElementById('relationship').value;
+		relationship_status = document.getElementById('relationship').value;
+
+		wedding_date = document.getElementById("wedding_date").value;
 
 		anniversary_date = document.getElementById('anniversary_date').value;
 
@@ -220,8 +183,12 @@ function checkInputFields() {
 			callToast('error', LCenterAnniversaryDate);
 			reject(false);
 			return;
-		} else if (relationship === '') {
+		} else if (relationship_status === '') {
 			callToast('error', LCenterRelationship);
+			reject(false);
+			return;
+		} else if (relationship_status === LCrelationship_state2 && wedding_date === '') {
+			callToast('error', LCenterWeddingDate);
 			reject(false);
 			return;
 		}
@@ -469,6 +436,19 @@ async function updateSetting(option) {
 	} else if (option === 'relationship_status') {
 		value = document.getElementById("relationship").value;
 		specialvalue = "";
+
+		if (value === LCrelationship_state2) { // Wenn Status Verheiratet, dann blende das Hochzeitsdatum ein
+			document.getElementById("div_wedding_date").style.display = "block";
+		} else {
+			document.getElementById("div_wedding_date").style.display = "none";
+		}
+
+	} else if (option === 'wedding_date') {
+		value = document.getElementById("wedding_date").value;
+		specialvalue = "";
+	} else if (option === 'anniversary') {
+		value = document.getElementById('anniversary_date').value;
+		specialvalue= "";
 	}
 
 
@@ -539,6 +519,10 @@ async function getRelationship() {
 
 					selectElement.value = relationship_status;
 					var instance = M.FormSelect.init(selectElement);	
+
+					if (relationship_status === LCrelationship_state2) { // Wenn Status Verheiratet, dann blende das Hochzeitsdatum ein
+						document.getElementById("div_wedding_date").style.display = "block";
+					}
 					
 				}
 

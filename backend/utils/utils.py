@@ -215,27 +215,23 @@ def check_setup_state():
 
 def days_together():
     try:
-        date = json.loads(anniversary_date())['anniversary_date']
-        datumInHtml = datetime.strptime(date, "%Y-%m-%d")
-        diff = relativedelta(datetime.now(), datumInHtml)
+
+        relationship_status = json.loads(relationship())['relationship_status']
+
+        if os.environ.get('WEDDING') == 'True': # Der Status ist verheiratet
+            date = json.loads(wedding_date())['wedding_date']
+        else:
+            date = json.loads(anniversary_date())['anniversary_date']
+
+        # Schreibe den ersten Buchstaben klein, damit das in den Text passt
+        relationship_status = relationship_status[0].lower() + relationship_status[1:]
+
+        if relationship_status == 'in einer Beziehung': # zusammen klingt im Text besser
+            relationship_status = 'zusammen'
 
         
-        with DBController():
-            result_json = DBController().fetch_settings_by_option('relationship_status')
-
-        if result_json:
-
-            if 'Error' in result_json:
-                raise Exception(locale['days_together_text_loaded_failed'])
-                        
-            else:
-                relationship_status = json.loads(result_json)['option']['value']
-                # Schreibe den ersten Buchstaben klein, damit das in den Text passt
-                relationship_status = relationship_status[0].lower() + relationship_status[1:]
-
-                if relationship_status == 'in einer Beziehung': # zusammen klingt im Text besser
-                    relationship_status = 'zusammen'
-                
+        datumInHtml = datetime.strptime(date, "%Y-%m-%d")
+        diff = relativedelta(datetime.now(), datumInHtml)
 
         # Berechne die Anzahl der Jahre, Monate und Tage
         years_count = f"1 {locale['year']}" if diff.years == 1 else f"{diff.years} {locale['years']}"
@@ -280,6 +276,54 @@ def anniversary_date():
         
         else:
             raise Exception(locale['anniversary_date_loaded_failed'])
+
+    except Exception as e:
+        return json.dumps({"Error": str(e)})
+    
+
+def wedding_date():
+    try:
+        result_json = DBController().fetch_settings_by_option('wedding_date')
+
+        if result_json:
+
+            if 'Error' in result_json:
+                return json.dumps({"Error": json.loads(result_json)['Error']})
+
+            else:
+
+                wedding_date = json.loads(result_json)['option']['value']
+            
+            return json.dumps({"wedding_date": wedding_date})
+        
+        else:
+            raise Exception(locale['wedding_date_loaded_failed'])
+
+    except Exception as e:
+        return json.dumps({"Error": str(e)})
+    
+    
+def relationship():
+    try:
+        result_json = DBController().fetch_settings_by_option('relationship_status')
+
+        if result_json:
+
+            if 'Error' in result_json:
+                return json.dumps({"Error": json.loads(result_json)['Error']})
+
+            else:
+                relationship_status = json.loads(result_json)['option']['value']
+
+                if relationship_status == locale['relationship_state2']: # Der Status ist verheiratet
+                    os.environ['WEDDING'] = 'True'
+                else:
+                    os.environ['WEDDING'] = 'False'
+            
+            return json.dumps({"relationship_status": relationship_status})
+        
+        else:
+            raise Exception(locale['loadRelationshipError'])
 
     except Exception as e:
         return json.dumps({"Error": str(e)})
@@ -495,9 +539,16 @@ def create_push_notifications():
     
 def calculate_special_day():
     try:
-        unformattedDate = json.loads(anniversary_date())['anniversary_date']
+
+        relationship_status = json.loads(relationship())['relationship_status']
+
+        if os.environ.get('WEDDING') == 'True': # Der Status ist verheiratet
+            unformattedDate = json.loads(wedding_date())['wedding_date']
+        else:
+            unformattedDate = json.loads(anniversary_date())['anniversary_date']
+
         datumInHtml = datetime.strptime(unformattedDate, "%Y-%m-%d")
-        # Berechne die Differenz zwischen dem heutigen Datum und dem Datum in der index.html
+        # Berechne die Differenz zwischen dem heutigen Datum und dem Jahres-/Hochzeitstag
         heute = datetime.now()
         diff = relativedelta(heute, datumInHtml)
 
@@ -507,6 +558,8 @@ def calculate_special_day():
         # Überprüfe, ob heute der Jahrestag ist
         if heute.month == datumInHtml.month and heute.day == datumInHtml.day:
             day = locale['anniversary_name_year']
+            if relationship_status == locale['relationship_state2']:
+                day = locale['wedding_name_year']
             day_text = locale['anniversary_today_is_text'] + " " + day
 
         # Überprüfe, ob heute der Halbjahrestag ist

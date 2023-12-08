@@ -55,9 +55,9 @@ async function fetchMainTitle() {
 
 async function fetchAnniversaryDate() {
 
-	fetch(API_ENDPOINTS.anniversaryDate, {
-			method: 'GET',
-		})
+	fetch(API_ENDPOINTS.settings + '/' + 'anniversary', {
+		method: 'GET',
+	})
 		.then(response => {
 			if (response.ok) {
 				return response.json();
@@ -68,7 +68,7 @@ async function fetchAnniversaryDate() {
 		.then(data => {
 			if (data.status === 'success') {
 
-				const anniversaryDate = data.data.anniversary_date;
+				const anniversaryDate = data.data.value;
 
 				const date = new Date(anniversaryDate);
 				const options = {
@@ -76,12 +76,9 @@ async function fetchAnniversaryDate() {
 					month: '2-digit',
 					day: '2-digit'
 				};
-				const anniversaryDateFormatted = date.toLocaleDateString(LClocale, options);
 
 				if (window.location.pathname === "/settings" || window.location.pathname === "/setup") {
 					document.getElementById("anniversary_date").value = anniversaryDate;
-				} else {
-					document.getElementById("anniversary_date").textContent = anniversaryDateFormatted;
 				}
 			} else if (data.status === 'error') {
 
@@ -91,6 +88,90 @@ async function fetchAnniversaryDate() {
 		})
 		.catch(error => {
 			var errmessage = LCloadAnniversaryDateError + " " + LCcheckConsole;
+			callToast('error', errmessage);
+			console.error(error);
+		});
+}
+
+async function fetchWeddingDate() {
+
+	fetch(API_ENDPOINTS.settings + '/' + 'wedding_date', {
+			method: 'GET',
+		})
+		.then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error(response.status + ": " + LCloadWeddingDateError + " " + LCcheckConsole);
+			}
+		})
+		.then(data => {
+			if (data.status === 'success') {
+
+				const weddingDate = data.data.value;
+
+				const date = new Date(weddingDate);
+				const options = {
+					year: 'numeric',
+					month: '2-digit',
+					day: '2-digit'
+				};
+
+				if (window.location.pathname === "/settings" || window.location.pathname === "/setup") {
+					document.getElementById("wedding_date").value = weddingDate;
+				}
+
+			} else if (data.status === 'error') {
+
+				const errmessage = data.message;
+				callToast('error', errmessage);
+			}
+		})
+		.catch(error => {
+			var errmessage = LCloadWeddingDateError + " " + LCcheckConsole;
+			callToast('error', errmessage);
+			console.error(error);
+		});
+}
+
+async function fetchMainDate() {
+
+	fetch(API_ENDPOINTS.mainDate, {
+			method: 'GET',
+		})
+		.then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error(response.status + ": " + LCloadMainDateError + " " + LCcheckConsole);
+			}
+		})
+		.then(data => {
+			if (data.status === 'success') {
+
+				const main_date = data.date;
+
+				const date = new Date(main_date);
+				const options = {
+					year: 'numeric',
+					month: '2-digit',
+					day: '2-digit'
+				};
+				const formatted_main_date = date.toLocaleDateString(LClocale, options);
+
+				if (window.location.pathname !== "/settings" || window.location.pathname !== "/setup") {
+					document.getElementById("main_date").textContent = formatted_main_date;
+				}
+
+
+			} else if (data.status === 'error') {
+
+				const errmessage = data.message;
+				callToast('error', errmessage);
+			}
+		})
+		.catch(error => {
+			var errmessage = LCloadMainDateError + " " + LCcheckConsole;
 			callToast('error', errmessage);
 			console.error(error);
 		});

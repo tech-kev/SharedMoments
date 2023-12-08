@@ -144,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('settingSubButton14').textContent = data.push_me;
             document.getElementById('password').placeholder = data.password;
             document.getElementById('confirmPassword').placeholder = data.confirm_password;
+            document.getElementById('settingsSubTitle11').textContent = data.settingsSubTitle11;
+            document.getElementById('settingsSubText11').textContent = data.settingsSubText11;
+            
 
          } else if (window.location.pathname === "/setup") {
 
@@ -194,6 +197,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('mainTitle').placeholder = data.our_moments;
             document.getElementById('nameUserA').placeholder = data.name;
             document.getElementById('nameUserB').placeholder = data.name;
+            document.getElementById('settingsSubTitle11').textContent = data.settingsSubTitle11;
+            document.getElementById('settingsSubText11').textContent = data.settingsSubText11;
          }
 
          if (window.location.pathname !== "/login" && window.location.pathname !== "/setup") { // Login + Setup hat kein Seitenmenü

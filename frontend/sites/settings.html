@@ -110,7 +110,7 @@
                            <p class="subtext" id="settingsSubText2"></p>
                         </div>
                         <div class="col s6 right-align">
-                           <input type="date" id="anniversary_date" onblur="updateAnniversaryDate()">
+                           <input type="date" id="anniversary_date" onblur="updateSetting('anniversary')">
                         </div>
                      </div>
                   </div>
@@ -130,6 +130,21 @@
                               <option value="" id="relationship_state3"></option>
                               <option value="" id="relationship_state4"></option>
                            </select>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="div_wedding_date" style="display: none;">
+                     <div class="divider"></div>
+                     <div class="section">
+                        <div class="row">
+                           <div class="col s6 truncate-wrap">
+                              <!-- Hochzeitstag -->
+                              <p id="settingsSubTitle11"></p>
+                              <p class="subtext" id="settingsSubText11"></p>
+                           </div>
+                           <div class="col s6 right-align">
+                              <input type="date" id="wedding_date" onblur="updateSetting('wedding_date')">
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -290,6 +305,7 @@
              fechtUseSongState();
              getBirthdays();
              getRelationship();
+             fetchWeddingDate();
          })
          
       </script>
