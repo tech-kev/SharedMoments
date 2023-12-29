@@ -39,6 +39,9 @@
       <div class="container">
       <div class="row">
          <div class="col s12">
+            <div id="update_message" style="display: none; height: 1px;" class="card-panel pink lighten-3 center-align">
+               <p style="margin-top: -0.5rem; color: white;" id="update_available"></p>
+            </div>
             <!-- Allgemein -->
             <span class="card-title" id="settingsMenuTitle1"></span>
             <div class="card">
@@ -246,7 +249,7 @@
             </div>
          </div>
       </div>
-      <p style="text-align: center;">Made with ❤️ by techkev</p>
+      <p style="text-align: center;">Made with ❤️ by techkev<span id="installed_version"></span></p>
       <div class="loader-container">
          <div class="preloader-wrapper big active">
             <div class="spinner-layer spinner-blue">
@@ -306,6 +309,7 @@
              getBirthdays();
              getRelationship();
              fetchWeddingDate();
+             checkNewRelease();
          })
          
       </script>

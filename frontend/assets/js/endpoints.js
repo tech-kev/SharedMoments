@@ -37,5 +37,6 @@ const API_ENDPOINTS = {
     export: "/api/v1/export",
     pushPublicKey: "/api/v1/push_public_key",
     sendPushNotifications: "/api/v1/send_push_notifications",
-    mainDate: "/api/v1/main_date"
+    mainDate: "/api/v1/main_date",
+    checkNewRelease: "/api/v1/check_new_release"
 };

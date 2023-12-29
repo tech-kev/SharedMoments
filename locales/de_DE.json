@@ -332,5 +332,9 @@
   "notificationtest": "Benachrichtigungstest",
   "settingSubText14": "Hier kannst du die Benachrichtigungen testen. Diese werden an alle eingerichteten Dienste gesendet.",
   "push_me": "Drück mich",
-  "test_Notification_Error": "Scheinbar gab es einen Fehler beim Testen der Benachrichtigungen."
+  "test_Notification_Error": "Scheinbar gab es einen Fehler beim Testen der Benachrichtigungen.",
+  "upToDate": "aktuell",
+  "updateAvailable": "Update verfügbar",
+  "versionInfoLoadedSuccessful": "Versionsinfo erfolgreich geladen",
+  "versionInfoLoadingFailed": "Versionsinfo konnte nicht geladen werden"
 }

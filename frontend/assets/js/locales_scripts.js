@@ -71,6 +71,9 @@ let LCrelationship_state2
 let LCloadWeddingDateError
 let LCloadMainDateError
 let LCenterWeddingDate
+let LCupToDate
+let LCupdateAvailable
+let LCversionInfoLoadingFailed
 
 fetch(API_ENDPOINTS.locales, {
 		method: 'GET'
@@ -134,6 +137,9 @@ fetch(API_ENDPOINTS.locales, {
 		LCloadWeddingDateError = data.loadWeddingDateError;
 		LCloadMainDateError = data.loadMainDateError;
 		LCenterWeddingDate = data.enterWeddingDate;
+		LCupToDate = data.upToDate;
+		LCupdateAvailable = data.updateAvailable;
+		LCversionInfoLoadingFailed = data.versionInfoLoadingFailed;
 
 
 	})

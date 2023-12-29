@@ -285,6 +285,10 @@
   "notificationtest": "Notification test",
   "settingSubText14": "Here you can test the notifications. These are sent to all configured services.",
   "push_me": "Push me",
-  "test_Notification_Error": "There was an error when testing the notifications."
+  "test_Notification_Error": "There was an error when testing the notifications.",
+  "upToDate": "up to date",
+  "updateAvailable": "Update available",
+  "versionInfoLoadedSuccessful": "Version info successfully loaded",
+  "versionInfoLoadingFailed": "Version info could not be loaded"
 
 }

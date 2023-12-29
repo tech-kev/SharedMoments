@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from flask import jsonify, request
+import requests
 import json
 import os
 import sys
@@ -400,3 +401,40 @@ def utils_routes(app):
                 # Internal Server Error
                 create_logentry('applog', 'error', 'utils_routes.py', str(e))               
                 return jsonify({'status': 'error', 'message': str(e)}), 500
+
+    @app.route('/api/v1/check_new_release', methods=['GET'])
+    def check_new_release():
+        if request.method == 'GET':
+            try:
+                url = "https://api.github.com/repos/tech-kev/SharedMoments/releases/latest"
+                response = requests.get(url)
+                
+                if response.status_code == 200:
+                    latest_release = response.json()
+                    latest_release_tag = latest_release['name']
+                    
+                    version = os.environ.get('VERSION')
+
+                    if latest_release_tag > version:
+                        new_version = True
+                    else:
+                        new_version = False
+                        
+                    data = {
+                        'new_version': new_version,
+                        'installed_version': version,
+                        'latest_version': latest_release_tag
+                    }
+                    
+                    message = locale['versionInfoLoadedSuccessful']
+                    return jsonify({'status': 'success', 'message': message, 'data': data}), 200
+                else:
+                    message = locale['versionInfoLoadingFailed']
+                    create_logentry('applog', 'error', 'utils_routes.py', message)
+                    return jsonify({'status': 'error', 'message': message}), 503
+
+            except Exception as e: 
+                # Internal Server Error
+                create_logentry('applog', 'error', 'utils_routes.py', str(e))               
+                return jsonify({'status': 'error', 'message': str(e)}), 500
+

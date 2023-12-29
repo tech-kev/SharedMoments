@@ -47,6 +47,9 @@ file_path = os.path.join(locales_dir, locale_env + ".json")
 with open(file_path, "r") as file:
     locale = json.load(file)
 
+# Set Version Number
+os.environ['VERSION'] = '1.3.0'
+
 # Import logger
 utils_dir = os.path.join(current_dir, '..', 'utils')
 sys.path.append(utils_dir)

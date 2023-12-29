@@ -438,3 +438,46 @@ document.addEventListener('DOMContentLoaded', async function() {
 	const instances = M.Sidenav.init(elems);
 
 });
+
+async function checkNewRelease() {
+
+	fetch(API_ENDPOINTS.checkNewRelease, {
+			method: 'GET',
+		})
+		.then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error(response.status + ": " + versionInfoLoadingFailed + " " + LCcheckConsole);
+			}
+		})
+		.then(data => {
+			if (data.status === 'success') {
+
+				const installed_version = data.data.installed_version;
+				const latest_version = data.data.latest_version;
+				const new_version = data.data.new_version;
+
+				if (new_version === true) {
+					document.getElementById("update_message").style.display = 'block';
+					document.getElementById("update_available").innerHTML = LCupdateAvailable + '! v' + installed_version + ' -> <a href="https://github.com/tech-kev/SharedMoments/releases/latest" target="_blank">v' + latest_version + '</a>';
+					document.getElementById("installed_version").innerHTML = ' - ' + installed_version + ' <a href="https://github.com/tech-kev/SharedMoments/releases/latest" target="_blank">(' + LCupdateAvailable + ')</a>';
+					
+				} else {
+					document.getElementById("installed_version").innerHTML = ' - <a href="https://github.com/tech-kev/SharedMoments/releases/tag/v' + installed_version + '" target="_blank">v' + installed_version + ' (' + LCupToDate + ')</a>';
+					
+				}
+				
+
+			} else if (data.status === 'error') {
+
+				const errmessage = data.message;
+				callToast('error', errmessage);
+			}
+		})
+		.catch(error => {
+			var errmessage = versionInfoLoadingFailed + " " + LCcheckConsole;
+			callToast('error', errmessage);
+			console.error(error);
+		});
+}
