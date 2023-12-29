@@ -671,12 +671,15 @@ async function updateFeedItem(event) {
 
 		// Datei-URLs zur contentURL hinzufügen (ohne die Basis-URL)
 		const baseURL = window.location.origin; // Dynamisch die Basis-URL der aktuellen Webseite ermitteln
-		const relativeURL = fileURL.replace(baseURL, '');
+		const relativeURLEncoded = fileURL.replace(baseURL, '');
+		const relativeURL = decodeURIComponent(relativeURLEncoded);
 		contentURL += relativeURL;
 		if (i < filePreviews.length - 1 || filePreviews.length > 1 && i !== filePreviews.length - 1) {
 			contentURL += ';'; // Hinzufügen eines Semikolons, wenn es weitere Dateien gibt oder bereits Dateien in der Vorschau sind
 		}
 	}
+
+	
 
 	const fileInput = document.getElementById('feed_file_update');
 	const files = fileInput.files;
