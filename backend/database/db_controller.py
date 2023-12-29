@@ -780,8 +780,28 @@ class DBController:
                     
                 file_path = os.path.join(feed_folder_path, file_name)
                 if not os.path.exists(file_path):
-                    missing_files.append(file_name)
 
+                    query = "SELECT `title`, `dateCreated` FROM `feed_items` WHERE contentURL LIKE %s;"
+                    values = ('%' + file_name + '%',)
+                    self.cursor.execute(query, values)
+                    self.connection.commit()
+                    result = self.cursor.fetchall()
+                    columns = [desc[0] for desc in self.cursor.description]
+            
+                    for row in result:
+                        item = {}
+                        for i in range(len(columns)):
+                            column_name = columns[i]
+                            column_value = row[i]
+                            
+                            # Konvertiere datetime-Objekte in Zeichenketten
+                            if isinstance(column_value, datetime):
+                                column_value = column_value.strftime("%Y-%m-%d")
+                            
+                            item[column_name] = column_value
+                        
+                        item['file_name'] = file_name
+                        missing_files.append(item)
 
             return json.dumps({"deleted_files_count": len(deleted_files), "deleted_files": deleted_files, "missing_files_count": len(missing_files), "missing_files": missing_files})
 
