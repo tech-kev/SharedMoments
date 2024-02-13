@@ -65,43 +65,60 @@
                   
                               if (data.status === "success") {
                   
-                                  const galleryTitle = document.getElementById('galleryTitle');
-                                  const galleryDesc = document.getElementById('galleryDesc');
-                                  const nanogallery2 = document.getElementById('nanogallery2');
-                  
-                                  // Titel aktualisieren
-                                  galleryTitle.innerText = LCgalleryTitle + ': ' + data.data[0].title;
-                                  galleryDesc.innerText = data.data[0].content;
-                  
-                  
-                                  // Dateien hinzufügen
-                                  const fileURLs = data.data[0].contentURL.split(';');
-                                  const items = fileURLs.map(url => {
-                                      const fileName = getFileNameFromURL(url);
-                                      return {
-                                          src: fileName,
-                                          srct: fileName,
-                                          title: ''
-                                      };
-                                  });
-                  
-                                  // Galerie erstellen
-                                  jQuery(nanogallery2).nanogallery2({
-                                      thumbnailHeight: 150,
-                                      thumbnailWidth: 150,
-                                      itemsBaseURL: '/upload/feed_items/',
-                                      items: items
-                                  });
-                              } else {
-                                  const message = data.message;
-                                  callToast('error', message);
+                                 const galleryTitle = document.getElementById('galleryTitle');
+                                 const galleryDesc = document.getElementById('galleryDesc');
+                                 const nanogallery2 = document.getElementById('nanogallery2');
+
+                                 // Bugfix for #2
+                                 if (typeof LCgalleryTitle === 'undefined'){
+                                 fetch(API_ENDPOINTS.locales, {
+                                    method: 'GET'
+                                 })
+                                 .then(response => response.json())
+                                 .then(data => {
+                                    LCgalleryTitle = data.gallery;
+                                 })
+                                 .catch(error => {
+                                    const errmessage = error + '! Please check the console!';
+                                    callToast('error', errmessage);
+                                    console.error(error);
+                                 });
+                                 }
+               
+                                 // Titel aktualisieren
+                                 galleryTitle.innerText = LCgalleryTitle + ': ' + data.data[0].title;
+                                 galleryDesc.innerText = data.data[0].content;
+               
+               
+                                 // Dateien hinzufügen
+                                 const fileURLs = data.data[0].contentURL.split(';');
+                                 const items = fileURLs.map(url => {
+                                    const fileName = getFileNameFromURL(url);
+                                    return {
+                                       src: fileName,
+                                       srct: fileName,
+                                       title: ''
+                                    };
+                                 });
+               
+                                 // Galerie erstellen
+                                 jQuery(nanogallery2).nanogallery2({
+                                    thumbnailHeight: 150,
+                                    thumbnailWidth: 150,
+                                    itemsBaseURL: '/upload/feed_items/',
+                                    items: items,
+                                    galleryRenderDelay: 500 // Bugfix for #2
+                                 });
+                              }  else {
+                                 const message = data.message;
+                                 callToast('error', message);
                               }
                               })
-                          .catch(error => {
+                           .catch(error => {
                               const errmessage = error + '! ' + LCcheckConsole;
                               callToast('error', errmessage);
                               console.error(error);
-                          });
+                           });
                   });
                </script>
             </div>

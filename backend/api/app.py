@@ -48,7 +48,7 @@ with open(file_path, "r") as file:
     locale = json.load(file)
 
 # Set Version Number
-os.environ['VERSION'] = '1.3.0'
+os.environ['VERSION'] = '1.3.1'
 
 # Import logger
 utils_dir = os.path.join(current_dir, '..', 'utils')
