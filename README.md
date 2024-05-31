@@ -29,6 +29,8 @@ SharedMoments is a website that allows a couple to capture their shared moments.
 Translations are currently available for the following languages:
 - de_DE
 - en_US
+- pt_BR
+- es_ES
 
 If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/SharedMoments/wiki#-translation) for more informations.
 
