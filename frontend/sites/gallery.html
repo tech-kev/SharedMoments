@@ -35,6 +35,7 @@
          <li><a href="/filmlist"><i class="material-icons">movie</i><span id="sidemenuFilmlist"></span></a></li>
          <li><a href="/bucketlist"><i class="material-icons">format_list_bulleted</i><span id="sidemenuBucketlist"></span></a></li>
          <div id="customMenu"></div>
+         <li class="nav-logout"><a href="/login" onclick="destroySession()"><i class="material-icons">logout</i><span id="sidemenuLogout"></span></a></li>
          <li class="nav-settings"><a href="/settings"><i class="material-icons">settings</i><span id="sidemenuSettings"></span></a></li>
       </ul>
       <div class="container">
@@ -45,83 +46,116 @@
                <br>
                <span class="card-title" id="galleryTitle"></span>
                <p id="galleryDesc"></p>
+               <div id="unsupportedVideos"></div>
             </div>
             <div class="card-image">
                <div id="nanogallery2"></div>
                <script>
-                  function getFileNameFromURL(url) {
-                      return url.substring(url.lastIndexOf('/') + 1);
-                  }
-                  
-                  jQuery(document).ready(function() {
-                      // ID-Parameter aus der URL abrufen
-                      const urlParams = new URLSearchParams(window.location.search);
-                      const id = urlParams.get('id');
-                  
-                      // API-Aufruf
-                      fetch(API_ENDPOINTS.feed + '/' + id)
-                          .then(response => response.json())
-                          .then(data => {
-                  
-                              if (data.status === "success") {
-                  
-                                 const galleryTitle = document.getElementById('galleryTitle');
-                                 const galleryDesc = document.getElementById('galleryDesc');
-                                 const nanogallery2 = document.getElementById('nanogallery2');
-
-                                 // Bugfix for #2
-                                 if (typeof LCgalleryTitle === 'undefined'){
-                                 fetch(API_ENDPOINTS.locales, {
-                                    method: 'GET'
-                                 })
-                                 .then(response => response.json())
-                                 .then(data => {
-                                    LCgalleryTitle = data.gallery;
-                                 })
-                                 .catch(error => {
-                                    const errmessage = error + '! Please check the console!';
-                                    callToast('error', errmessage);
-                                    console.error(error);
-                                 });
-                                 }
-               
-                                 // Titel aktualisieren
-                                 galleryTitle.innerText = LCgalleryTitle + ': ' + data.data[0].title;
-                                 galleryDesc.innerText = data.data[0].content;
-               
-               
-                                 // Dateien hinzufügen
-                                 const fileURLs = data.data[0].contentURL.split(';');
-                                 const items = fileURLs.map(url => {
-                                    const fileName = getFileNameFromURL(url);
-                                    return {
-                                       src: fileName,
-                                       srct: fileName,
-                                       title: ''
-                                    };
-                                 });
-               
-                                 // Galerie erstellen
-                                 jQuery(nanogallery2).nanogallery2({
-                                    thumbnailHeight: 150,
-                                    thumbnailWidth: 150,
-                                    itemsBaseURL: '/upload/feed_items/',
-                                    items: items,
-                                    galleryRenderDelay: 500 // Bugfix for #2
-                                 });
-                              }  else {
-                                 const message = data.message;
-                                 callToast('error', message);
-                              }
-                              })
+                   function getFileNameFromURL(url) {
+                       return url.substring(url.lastIndexOf('/') + 1);
+                   }
+           
+                   function canPlayMOV() {
+                       const videoElement = document.createElement('video');
+                       return videoElement.canPlayType('video/quicktime') !== '';
+                   }
+           
+                   jQuery(document).ready(function() {
+                       // ID-Parameter aus der URL abrufen
+                       const urlParams = new URLSearchParams(window.location.search);
+                       const id = urlParams.get('id');
+           
+                       // API-Aufruf
+                       fetch(API_ENDPOINTS.feed + '/' + id)
+                           .then(response => response.json())
+                           .then(data => {
+           
+                               if (data.status === "success") {
+           
+                                   const galleryTitle = document.getElementById('galleryTitle');
+                                   const galleryDesc = document.getElementById('galleryDesc');
+                                   const nanogallery2 = document.getElementById('nanogallery2');
+                                   const unsupportedVideos = document.getElementById('unsupportedVideos');
+           
+                                   // Bugfix for #2
+                                   if (typeof LCgalleryTitle === 'undefined'){
+                                       fetch(API_ENDPOINTS.locales, {
+                                           method: 'GET'
+                                       })
+                                       .then(response => response.json())
+                                       .then(data => {
+                                           LCgalleryTitle = data.gallery;
+                                       })
+                                       .catch(error => {
+                                           const errmessage = error + '! Please check the console!';
+                                           callToast('error', errmessage);
+                                           console.error(error);
+                                       });
+                                   }
+           
+                                   // Titel aktualisieren
+                                   galleryTitle.innerText = LCgalleryTitle + ': ' + data.data[0].title;
+                                   galleryDesc.innerText = data.data[0].content;
+           
+                                   // Dateien hinzufügen
+                                   const fileURLs = data.data[0].contentURL.split(';');
+                                   const items = [];
+                                   const unsupportedMOVs = [];
+                                   const canPlayMOVFiles = canPlayMOV();
+           
+                                   fileURLs.forEach(url => {
+                                       const fileName = getFileNameFromURL(url);
+                                       const fileExtension = fileName.split('.').pop().toLowerCase();
+           
+                                       if (fileExtension === 'mov') {
+                                           if (canPlayMOVFiles) {
+                                               items.push({
+                                                   src: fileName,
+                                                   srct: fileName,
+                                                   title: ''
+                                               });
+                                           } else {
+                                               unsupportedMOVs.push(url);
+                                           }
+                                       } else {
+                                           items.push({
+                                               src: fileName,
+                                               srct: fileName,
+                                               title: ''
+                                           });
+                                       }
+                                   });
+           
+                                   if (unsupportedMOVs.length > 0) {
+                                       let unsupportedHTML = `<br><p>${LCgalleryunsupportedVideo}</p><ul>`;
+                                       unsupportedMOVs.forEach(url => {
+                                           unsupportedHTML += `<li><a href="${url}" download>${getFileNameFromURL(url)}</a></li>`;
+                                       });
+                                       unsupportedHTML += '</ul>';
+                                       unsupportedVideos.innerHTML = unsupportedHTML;
+                                   }
+           
+                                   // Galerie erstellen
+                                   jQuery(nanogallery2).nanogallery2({
+                                       thumbnailHeight: 150,
+                                       thumbnailWidth: 150,
+                                       itemsBaseURL: '/upload/feed_items/',
+                                       items: items,
+                                       galleryRenderDelay: 500 // Bugfix for #2
+                                   });
+                               } else {
+                                   const message = data.message;
+                                   callToast('error', message);
+                               }
+                           })
                            .catch(error => {
-                              const errmessage = error + '! ' + LCcheckConsole;
-                              callToast('error', errmessage);
-                              console.error(error);
+                               const errmessage = error + '! ' + LCcheckConsole;
+                               callToast('error', errmessage);
+                               console.error(error);
                            });
-                  });
+                   });
                </script>
-            </div>
+           </div>  
          </div>
       </div>
    </body>

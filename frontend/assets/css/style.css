@@ -311,6 +311,12 @@ div.cd-box {
 	width: 100%;
 }
 
+.nav-logout {
+	position: absolute;
+	bottom: 11rem;
+	width: 100%;
+}
+
 .subtext {
 	font-size: 13px;
 	color: #888888;

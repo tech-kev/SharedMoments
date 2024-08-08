@@ -481,3 +481,9 @@ async function checkNewRelease() {
 			console.error(error);
 		});
 }
+
+function destroySession() {
+    // Setzt das Ablaufdatum des Cookies auf ein Datum in der Vergangenheit, um es zu löschen
+    document.cookie = "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict;";
+}

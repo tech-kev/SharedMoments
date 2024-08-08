@@ -354,7 +354,7 @@ function getFileType(fileURL, fType) {
 		const fileExtension = fileURL.split('.').pop().toLowerCase();
 		if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'jfif' || fileExtension === 'pjpeg' || fileExtension === 'pjp' || fileExtension === 'png') {
 			return 'image';
-		} else if (fileExtension === 'mp4') {
+		} else if (fileExtension === 'mp4' || fileExtension === 'mov') {
 			return 'video';
 		} else {
 			return LCinvalidFiletype;
@@ -400,7 +400,7 @@ async function createNewFeedItem(event) {
 		const fileExtension = fileName.split('.').pop();
 		if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'jfif' || fileExtension === 'pjpeg' || fileExtension === 'pjp' || fileExtension === 'png') {
 			contentType = 'picture';
-		} else if (fileExtension === 'mp4') {
+		} else if (fileExtension === 'mp4' || fileExtension === 'mov') {
 			contentType = 'video';
 		}
 
@@ -578,7 +578,7 @@ async function handleFileSelectOnUpdate(event) {
 		const fileName = file.name;
 		const fileExtension = fileName.split('.').pop().toLowerCase();
 
-		if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'jfif' || fileExtension === 'pjpeg' || fileExtension === 'pjp' || fileExtension === 'png' || fileExtension === 'mp4') {
+		if (fileExtension === 'jpg' || fileExtension === 'jpeg' || fileExtension === 'jfif' || fileExtension === 'pjpeg' || fileExtension === 'pjp' || fileExtension === 'png' || fileExtension === 'mp4' || fileExtension === 'mov') {
 			const formdata = new FormData();
 			formdata.append('file', file);
 			formdata.append('item_type', 'feed_item');
