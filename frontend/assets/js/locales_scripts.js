@@ -74,6 +74,7 @@ let LCenterWeddingDate
 let LCupToDate
 let LCupdateAvailable
 let LCversionInfoLoadingFailed
+let LCgalleryunsupportedVideo
 
 fetch(API_ENDPOINTS.locales, {
 		method: 'GET'
@@ -140,6 +141,7 @@ fetch(API_ENDPOINTS.locales, {
 		LCupToDate = data.upToDate;
 		LCupdateAvailable = data.updateAvailable;
 		LCversionInfoLoadingFailed = data.versionInfoLoadingFailed;
+		LCgalleryunsupportedVideo = data.galleryunsupportedVideo
 
 
 	})

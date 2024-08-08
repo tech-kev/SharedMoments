@@ -192,6 +192,8 @@
   "example": "Example",
   "name": "Name",
   "gallery": "Gallery",
+  "galleryunsupportedVideo": "Unfortunately, your browser does not support .mov videos. Please download the videos and play them in an external media player.",
+  "logout": "Logout",
   "check_console": "Please check the console!",
   "login": "Login",
   "confirm": "Confirm",

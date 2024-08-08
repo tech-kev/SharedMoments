@@ -191,6 +191,8 @@
     "example": "Exemplo",
     "name": "Nome",
     "gallery": "Galeria",
+    "galleryunsupportedVideo": "Infelizmente, seu navegador não suporta vídeos .mov. Por favor, baixe os vídeos e reproduza-os em um reprodutor de mídia externo.",
+    "logout": "Sair",
     "check_console": "Por favor, verifique o console!",
     "login": "Login",
     "confirm": "Confirmar",

@@ -208,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('sidemenuFilmlist').textContent = data.filmlist;
             document.getElementById('sidemenuBucketlist').textContent = data.bucketlist;
             document.getElementById('sidemenuSettings').textContent = data.settings;
+            document.getElementById('sidemenuLogout').textContent = data.logout;
          }
 
 

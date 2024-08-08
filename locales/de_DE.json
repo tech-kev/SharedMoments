@@ -197,6 +197,8 @@
   "example": "Beispiel",
   "name": "Name",
   "gallery": "Galerie",
+  "galleryunsupportedVideo": "Dein Browser unterstützt leider keine .mov-Videos. Bitte lade die Videos herunter und spiele diese in einem externen Mediaplayer ab.",
+  "logout": "Abmelden",
 
   "check_console": "Bitte prüfe die Console!",
 
