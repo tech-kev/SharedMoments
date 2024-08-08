@@ -108,74 +108,69 @@ $(document).ready(function() {
 	(function(e) {
 		e.fn.countdown = function(t, n) {
 			function i() {
-				eventDate = Date.parse(r.date) / 1e3;
-				currentDate = Math.floor(e.now() / 1e3);
+				// Convert date to ISO 8601 format
+				let eventDate = new Date(r.date.replace(" ", "T") + "Z").getTime() / 1e3;
+				let currentDate = Math.floor(Date.now() / 1e3);
 
 				if (eventDate <= currentDate) {
-					return //Stoppt das Script, wenn das heutige Datum größer als das EventDatum ist
+					return; // Stop the script if the current date is greater than the event date
 				}
 
-				seconds = eventDate - currentDate;
-				days = Math.floor(seconds / 86400);
+				let seconds = eventDate - currentDate;
+				let days = Math.floor(seconds / 86400);
 				seconds -= days * 60 * 60 * 24;
-				hours = Math.floor(seconds / 3600);
+				let hours = Math.floor(seconds / 3600);
 				seconds -= hours * 60 * 60;
-				minutes = Math.floor(seconds / 60);
+				let minutes = Math.floor(seconds / 60);
 				seconds -= minutes * 60;
-				/*
-				days == 1 ? thisEl.find(".timeRefDays").text("Tag") : thisEl.find(".timeRefDays").text("Tage");
-				hours == 1 ? thisEl.find(".timeRefHours").
-				thisEl.find(".timeRefHours").text("Stunde"):
-				   minutes == 1 ? thisEl.find(".timeRefMinutes").text("Minute") : thisEl.find(".timeRefMinutes").text("Minuten");
-				seconds == 1 ? thisEl.find(".timeRefSeconds").text("Sekunde") : thisEl.find(".timeRefSeconds").text("Sekunden");
-				*/
 
-				if (r["format"] == "on") {
-					days = String(days).length >= 2 ? days : "0" + days;
-					hours = String(hours).length >= 2 ? hours : "0" + hours;
-					minutes = String(minutes).length >= 2 ? minutes : "0" + minutes;
-					seconds = String(seconds).length >= 2 ? seconds : "0" + seconds
+				if (r.format == "on") {
+					days = String(days).padStart(2, '0');
+					hours = String(hours).padStart(2, '0');
+					minutes = String(minutes).padStart(2, '0');
+					seconds = String(seconds).padStart(2, '0');
 				}
-				//
+
 				if (!isNaN(eventDate)) {
 					thisEl.find(".days").text(days);
 					thisEl.find(".hours").text(hours);
 					thisEl.find(".minutes").text(minutes);
-					thisEl.find(".seconds").text(seconds)
+					thisEl.find(".seconds").text(seconds);
 				} else {
-					errorMessage = LCinvalidDate + ". " + LCexample + ": 2023-06-31 00:00:00";
+					let errorMessage = LCinvalidDate + ". " + LCexample + ": 2023-06-31 00:00:00";
 					alert(errorMessage);
 					console.log(errorMessage);
-					clearInterval(interval)
+					clearInterval(interval);
 				}
 			}
-			//
-			var thisEl = e(this);
-			var r = {
+
+			let thisEl = e(this);
+			let r = {
 				date: null,
 				format: null
 			};
-			//
-			t && e.extend(r, t);
+
+			if (t) {
+				e.extend(r, t);
+			}
 			i();
-			interval = setInterval(i, 1e3)
+			interval = setInterval(i, 1e3);
 		}
 	})(jQuery);
-	//
+
 	$(document).ready(function() {
 		function e() {
-			var e = new Date;
+			let e = new Date();
 			e.setDate(e.getDate() + 60);
-			dd = e.getDate();
-			mm = e.getMonth() + 1;
-			y = e.getFullYear();
-			futureFormattedDate = mm + "/" + dd + "/" + y;
-			return futureFormattedDate
+			let dd = e.getDate();
+			let mm = e.getMonth() + 1;
+			let y = e.getFullYear();
+			let futureFormattedDate = mm + "/" + dd + "/" + y;
+			return futureFormattedDate;
 		}
 
 		fetch(API_ENDPOINTS.settings + '/countdown', {
 				method: 'GET',
-
 			})
 			.then(response => {
 				if (response.ok) {
@@ -186,7 +181,6 @@ $(document).ready(function() {
 			})
 			.then(data => {
 				if (data.status === 'success') {
-
 					const countdownDate = data.data.specialvalue;
 					const title = data.data.value;
 
@@ -200,8 +194,7 @@ $(document).ready(function() {
 					if (title) {
 						$(".countdown-title").text(title);
 					}
-
-					/*
+						/*
                 //Zeigt das Countdown Datum auf der Countdown Karte an
             
                 if (countdownObj && countdownObj.inhalt) {
@@ -213,16 +206,13 @@ $(document).ready(function() {
                     $("#countdown-date").text(formattedDate);
                 }
                 */
-
-
 				} else if (data.status === 'error') {
-
 					const errmessage = data.message;
 					callToast('error', errmessage);
 				}
 			})
 			.catch(error => {
-				var errmessage = LCloadCountdownError + LCcheckConsole;
+				let errmessage = LCloadCountdownError + LCcheckConsole;
 				callToast('error', errmessage);
 				console.error(error);
 			});
