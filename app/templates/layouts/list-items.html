@@ -17,22 +17,25 @@
       </article>
     {% endif %}
 
+    {% set ns = namespace(done_header_shown=false) %}
     {% for item, user in items %}
-    <a class="row wave" onclick="checkCheckbox(this); updateListItem('{{ item.id }}', event.target.querySelector('input[type=checkbox]').checked);">
-        <span>{{ item.title }}</span>
+    {% if item.content == '1' and not ns.done_header_shown %}
+    {% set ns.done_header_shown = true %}
+    <div class="space"></div>
+    <div class="divider"></div>
+    <legend>{{ _('Done') }}</legend>
+    {% endif %}
+    <a class="row wave" onclick="checkCheckbox(this); updateListItem('{{ item.id }}', event.target.querySelector('input[type=checkbox]').checked);"{% if item.content == '1' %} style="opacity: 0.6;"{% endif %}>
+        <span{% if item.content == '1' %} style="text-decoration: line-through;"{% endif %}>{{ item.title }}</span>
         <div class="max"></div>
         <label class="checkbox">
             <input type="checkbox" {% if item.content=='1' %}checked{% endif %}>
             <span></span>
         </label>
     </a>
-    
-
     {% if not loop.last %}
     <hr>
     {% endif %}
     {% endfor %}
-
-    
 
 </article>

@@ -548,11 +548,11 @@ def item_by_id(id):
             if dateCreated:
                 dateCreated = datetime.strptime(request.form['dateCreated'], "%Y-%m-%d")
 
-            if not title or not content or not content_type or not list_type or not content_url:
+            if not title or content is None or not content_type or not list_type or not content_url:
                 item = get_item_by_id(id)
                 if not title:
                     title = item.title
-                if not content:
+                if content is None or (content == '' and 'content' not in request.form):
                     content = item.content
                 if not content_type:
                     content_type = item.contentType
