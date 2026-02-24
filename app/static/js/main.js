@@ -56,6 +56,10 @@ function callUi(id) {
          document.getElementById("div-overlay-new-list-item").classList.remove("active");
       } else if (id == "#dialog-edition-confirm") {
          document.getElementById("div-overlay-edition-confirm").classList.remove("active");
+      } else if (id == "#dialog-create-role") {
+         document.getElementById("div-overlay-create-role").classList.remove("active");
+      } else if (id == "#dialog-edit-user-roles") {
+         document.getElementById("div-overlay-edit-user-roles").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -80,6 +84,10 @@ function callUi(id) {
          document.getElementById("div-overlay-new-list-item").classList.add("active");
       } else if (id == "#dialog-edition-confirm") {
          document.getElementById("div-overlay-edition-confirm").classList.add("active");
+      } else if (id == "#dialog-create-role") {
+         document.getElementById("div-overlay-create-role").classList.add("active");
+      } else if (id == "#dialog-edit-user-roles") {
+         document.getElementById("div-overlay-edit-user-roles").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }

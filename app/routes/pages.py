@@ -107,7 +107,7 @@ def manage_translations():
 
 @pages_bp.route('/settings')
 @jwt_required
-@require_permission('Update Setting')
+@require_permission('Read Setting')
 def settings():
     try:
         settings = get_all_settings()

@@ -42,13 +42,7 @@ def init_db():
 
         # Permissions — CRUD for entities + per-list + global
         perm_names = [
-            'Create User', 'Read User', 'Update User', 'Delete User',
-            'Create Role', 'Read Role', 'Update Role', 'Delete Role',
-            'Create Permission', 'Read Permission', 'Update Permission', 'Delete Permission',
-            'Create RolePermission', 'Read RolePermission', 'Update RolePermission', 'Delete RolePermission',
-            'Create UserRole', 'Read UserRole', 'Update UserRole', 'Delete UserRole',
-            'Create Setting', 'Read Setting', 'Update Setting', 'Delete Setting',
-            'Create UserSetting', 'Read UserSetting', 'Update UserSetting', 'Delete UserSetting',
+            'Read Setting', 'Update Setting',
         ]
         # Per-list permissions (linked to list type)
         list_perm_actions = ['View', 'Create', 'Update', 'Delete']
@@ -84,7 +78,7 @@ def init_db():
 
         # Adult permissions
         adult_perms = [
-            'Read User', 'Read Setting', 'Read UserSetting', 'Update UserSetting',
+            'Read Setting',
             'View Home', 'Create Home', 'Update Home', 'Delete Home',
             'View Moments', 'Create Moments', 'Update Moments', 'Delete Moments',
             'View Movie List', 'Create Movie List', 'Update Movie List', 'Delete Movie List',
@@ -96,7 +90,7 @@ def init_db():
 
         # Child permissions
         child_perms = [
-            'Read User', 'Read Setting', 'Read UserSetting', 'Update UserSetting',
+            'Read Setting',
             'View Home', 'Create Home',
             'View Moments', 'Create Moments',
             'View Movie List', 'Create Movie List',
@@ -300,17 +294,11 @@ def get_all_roles():
     finally:
         session.close()
 
-HIDDEN_PERMISSIONS = {'Create Setting', 'Create UserSetting', 'Read UserSetting',
-                      'Update UserSetting', 'Delete UserSetting',
-                      'Create Session', 'Read Session', 'Update Session', 'Delete Session'}
-
 def get_all_permissions_list():
-    """Returns all permissions, excluding hidden ones from the UI."""
+    """Returns all permissions."""
     session = SessionLocal()
     try:
-        permissions = session.query(Permission).filter(
-            ~Permission.permissionName.in_(HIDDEN_PERMISSIONS)
-        ).all()
+        permissions = session.query(Permission).all()
         for p in permissions:
             session.expunge(p)
         return permissions

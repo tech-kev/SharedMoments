@@ -228,10 +228,9 @@ function editRolePermissions(roleId, roleName) {
     const container = document.getElementById('edit-role-permissions-checkboxes');
     container.innerHTML = '';
 
-    // Separate per-list permissions (have listTypeID) from global permissions
-    const listPerms = {}; // { listTypeID: { View: perm, Create: perm, ... } }
-    const globalPerms = [];
     const actions = ['View', 'Create', 'Update', 'Delete'];
+    const listPerms = {};
+    const globalPerms = [];
 
     allPermissions.forEach(perm => {
         if (perm.listTypeID) {
@@ -243,132 +242,160 @@ function editRolePermissions(roleId, roleName) {
         }
     });
 
-    // --- Per-list permissions as table ---
-    if (Object.keys(listPerms).length > 0) {
-        let html = `<h6 class="small">${_('List permissions')}</h6>`;
-        html += `<div class="permission-table" style="overflow-x: auto;">`;
-        html += `<table class="border" style="width: 100%;">`;
-        html += `<thead><tr><th style="text-align: left;">${_('List')}</th>`;
-        actions.forEach(action => {
-            html += `<th style="text-align: center;">${_(action)}</th>`;
-        });
-        html += `</tr></thead><tbody>`;
+    // --- One unified table ---
+    const cols = ['View', 'Create', 'Update', 'Delete'];
+    let html = `<table class="border permission-matrix" style="width: 100%;">`;
+    html += `<thead><tr><th style="text-align: left;"></th>`;
+    cols.forEach(c => { html += `<th style="text-align: center;">${_(c)}</th>`; });
+    html += `</tr></thead><tbody>`;
 
-        // Sort by list name
-        const sortedListTypeIds = Object.keys(listPerms).sort((a, b) => {
-            const nameA = listPerms[a].View ? listPerms[a].View.name.split(' ').slice(1).join(' ') : '';
-            const nameB = listPerms[b].View ? listPerms[b].View.name.split(' ').slice(1).join(' ') : '';
-            return nameA.localeCompare(nameB);
-        });
+    // Helper: find View/Read perm for same entity
+    const findViewPerm = (perm) => {
+        const entity = perm.name.split(' ').slice(1).join(' ');
+        return allPermissions.find(p =>
+            p.listTypeID === perm.listTypeID &&
+            p.name.split(' ').slice(1).join(' ') === entity &&
+            (p.name.split(' ', 1)[0] === 'View' || p.name.split(' ', 1)[0] === 'Read')
+        );
+    };
 
-        sortedListTypeIds.forEach(ltId => {
-            const permsForList = listPerms[ltId];
-            const listName = permsForList.View
-                ? permsForList.View.name.split(' ').slice(1).join(' ')
-                : (permsForList.Create ? permsForList.Create.name.split(' ').slice(1).join(' ') : '?');
+    // Helper for checkbox cell
+    const cell = (perm) => {
+        if (!perm) return '<td></td>';
+        const checked = currentPerms.includes(perm.id) ? 'checked' : '';
+        const action = perm.name.split(' ', 1)[0];
+        const needsView = ['Create', 'Update', 'Delete'].includes(action);
+        const viewPerm = needsView ? findViewPerm(perm) : null;
+        const disabled = needsView && viewPerm && !currentPerms.includes(viewPerm.id) ? 'disabled' : '';
+        return `<td style="text-align: center;">
+            <label class="checkbox">
+                <input type="checkbox" value="${perm.id}" ${checked} ${disabled}
+                    onchange="togglePermission(${roleId}, ${perm.id}, this.checked)">
+                <span></span>
+            </label>
+        </td>`;
+    };
 
-            html += `<tr>`;
-            html += `<td><strong>${listName}</strong></td>`;
-            actions.forEach(action => {
-                const perm = permsForList[action];
-                if (perm) {
-                    const checked = currentPerms.includes(perm.id) ? 'checked' : '';
-                    const isView = action === 'View';
-                    const viewPerm = permsForList['View'];
-                    const viewChecked = viewPerm && currentPerms.includes(viewPerm.id);
-                    const disabled = (!isView && !viewChecked) ? 'disabled' : '';
+    // Section: Lists
+    html += `<tr><td colspan="5" style="padding-top: 16px;"><strong>${_('Lists')}</strong></td></tr>`;
+    const sortedIds = Object.keys(listPerms).sort((a, b) => {
+        const nameA = listPerms[a].View ? listPerms[a].View.name.split(' ').slice(1).join(' ') : '';
+        const nameB = listPerms[b].View ? listPerms[b].View.name.split(' ').slice(1).join(' ') : '';
+        return nameA.localeCompare(nameB);
+    });
+    sortedIds.forEach(ltId => {
+        const p = listPerms[ltId];
+        const name = p.View ? p.View.name.split(' ').slice(1).join(' ')
+            : (p.Create ? p.Create.name.split(' ').slice(1).join(' ') : '?');
+        html += `<tr><td style="padding-left: 16px;">${_(name)}</td>`;
+        cols.forEach(action => { html += cell(p[action]); });
+        html += `</tr>`;
+    });
 
-                    html += `<td style="text-align: center;">
-                        <label class="checkbox">
-                            <input type="checkbox" value="${perm.id}" ${checked} ${disabled}
-                                data-list-type-id="${ltId}" data-action="${action}"
-                                ${isView ? `onchange="toggleListViewDependency(this, '${ltId}')"` : ''}>
-                            <span></span>
-                        </label>
-                    </td>`;
-                } else {
-                    html += `<td></td>`;
-                }
-            });
+    // Section: General (CRUD-based global perms)
+    const crudGroups = {};
+    const standalonePerms = [];
+    globalPerms.forEach(perm => {
+        const action = perm.name.split(' ', 1)[0];
+        if (['Create', 'Read', 'Update', 'Delete'].includes(action)) {
+            const entity = perm.name.split(' ').slice(1).join(' ');
+            if (!crudGroups[entity]) crudGroups[entity] = {};
+            crudGroups[entity][action] = perm;
+        } else {
+            standalonePerms.push(perm);
+        }
+    });
+
+    if (Object.keys(crudGroups).length > 0) {
+        html += `<tr><td colspan="5" style="padding-top: 16px;"><strong>${_('General')}</strong></td></tr>`;
+        Object.keys(crudGroups).sort().forEach(entity => {
+            const g = crudGroups[entity];
+            html += `<tr><td style="padding-left: 16px;">${entity}</td>`;
+            // Map Read→View column position
+            html += cell(g['View'] || g['Read']);
+            html += cell(g['Create']);
+            html += cell(g['Update']);
+            html += cell(g['Delete']);
             html += `</tr>`;
         });
-
-        html += `</tbody></table></div><br>`;
-        container.innerHTML += html;
     }
 
-    // --- Global permissions grouped by entity ---
-    if (globalPerms.length > 0) {
-        const groups = {};
-        globalPerms.forEach(perm => {
-            const parts = perm.name.split(' ');
-            const entity = parts.length > 1 ? parts.slice(1).join(' ') : 'Other';
-            if (!groups[entity]) groups[entity] = [];
-            groups[entity].push(perm);
+    // Section: Special (standalone perms)
+    if (standalonePerms.length > 0) {
+        html += `<tr><td colspan="5" style="padding-top: 16px;"><strong>${_('Special')}</strong></td></tr>`;
+        standalonePerms.sort((a, b) => a.name.localeCompare(b.name)).forEach(perm => {
+            const checked = currentPerms.includes(perm.id) ? 'checked' : '';
+            html += `<tr><td style="padding-left: 16px;">${_(perm.name)}</td>`;
+            html += `<td colspan="4" style="text-align: center;">
+                <label class="checkbox">
+                    <input type="checkbox" value="${perm.id}" ${checked}
+                        onchange="togglePermission(${roleId}, ${perm.id}, this.checked)">
+                    <span></span>
+                </label>
+            </td></tr>`;
         });
-
-        let html = `<h6 class="small">${_('General permissions')}</h6>`;
-        Object.keys(groups).sort().forEach(entity => {
-            html += `<div class="permission-group">`;
-            html += `<p style="margin: 8px 0 4px; font-weight: 500; opacity: 0.7;">${entity}</p>`;
-            groups[entity].forEach(perm => {
-                const checked = currentPerms.includes(perm.id) ? 'checked' : '';
-                html += `
-                    <label class="checkbox" style="display: inline-block; margin: 4px 12px 4px 0;">
-                        <input type="checkbox" value="${perm.id}" ${checked}>
-                        <span>${perm.name}</span>
-                    </label>
-                `;
-            });
-            html += `</div>`;
-        });
-        container.innerHTML += html;
     }
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
 
     callUi('#dialog-edit-role-permissions');
 }
 
-function toggleListViewDependency(viewCheckbox, listTypeId) {
-    const container = document.getElementById('edit-role-permissions-checkboxes');
-    const dependentCheckboxes = container.querySelectorAll(
-        `input[data-list-type-id="${listTypeId}"]:not([data-action="View"])`
-    );
+function togglePermission(roleId, permId, checked) {
+    const currentPerms = rolePermissionsMap[roleId] || [];
 
-    if (!viewCheckbox.checked) {
-        dependentCheckboxes.forEach(cb => {
-            cb.checked = false;
-            cb.disabled = true;
-        });
-    } else {
-        dependentCheckboxes.forEach(cb => {
-            cb.disabled = false;
-        });
+    // Find the toggled permission
+    const perm = allPermissions.find(p => p.id === permId);
+    if (perm) {
+        const action = perm.name.split(' ', 1)[0];
+        const entity = perm.name.split(' ').slice(1).join(' ');
+        const siblings = allPermissions.filter(p =>
+            p.listTypeID === perm.listTypeID &&
+            p.name.split(' ').slice(1).join(' ') === entity
+        );
+
+        if (checked && (action === 'View' || action === 'Read')) {
+            // Enabling View → enable CUD checkboxes
+            siblings.forEach(p => {
+                const a = p.name.split(' ', 1)[0];
+                if (['Create', 'Update', 'Delete'].includes(a)) {
+                    const cb = document.querySelector(`#edit-role-permissions-checkboxes input[value="${p.id}"]`);
+                    if (cb) cb.disabled = false;
+                }
+            });
+        } else if (!checked && (action === 'View' || action === 'Read')) {
+            // Deactivating View/Read → uncheck + disable CUD
+            siblings.forEach(p => {
+                const a = p.name.split(' ', 1)[0];
+                if (['Create', 'Update', 'Delete'].includes(a)) {
+                    const cb = document.querySelector(`#edit-role-permissions-checkboxes input[value="${p.id}"]`);
+                    if (cb) { cb.checked = false; cb.disabled = true; }
+                }
+            });
+        }
     }
-}
 
-function saveRolePermissions() {
-    const roleId = document.getElementById('edit-role-permissions-role-id').value;
-    const checkboxes = document.querySelectorAll('#edit-role-permissions-checkboxes input[type="checkbox"]:checked');
-    const permissionIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    // Collect all checked checkboxes as new permission set
+    const allChecked = document.querySelectorAll('#edit-role-permissions-checkboxes input[type="checkbox"]:checked');
+    const newPerms = Array.from(allChecked).map(cb => parseInt(cb.value));
 
     const formData = new FormData();
-    formData.append('permissionIds', JSON.stringify(permissionIds));
+    formData.append('permissionIds', JSON.stringify(newPerms));
 
     fetch(`/api/v2/admin/roles/${roleId}/permissions`, { method: 'PUT', body: formData })
         .then(response => response.json())
         .then(result => {
             if (result.status === 'success') {
-                rolePermissionsMap[roleId] = permissionIds;
-                callUi('#dialog-edit-role-permissions');
-                showAdminSnackbar(result.message, false);
-                location.reload();
+                rolePermissionsMap[roleId] = newPerms;
             } else {
                 showAdminSnackbar(result.message, true);
+                editRolePermissions(roleId, document.getElementById('edit-role-permissions-title').textContent);
             }
         })
         .catch(error => {
-            console.error('Error saving role permissions:', error);
             showAdminSnackbar(_('Server not reachable'), true);
+            editRolePermissions(roleId, document.getElementById('edit-role-permissions-title').textContent);
         });
 }
 

@@ -4,15 +4,11 @@
     <title>{{ title.value }} - {{ _('Admin') }}</title>
     {% include 'layouts/head.html' %}
     <style>
-        .permission-group { margin-bottom: 8px; }
-        .permission-group h6 { margin-bottom: 8px; }
-        .role-card { cursor: pointer; }
-        .role-card:hover { opacity: 0.9; }
         .user-roles-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-        .permission-table table td, .permission-table table th { padding: 8px 12px; }
-        .permission-table table th { font-size: 0.85em; opacity: 0.7; }
-        .permission-table table td label.checkbox { margin: 0; }
-        .permission-table table td label.checkbox span { padding-left: 0; }
+        .permission-matrix td, .permission-matrix th { padding: 6px 12px; }
+        .permission-matrix th { font-size: 0.85em; opacity: 0.7; }
+        .permission-matrix td label.checkbox { margin: 0; }
+        .permission-matrix td label.checkbox span { padding-left: 0; }
     </style>
 </head>
 <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
@@ -148,10 +144,9 @@
             <button class="circle transparent" onclick="callUi('#dialog-edit-role-permissions')"><i>close</i></button>
             <h5 id="edit-role-permissions-title">{{ _('Edit permissions') }}</h5>
             <div class="max"></div>
-            <button class="transparent link" onclick="saveRolePermissions()">{{ _('Save') }}</button>
         </nav>
+        <div id="edit-role-permissions-checkboxes" class="padding" style="overflow-x: auto;"></div>
         <input type="hidden" id="edit-role-permissions-role-id">
-        <div id="edit-role-permissions-checkboxes" class="padding"></div>
     </dialog>
 
     <!-- Dialog: Create Role -->
