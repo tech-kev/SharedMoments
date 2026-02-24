@@ -1,0 +1,54 @@
+<dialog class="max" id="dialog-edit-home-item">
+
+    <!-- Overlay für Ladeanimation -->
+   <div class="overlay" id="div-overlay-edit-home-item">
+    <article class="round center middle" style="max-width: 320px; margin: auto; padding: 24px;">
+       <i class="extra" style="margin-bottom: 12px;">cloud_upload</i>
+       <h6 id="headline-article-edit-home-item"></h6>
+         <progress value="1" max="100" id="progress-edit-home-item" style="display: none; margin: 12px 0;"></progress>
+         <p class="small-text" style="opacity: 0.8;">{{ _('File') }} <span id="span-progress-file-edit-home-item"></span> {{ _('of') }} <span id="span-progress-file-edit-home-item-count"></span></p>
+     </article>
+    </div>
+
+    <nav>
+        <button class="circle transparent" onclick="callUi('#dialog-edit-home-item')"><i>close</i></button>
+        <h5>{{ _('Edit entry') }}</h5>
+        <div class="max"></div><a onclick="saveEditedHomeItem()">{{ _('Save') }}</a>
+    </nav>
+    <div class="grid">
+        <div class="s12">
+            <div class="field label border"><input type="text" placeholder=" " id="edit-home-item-title" value="{{ item.title }}"><label>{{ _('Title') }}</label></div>
+        </div>
+        <div class="s12">
+            <div class="field label border textarea"><textarea placeholder=" " id="edit-home-item-content" oninput="autoResizeTextarea(this)">{{ item.content }}</textarea><label>{{ _('Description') }}</label></div>
+            {% if ai_enabled and has_list_permission('Update', list_type_title) %}
+            <div class="ai-actions right-align" style="margin-top: 4px;">
+               <button class="circle transparent small ai-enhance-btn" id="btn-ai-enhance-edit" onclick="enhanceWithAI('edit')" title="{{ _('Enhance with AI') }}"><i>auto_awesome</i></button>
+               <button class="circle transparent small ai-undo-btn" id="btn-ai-undo-edit" onclick="undoAI('edit')" title="{{ _('Undo AI') }}" style="display:none;"><i>undo</i></button>
+               <button class="circle transparent small ai-redo-btn" id="btn-ai-redo-edit" onclick="enhanceWithAI('edit')" title="{{ _('Regenerate') }}" style="display:none;"><i>refresh</i></button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="s12">
+            <div class="field label border"><input type="date" placeholder=" " id="edit-home-item-date-created" value="{{ item.dateCreated|format_date_ymd }}"><label>{{ _('Creation Date') }} ({{ _('optional') }})</label></div>
+        </div>
+        <div class="s12">
+            <div class="field label prefix large border">
+                <i>attach_file</i>
+                <input type="file" multiple accept="image/*, video/*, .mov" id="file-input-edit-home-item" onchange="generatePreviewForFileInput(event, 'edit')">
+                <input type="text">
+                <label>{{ _('Images or videos') }}</label>
+            </div>
+        </div>
+        <div class="s12">
+            <label class="checkbox">
+                <input type="checkbox" id="checkbox-edit-home-item-all-editions" {{ 'checked' if item.edition == 'all' or not item.edition }}>
+                <span>{{ _('Show in all editions') }}</span>
+            </label>
+        </div>
+    </div>
+    <input type="hidden" id="input-hidden-edit-item-contentURLs" value="{{ item.contentURL }}">
+    <div class="grid center-align" id="div-edit-home-item-preview-grid">
+        <!-- Hier kommen die Vorschaubilder dynamisch hin -->
+    </div>
+</dialog>

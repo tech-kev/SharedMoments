@@ -1,0 +1,38 @@
+<article class="primary-container">
+    <h5>{{ _(mainTitle) }}</h5>
+    <br>
+    {% if not items %}
+        <div class="center-align">
+          <i class="extra">format_list_bulleted_add</i>
+        <h5>{{ _('You haven´t created any entry yet') }}</h5>
+          {% if has_list_permission('Create', list_type_title) %}
+          <p>{{ _('Click the button to create a new entry') }}</p>
+          <div class="space"></div>
+          <nav class="center-align">
+            <button onclick="callUi('#dialog-create-new-list-item')">{{ _('Create entry') }}</button>
+          </nav>
+          {% endif %}
+        </div>
+        <br>
+      </article>
+    {% endif %}
+
+    {% for item, user in items %}
+    <a class="row wave" onclick="checkCheckbox(this); updateListItem('{{ item.id }}', event.target.querySelector('input[type=checkbox]').checked);">
+        <span>{{ item.title }}</span>
+        <div class="max"></div>
+        <label class="checkbox">
+            <input type="checkbox" {% if item.content=='1' %}checked{% endif %}>
+            <span></span>
+        </label>
+    </a>
+    
+
+    {% if not loop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
+
+    
+
+</article>

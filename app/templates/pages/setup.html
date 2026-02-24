@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ _('SharedMoments Setup') }}</title>
+      {% include 'layouts/head.html' %}
+   </head>
+   <style>
+    .setup-image {
+        block-size: 15rem !important;
+        inline-size: 15rem !important;
+    }
+
+    .setup-text-color {
+        color: white;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+   </style>
+   <body style="background-color: #536dfe;" class="setup-text-color">
+
+
+    <main class="responsive">
+        <div class="overlay" id="div-overlay-setup-add-user" onclick="callUi('#dialog-add-user');"></div>
+        <div class="overlay" id="div-overlay-setup-edit-settings" onclick="callUi('#edit-settings');"></div>
+        <div>
+            <div class="page padding active" id="setup-tab-1">
+                <h5>{{ _('Select edition') }}</h5>
+                <br>
+    
+                <div class="page left active" id="info-couples">
+    
+                    <img class="circle setup-image center" src="/api/v2/media/static/setup-couples.jpg">
+                    <br>
+                    <p>{{ _('SharedMoments Couples is designed for couples who want to store their shared experiences and wish lists') }}</p>
+                </div>
+    
+                <div class="page left" id="info-family">
+                    <img class="circle setup-image center" src="/api/v2/media/static/setup-family.jpg"
+                        style="width: 100%; height: 100%;">
+                    <br>
+                    <p>{{ _('SharedMoments Family is designed for families who want to store their shared experiences and wish lists') }}</p>
+                </div>
+    
+                <div class="page left" id="info-friends">
+                    <img class="circle setup-image center" src="/api/v2/media/static/setup-friends.jpg"
+                        style="width: 100%; height: 100%;">
+                    <br>
+                    <p>{{ _('SharedMoments Friends is designed for friend groups who want to store their shared experiences and wish lists') }}</p>
+                </div>
+    
+                <div class="">
+    
+                    <p>{{ _('Please select a version of SharedMoments to continue') }}:</p>
+                    <div class="field suffix border round white">
+                        <select onchange="showInfo(this.value);" id="sm_edition" style="color: black;">
+                            <option>Couples</option>
+                            <option>Family</option>
+                            <option>Friends</option>
+                        </select>
+                        <i style="color: black;">arrow_drop_down</i>
+                    </div>
+                </div>
+    
+            </div>
+            <div class="page padding" id="setup-tab-2">
+    
+                <div class="">
+                    <h5>{{ _('Add user') }}</h5>
+                    <br>
+                    <img class="circle setup-image center" src="/api/v2/media/static/profile-men.jpg"
+                        style="width: 100%; height: 100%;">
+                    <br>
+                    <br>
+                    <p id="p-add-user-text">{{ _('Add users who will use SharedMoments') }}.</p>
+                    <p style="display: none;" id="p-added-users">{{ _('Added users') }}:</p>
+    
+                    <div id="users">
+                    </div>
+                    <br>
+                    <button onclick="callUi('#dialog-add-user')" class="border center white">{{ _('Add user') }}</button>
+    
+    
+    
+    
+    
+                    <dialog class="bottom" id="dialog-add-user">
+                        <h5>{{ _('Add user') }}</h5>
+                        <div class="grid">
+                            <div class="s6">
+                                <div class="field label border">
+                                    <input type="text" id="add-user-firstname" onblur="validateUserInputs('firstname')">
+                                    <label>{{ _('First name') }}</label>
+                                    <span class="helper" id="firstname-helper"></span>
+                                </div>
+                            </div>
+                            <div class="s6">
+                                <div class="field label border">
+                                    <input type="text" id="add-user-lastname" onblur="validateUserInputs('lastname')">
+                                    <label>{{ _('Last name') }}</label>
+                                    <span class="helper" id="lastname-helper"></span>
+                                </div>
+                            </div>
+                            <div class="s6">
+                                <div class="field label border">
+                                    <input type="email" id="add-user-email" onblur="validateUserInputs('email')">
+                                    <label>{{ _('Email address') }}</label>
+                                    <span class="helper" id="email-helper"></span>
+                                </div>
+                            </div>
+                            <div class="s6">
+                                <div class="field label border">
+                                    <input type="date" id="add-user-birthdate" onblur="validateUserInputs('birthdate')">
+                                    <label>{{ _('Birthdate') }}</label>
+                                    <span class="helper" id="birthdate-helper"></span>
+                                </div>
+                            </div>
+                            <div id="password-input"></div>
+                            <div class="s12">
+                                <div class="field label border">
+                                    <input type="password" id="add-user-password" onblur="validateUserInputs('password')">
+                                    <label>{{ _('Password') }}</label>
+                                    <span class="helper" id="password-helper"></span>
+                                </div>
+                            </div>
+                            <div class="s12">
+                                <div class="field label border">
+                                    <input type="password" id="add-user-password-confirm" oninput="validateUserInputs('password-confirm')">
+                                    <label>{{ _('Repeat password') }}</label>
+                                    <span class="helper" id="password-confirm-helper"></span>
+                                </div>
+                            </div>
+
+                            <div class="s12">
+                                <button onclick="registerPasskey()">{{ _('Create a passkey') }}</button>
+                            </div>
+
+                            <div class="s12">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="add-user-passwordless-login" onchange="validateUserInputs('password'); validateUserInputs('password-confirm')">
+                                    <span>{{ _('Only use passwordless login') }}</span>
+                                </label>
+                             </div>
+
+    
+    
+                            <div class="s6">
+                                <button>
+                                    <i>add_photo_alternate</i>
+                                    <span>{{ _('Profile picture') }}</span>
+                                    <input type="file" id="add-user-profile-picture"
+                                        onchange="renderFile(this.files[0], 'preview')">
+                                </button>
+                            </div>
+    
+                            <div class="s6">
+                                <span>{{ _('Preview') }}: </span>
+                                <img class="circle large" id="add-user-render-profile-picture"
+                                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+                            </div>
+                            <div class="s6">
+                                <div class="field label suffix border">
+                                    <select id="add-user-role">
+                                        <option value="Admin">Admin</option>
+                                        <option value="Adult" selected>{{ _('Adult') }}</option>
+                                        <option value="Child">{{ _('Child') }}</option>
+                                    </select>
+                                    <label>{{ _('User role') }}</label>
+                                    <i>arrow_drop_down</i>
+                                </div>
+                            </div>
+    <!--
+                            <div class="s6">
+                                <label class="checkbox center">
+                                    <input type="checkbox" id="add-user-is-admin">
+                                    <span>Administrator</span>
+                                </label>
+                            </div>-->
+                        </div>
+                        <nav class="right-align">
+                            <button class="border" onclick="callUi('#dialog-add-user')">{{ _('Cancel') }}</button>
+                            <button id="add-user-save" onclick="saveUser()">{{ _('Save') }}</button>
+                        </nav>
+                    </dialog>
+                </div>
+            </div>
+            <div class="page padding" id="setup-tab-3">
+                <div class="">
+                    <h5>{{ _('Final touches') }}</h5>
+                    <br>
+                    <img class="circle setup-image center" src="/api/v2/media/static/profile-men.jpg"
+                        style="width: 100%; height: 100%;">
+                    <br>
+                    <br>
+                    <p>{{ _('Now make the final adjustments to get started!') }}</p>
+    
+                    <br>
+                    <button onclick="callUi('#edit-settings')" class="border center white">{{ _('Adjust settings') }}</button>
+                    <br>
+                    <br>
+                    <button onclick="exitSetup()" class="border center white" id="button-exit-setup" disabled>{{ _('Complete setup') }}</button>
+    
+    
+                    <dialog class="bottom" id="edit-settings">
+                        <h5>{{ _('Adjust settings') }}</h5>
+                        <div class="grid">
+                            <div class="s12 hidden">
+                                <div class="field label border">
+                                    <input type="text" id="title">
+                                    <label>{{ _('Title') }}</label>
+                                </div>
+                            </div>
+                            <div class="s12 hidden">
+                                <div class="field label border">
+                                    <input type="text" id="family-name">
+                                    <label>{{ _('Family name') }}</label>
+                                </div>
+                            </div>
+                            <div class="s12 hidden">
+                                <div class="field label border">
+                                    <input type="text" id="friend-group-name">
+                                    <label>{{ _('Name of your friend group') }}</label>
+                                </div>
+                            </div>
+    
+                            <div class="s6 hidden">
+    
+                                <div class="field label suffix border">
+                                    <select id="relationship-status"> <!-- TODO: Hier aus Datenbank und Locale laden! -->
+
+                                        {% for relationship_status in relationship_statuses_translated %}
+                                        <option value="{{ relationship_status.id }}">{{ relationship_status.translatedText }}</option>
+                                        {% endfor %}
+                                        
+                                    
+                                    </select>
+                                    <label>{{ _('Relationship status') }}</label>
+                                    <i>arrow_drop_down</i>
+                                </div>
+                            </div>
+    
+                            <div class="s6 hidden">
+                                <div class="field label border">
+                                    <input type="date" id="anniversary">
+                                    <label>{{ _('Anniversary') }}</label>
+                                </div>
+                            </div>
+                            <div class="s6 hidden">
+                                <div class="field label border">
+                                    <input type="date" id="engagement">
+                                    <label>{{ _('Engagement day') }}</label>
+                                </div>
+                            </div>
+                            <div class="s6 hidden">
+                                <div class="field label border">
+                                    <input type="date" id="wedding-anniversary">
+                                    <label>{{ _('Wedding anniversary') }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <nav class="right-align">
+                            <button class="border" onclick="callUi('#edit-settings')">{{ _('Cancel') }}</button>
+                            <button id="add-user-save" onclick="saveSettings()">{{ _('Save') }}</button>
+                        </nav>
+                    </dialog>
+                </div>
+            </div>
+
+            <button class="transparent circle absolute middle right" id="button-next-setting-tab" onclick="nextSetupTab()">
+                <i>chevron_right</i>
+            </button>
+    
+            <button class="transparent circle absolute middle left" id="button-previous-setting-tab" style="display: none;"
+                onclick="previousSetupTab()">
+                <i>chevron_left</i>
+            </button>
+    
+            <!-- Footer -->
+            {% include 'layouts/footer.html' %}
+    </main>
+
+   <div class="snackbar" id="setup-snackbar">
+      <div class="max" id="setup-snackbar-text" onclick="document.getElementById('setup-snackbar').classList.remove('active');"></div>
+      <a id="setup-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-setup-error">
+   </div>
+
+   <dialog id="setup-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="setup-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('setup', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <script src="/static/js/main.js"></script>
+   <script src="/static/js/setup.js"></script>
+
+   </body>
+</html>

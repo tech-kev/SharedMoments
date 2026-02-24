@@ -1,0 +1,19 @@
+<header>
+    <nav>
+        <button class="circle transparent" id="dialog-nav-drawer-trigger" onclick="callUi('#dialog-nav-drawer')">
+            <i>menu</i>
+        </button>
+        <a class="max center-align" href="/home">
+        <h6>{{ title.value }}</h6>
+        </a>
+        <button class="circle transparent">
+            <img class="responsive" id="header-profile-picture"
+                src="/api/v2/media/static/{{ user_data.profilePicture or 'profile-men.jpg' }}">
+            <!-- Usermenü -->
+            <menu class="left no-wrap">
+                <a href="/user-settings">{{ _('User settings') }}</a>
+                <a href="/logout">{{ _('Logout') }}</a>
+            </menu>
+        </button>
+    </nav>
+</header>

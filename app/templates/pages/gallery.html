@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }}</title>
+      {% include 'layouts/head.html' %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-video.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lg-thumbnail.min.css">
+<style>
+   #lightgallery {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ensures all images have the same width */
+     grid-gap: 10px; /* Adds space between images */
+   } /* TODO: Make the Size perfect */
+ 
+   #lightgallery a img {
+     width: 100%; /* All images will take up 100% of the width of their container */
+     height: auto; /* Height will automatically adjust based on the image's aspect ratio */
+     object-fit: cover; /* Ensures the image covers the container proportionally */
+   }
+ </style>
+ 
+ 
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+   <!-- Overlay für New-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-new-timeline-item" onclick="callUi('#dialog-create-new-timeline-item')"></div>
+
+   <!-- Overlay für Details-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-details-timeline-item" onclick="callUi('#dialog-details-timeline-item')"></div>
+
+   <!-- Gallery-Karten -->
+   <main class="responsive">
+      <article class="no-padding primary-container">
+         <div class="padding">
+            <h5><button class="circle transparent" onclick="window.history.back()"><i>arrow_back</i></button> {{ _('Gallery') }}</h5>
+            <p>{{ item.content }}</p>
+            <div id="lightgallery"> <!-- TODO: Buttons werden nicht korrekt dargestellt -->
+               {% for url in item.contentURL.split(';') %}
+                   {% set video_extensions = ['.mp4', '.mov', '.avi', '.mkv'] %}
+                   {% set lower_url = url|lower %}
+                   {% if lower_url[-4:] in video_extensions %}
+                   <a
+                   data-lg-size="1200-720"
+                   data-video='{"source": [{"src":"/api/v2/media/{{ url }}", "type":"video/mp4"}], "attributes": {"preload": false, "controls": true}}'
+               >
+                   <div class="img-responsive" style="display:flex;align-items:center;justify-content:center;aspect-ratio:1;background:var(--surface-variant);">
+                       <i style="font-size:3rem;color:var(--on-surface-variant);">play_circle</i>
+                   </div>
+               </a>
+                   {% else %}
+                       <a href="/api/v2/media/{{ url }}" data-lg-size="150-100">
+                           <img src="/api/v2/media/{{ url }}">
+                       </a>
+                   {% endif %}
+                   {% endfor %}
+           </div>
+           
+              
+         </div>
+      </article>
+
+
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   
+
+   <div class="snackbar" id="home-snackbar">
+      <div class="max" id="home-snackbar-text" onclick="document.getElementById('home-snackbar').classList.remove('active');"></div>
+      <a id="home-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-home-error">
+   </div>
+
+   <dialog id="home-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="home-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('home', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <script src="/static/js/main.js"></script>
+
+   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/video/lg-video.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/autoplay/lg-autoplay.min.js"></script>
+
+<script>
+  lightGallery(document.getElementById('lightgallery'), {
+    plugins: [lgThumbnail, lgVideo, lgAutoplay],
+    speed: 500,
+    thumbnail: true,
+    animateThumb: true,
+    zoomFromOrigin: false,
+    toggleThumb: true,
+    download: true,
+    hideScrollbar: true,
+    mobileSettings: { download: true, },
+    autoplay: true
+
+  });
+</script>
+   
+   </body>
+</html>

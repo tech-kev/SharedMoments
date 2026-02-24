@@ -1,0 +1,72 @@
+<dialog class="bottom" id="dialog-create-new-timeline-item">
+    <nav>
+       <button class="circle transparent" id="button-close-dialog-create-new-timeline-item" onclick="callUi('#dialog-create-new-timeline-item')"><i>close</i></button>
+       <h5>{{ _('Create new moment') }}</h5>
+       <div class="max"></div>
+       <a onclick="saveNewTimelineItem()">{{ _('Save') }}</a>
+    </nav>
+    <div class="grid">
+       <div class="s12">
+          <div class="field label border">
+           <input type="text" id="div-create-timeline-item-title">
+           <label>{{ _('Title') }}</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label border textarea">
+           <textarea id="textarea-create-timeline-item-content"></textarea>
+           <label>{{ _('Description') }}</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label border"><input type="date" id="div-create-timeline-item-date-created">
+           <label>{{ _('Creation Date') }}</label>
+           </div>
+       </div>
+    </div>
+ </dialog>
+
+ <script>
+async function saveNewTimelineItem() {
+
+   contentType = "text";
+   listType = 2;
+
+   const formData = new FormData();
+   formData.append("title", document.getElementById("div-create-timeline-item-title").value);
+   formData.append("content", document.getElementById("textarea-create-timeline-item-content").value);
+   formData.append("contentType", contentType);
+   formData.append("listType", listType);
+   formData.append("dateCreated", document.getElementById("div-create-timeline-item-date-created").value);
+
+   fetch("/api/v2/items" + selectedArticles, {
+      method: "POST",
+      body: formData,
+   })
+      .then(async (response) => {
+         try {
+            const result = await response.json();
+            if (result.status === "success") {
+               document.getElementById("div-render-timeline-card").innerHTML = result.data.rendered_items;
+
+               callUi("#dialog-create-new-timeline-item");
+               document.getElementById('div-create-timeline-item-title').value = "";
+               document.getElementById('textarea-create-timeline-item-content').value = "";
+               document.getElementById('div-create-timeline-item-date-created').value = "";
+               
+               showSnackbar('home', true, 'green', result.message, null, false);
+            } else {
+               showSnackbar('home', true, 'error', result.message, result, true);
+            }
+         } catch (error) { // Kein gültiges JSON
+            showSnackbar('home', true, 'error', error, null, false);
+         }
+      })
+      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         if (error == "TypeError: Failed to fetch") {
+            error = _('Server not reachable');
+         }
+         showSnackbar('home', true, 'error', error, null, false);
+      });
+}
+ </script>

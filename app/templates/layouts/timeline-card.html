@@ -1,0 +1,80 @@
+<article class="no-padding primary-container">
+    <div class="padding">
+       <h5 class="middle-align center-align">{{ _('Our special moments') }}</h5>
+       <nav style="overflow: auto;">
+
+         {% for moment, user in moments %}
+         <div class="center-align">
+            <div class="small-margin">{{ moment.title }}</div>
+           <button class="circle small"
+               data-id="{{ moment.id }}"
+               data-title="{{ moment.title }}"
+               data-date="{{ moment.dateCreated|format_date_dmy }}"
+               data-date-ymd="{{ moment.dateCreated|format_date_ymd }}"
+               data-content="{{ moment.content or '' }}"
+               onclick="showTimelineItemDetails(this)">
+             <i>home</i>
+           </button>
+           <div class="small-margin">{{ moment.dateCreated|format_date_dmy }}</div>
+         </div>
+         <hr class="max timeline-hr">
+         {% endfor %}
+
+          {% if has_list_permission('Create', moments_title) %}
+          <div class="center-align">
+            <button class="circle small" onclick="callUi('#dialog-create-new-timeline-item')">
+              <i>arrow_forward</i>
+            </button>
+          </div>
+          {% endif %}
+       </nav>
+      </div>
+ </article>
+
+ <dialog class="modal" id="dialog-details-timeline-item">
+  <nav>
+     <h5 id="timeline-detail-title"></h5>
+     <div class="max"></div>
+     {% if has_list_permission('Delete', moments_title) %}
+     <button class="circle transparent" onclick="deleteTimelineItem()"><i>delete</i></button>
+     {% endif %}
+     {% if has_list_permission('Update', moments_title) %}
+     <button class="circle transparent" onclick="editTimelineItem()"><i>edit</i></button>
+     {% endif %}
+  </nav>
+  <p id="timeline-detail-date" class="small"></p>
+  <div id="div-details-timeline-item"></div>
+  <nav class="right-align no-space">
+    <button class="transparent link" onclick="callUi('#dialog-details-timeline-item')">{{ _('Close') }}</button>
+ </nav>
+</dialog>
+
+<dialog class="bottom" id="dialog-edit-timeline-item">
+  <nav>
+    <button class="circle transparent" onclick="callUi('#dialog-edit-timeline-item')"><i>close</i></button>
+    <h5>{{ _('Edit moment') }}</h5>
+    <div class="max"></div>
+    <a onclick="saveEditedTimelineItem()">{{ _('Save') }}</a>
+  </nav>
+  <div class="grid">
+    <div class="s12">
+      <div class="field label border">
+        <input type="text" id="edit-timeline-item-title">
+        <label>{{ _('Title') }}</label>
+      </div>
+    </div>
+    <div class="s12">
+      <div class="field label border textarea">
+        <textarea id="edit-timeline-item-content"></textarea>
+        <label>{{ _('Description') }}</label>
+      </div>
+    </div>
+    <div class="s12">
+      <div class="field label border">
+        <input type="date" id="edit-timeline-item-date">
+        <label>{{ _('Creation Date') }}</label>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" id="edit-timeline-item-id">
+</dialog>

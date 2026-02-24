@@ -1,17 +1,41 @@
-/logs
+__pycache__/
 
-/tests
+.vscode/
 
-/data_transfer
+venv/
+.venv/
 
-/upload
-
-/venv
-
-/keys
-
-__pycache__
-
+# Environment
+.env
 my.env
 
-.vscode
+# OS
+.DS_Store
+
+# Logs
+logs/
+
+# Database
+app/database/*.db
+app/database/*.bin
+
+# Session files
+*.session.sql
+
+# Exports
+app/export/
+
+# Uploads (user data)
+app/uploads/
+
+# User-uploaded images (keep only app assets)
+app/static/images/20*
+
+# Translation exports
+app/translations/
+
+# Test artifacts
+.pytest_cache/
+
+# Flask instance folder
+instance/

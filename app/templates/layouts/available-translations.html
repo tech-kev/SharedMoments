@@ -1,0 +1,47 @@
+<article class="no-padding primary-container">
+    <div class="padding">
+       <h5>{{ _('Currently available languages:') }}</h5>
+
+          <div class="extra-height scroll primary-container">
+            <table class="border">
+              <thead class="fixed">
+                <tr>
+                  <th>{{ _('Language') }}</th>
+                  <th>{{ _('Status') }}</th>
+                  <th>{{ _('Edit') }}</th>
+                  <th>{{ _('Export') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+               {% for language in supported_languages %}
+                    <tr>
+                      <td>{{ language }}</td>
+                      <td>
+                        {% for translation_progress in translation_progresses %}
+                        {% if translation_progress.language == language %}
+                        <div class="row">
+                            <div>{{ translation_progress.translated_entries }} von {{ translation_progress.total_entries }}</div>
+                            <div class="max"></div>
+                            <div>{{ translation_progress.percentage }} %</div>
+                          </div>
+                        <progress class="blue" value="{{ translation_progress.translated_entries }}" max="{{ translation_progress.total_entries }}"></progress>
+                        {% endif %}
+                        {% endfor %}
+                      </td>
+                      <td><button class="transparent small circle" onclick="getTranslations('{{ language }}')">
+                        <i>edit</i>
+                      </button></td>
+                      <td><button class="transparent small circle" onclick="exportTranslations('{{ language }}')">
+                        <i>cloud_download</i>
+                      </button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+       <nav class="right-align">
+          <button onclick="callUi('#dialog-new-language')">{{ _('Create new translation') }}</button>
+       </nav>
+    </div>
+ </article>

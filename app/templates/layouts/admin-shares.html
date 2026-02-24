@@ -1,0 +1,49 @@
+{% if not active_shares %}
+<article class="medium middle-align center-align primary-container">
+   <div>
+      <i class="extra">link_off</i>
+      <h5>{{ _('No active shares') }}</h5>
+      <p>{{ _('Share links will appear here once created.') }}</p>
+   </div>
+</article>
+{% else %}
+{% for share in active_shares %}
+<article class="primary-container no-padding" id="share-row-{{ share.id }}">
+   <div class="padding">
+      <nav>
+         <div class="max">
+            <h6 class="small">{{ share.itemTitle }}</h6>
+            <div class="small-text" style="opacity: 0.7;">
+               <span>{{ _('Created by') }}: {{ share.createdBy }}</span>
+               <span> &middot; {{ share.createdAt }}</span>
+            </div>
+            <div class="small-text" style="margin-top: 4px;">
+               <a class="link" style="word-break: break-all;">/s/{{ share.token }}</a>
+            </div>
+            <div class="small-text" style="margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap;">
+               {% if share.expiresAt %}
+               <span class="chip small round {% if share.isExpired %}error{% else %}tertiary{% endif %} no-border">
+                  <i class="small">schedule</i>
+                  <span>{% if share.isExpired %}{{ _('Expired') }}{% else %}{{ share.expiresAt }}{% endif %}</span>
+               </span>
+               {% endif %}
+               {% if share.hasPassword %}
+               <span class="chip small round secondary no-border">
+                  <i class="small">lock</i>
+                  <span>{{ _('Password') }}</span>
+               </span>
+               {% endif %}
+               <span class="chip small round surface-variant no-border">
+                  <i class="small">visibility</i>
+                  <span>{{ share.viewCount }}</span>
+               </span>
+            </div>
+         </div>
+         <button class="circle transparent" onclick="revokeShareAdmin({{ share.id }})">
+            <i>delete</i>
+         </button>
+      </nav>
+   </div>
+</article>
+{% endfor %}
+{% endif %}

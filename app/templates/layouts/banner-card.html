@@ -1,0 +1,17 @@
+{% if banner_text %}
+<article class="no-padding primary-container">
+    <img class="responsive" src="/api/v2/media/static/setup-friends.jpg">
+    <div class="padding">
+       <h5 class="middle-align center-align">
+         {% if settings.relationship_status.value == '1' or settings.relationship_status.value == '4' or settings.relationship_status.value == '5' %}
+         {{ settings.anniversary_date.value|format_string_date_dmy if settings.anniversary_date.value else '' }}
+         {% elif settings.relationship_status.value == '2' %}
+         {{ settings.engaged_date.value|format_string_date_dmy if settings.engaged_date.value else '' }}
+         {% elif settings.relationship_status.value == '3' %}
+         {{ settings.wedding_date.value|format_string_date_dmy if settings.wedding_date.value else '' }}
+         {% endif %}
+      </h5>
+       <p class="middle-align center-align">{{ banner_text }}</p>
+    </div>
+ </article>
+{% endif %}

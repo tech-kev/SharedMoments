@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title.value }} - {{ _('Admin') }}</title>
+    {% include 'layouts/head.html' %}
+    <style>
+        .permission-group { margin-bottom: 8px; }
+        .permission-group h6 { margin-bottom: 8px; }
+        .role-card { cursor: pointer; }
+        .role-card:hover { opacity: 0.9; }
+        .user-roles-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+        .permission-table table td, .permission-table table th { padding: 8px 12px; }
+        .permission-table table th { font-size: 0.85em; opacity: 0.7; }
+        .permission-table table td label.checkbox { margin: 0; }
+        .permission-table table td label.checkbox span { padding-left: 0; }
+    </style>
+</head>
+<body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+    <!-- Header -->
+    {% include 'layouts/header.html' %}
+
+    <!-- Overlay wenn Nav-Drawer geoffnet -->
+    <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+
+    <!-- Nav-Drawer -->
+    <div id="div-render-nav-drawer">
+        {% include 'layouts/nav-drawer.html' %}
+    </div>
+
+    <main class="responsive">
+        <!-- Tabs -->
+        <div class="tabs">
+            <a class="active" id="tab-users-btn" onclick="showAdminTab('users')">
+                <i>people</i>
+                <span>{{ _('Users') }}</span>
+            </a>
+            <a id="tab-roles-btn" onclick="showAdminTab('roles')">
+                <i>shield</i>
+                <span>{{ _('Roles & Permissions') }}</span>
+            </a>
+            <a id="tab-shares-btn" onclick="showAdminTab('shares')">
+                <i>share</i>
+                <span>{{ _('Shares') }}</span>
+            </a>
+        </div>
+
+        <!-- Tab: Users -->
+        <div id="tab-users">
+            {% include 'layouts/admin-users.html' %}
+        </div>
+
+        <!-- Tab: Roles -->
+        <div id="tab-roles" style="display: none;">
+            {% include 'layouts/admin-roles.html' %}
+        </div>
+
+        <!-- Tab: Shares -->
+        <div id="tab-shares" style="display: none;">
+            {% include 'layouts/admin-shares.html' %}
+        </div>
+
+
+        {% include 'layouts/footer.html' %}
+    </main>
+
+    <!-- Dialog: Edit User (fullscreen) -->
+    <dialog class="max" id="dialog-edit-user">
+        <nav>
+            <button class="circle transparent" onclick="callUi('#dialog-edit-user')"><i>close</i></button>
+            <h5 id="edit-user-title">{{ _('Edit user') }}</h5>
+            <div class="max"></div>
+            <button class="transparent link" id="btn-delete-user" onclick="deleteUser()" style="display:none;"><i>delete</i></button>
+            <button class="transparent link" onclick="saveUser()">{{ _('Save') }}</button>
+        </nav>
+        <div class="padding">
+            <input type="hidden" id="edit-user-id">
+            <div class="grid">
+                <div class="s6">
+                    <div class="field label border">
+                        <input type="text" id="edit-user-firstName">
+                        <label>{{ _('First name') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <div class="field label border">
+                        <input type="text" id="edit-user-lastName">
+                        <label>{{ _('Last name') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <div class="field label border">
+                        <input type="email" id="edit-user-email">
+                        <label>{{ _('E-Mail') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <div class="field label border">
+                        <input type="date" id="edit-user-birthDate">
+                        <label>{{ _('Birth date') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <div class="field label border">
+                        <input type="password" id="edit-user-password" autocomplete="new-password">
+                        <label id="edit-user-password-label">{{ _('Password') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <div class="field label border" id="edit-user-password-confirm-field">
+                        <input type="password" id="edit-user-passwordConfirm" autocomplete="new-password">
+                        <label>{{ _('Repeat password') }}</label>
+                    </div>
+                </div>
+                <div class="s6">
+                    <button class="border" onclick="document.getElementById('edit-user-profilePicture').click()">
+                        <i>add_photo_alternate</i>
+                        <span>{{ _('Profile picture') }}</span>
+                    </button>
+                    <input type="file" id="edit-user-profilePicture" accept="image/*" style="display:none;" onchange="previewUserImage(this)">
+                </div>
+                <div class="s6">
+                    <span>{{ _('Preview') }}: </span>
+                    <img class="circle large" id="edit-user-profilePicture-preview" src="" style="vertical-align: middle; display: none;">
+                </div>
+                <div class="s12">
+                    <h6 class="small">{{ _('Roles') }}</h6>
+                    <div id="edit-user-roles-checkboxes"></div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Dialog: Edit User Roles (standalone) -->
+    <div class="overlay" id="div-overlay-edit-user-roles" onclick="callUi('#dialog-edit-user-roles')"></div>
+    <dialog class="modal" id="dialog-edit-user-roles">
+        <h5 id="edit-user-roles-title">{{ _('Edit user roles') }}</h5>
+        <input type="hidden" id="edit-user-roles-user-id">
+        <div id="edit-user-roles-only-checkboxes"></div>
+        <nav class="right-align no-space">
+            <button class="transparent link" onclick="callUi('#dialog-edit-user-roles')">{{ _('Cancel') }}</button>
+            <button class="transparent link" onclick="saveUserRoles()">{{ _('Save') }}</button>
+        </nav>
+    </dialog>
+
+    <!-- Dialog: Edit Role Permissions (fullscreen) -->
+    <dialog class="max" id="dialog-edit-role-permissions">
+        <nav>
+            <button class="circle transparent" onclick="callUi('#dialog-edit-role-permissions')"><i>close</i></button>
+            <h5 id="edit-role-permissions-title">{{ _('Edit permissions') }}</h5>
+            <div class="max"></div>
+            <button class="transparent link" onclick="saveRolePermissions()">{{ _('Save') }}</button>
+        </nav>
+        <input type="hidden" id="edit-role-permissions-role-id">
+        <div id="edit-role-permissions-checkboxes" class="padding"></div>
+    </dialog>
+
+    <!-- Dialog: Create Role -->
+    <div class="overlay" id="div-overlay-create-role" onclick="callUi('#dialog-create-role')"></div>
+    <dialog class="modal" id="dialog-create-role">
+        <h5>{{ _('Create new role') }}</h5>
+        <div class="field label border">
+            <input type="text" id="create-role-name">
+            <label>{{ _('Role name') }}</label>
+        </div>
+        <nav class="right-align no-space">
+            <button class="transparent link" onclick="callUi('#dialog-create-role')">{{ _('Cancel') }}</button>
+            <button class="transparent link" onclick="createRole()">{{ _('Save') }}</button>
+        </nav>
+    </dialog>
+
+    <!-- FABs -->
+    <button class="circle extra large-elevate fixed bottom right" id="fab-create-user" onclick="openCreateUser()" style="margin: 16px;">
+        <i>person_add</i>
+    </button>
+    <button class="circle extra large-elevate fixed bottom right" id="fab-create-role" onclick="callUi('#dialog-create-role')" style="margin: 16px; display: none;">
+        <i>add</i>
+    </button>
+
+    <!-- Snackbar -->
+    <div class="snackbar" id="admin-snackbar">
+        <div class="max" id="admin-snackbar-text" onclick="document.getElementById('admin-snackbar').classList.remove('active');"></div>
+    </div>
+
+    <script>
+        const allRoles = {{ roles | map(attribute='id') | list | tojson }};
+        const allRoleNames = {};
+        {% for role in roles %}
+        allRoleNames[{{ role.id }}] = "{{ role.roleName }}";
+        {% endfor %}
+
+        const allPermissions = [];
+        {% for perm in permissions %}
+        allPermissions.push({id: {{ perm.id }}, name: "{{ perm.permissionName }}", listTypeID: {{ perm.listTypeID if perm.listTypeID else 'null' }}});
+        {% endfor %}
+
+        const rolePermissionsMap = {{ role_permissions_map | tojson }};
+        const userRolesMap = {{ user_roles_map | tojson }};
+    </script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

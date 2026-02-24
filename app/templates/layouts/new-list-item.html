@@ -1,0 +1,57 @@
+<dialog class="bottom" id="dialog-create-new-list-item">
+
+    <nav>
+       <button class="circle transparent" id="button-close-dialog-create-new-list-item" onclick="callUi('#dialog-create-new-list-item')"><i>close</i></button>
+       <h5>{{ _('Create new entry') }}</h5>
+       <div class="max"></div>
+       <a onclick="saveNewListItem()">{{ _('Save') }}</a>
+    </nav>
+    <div class="grid">
+       <div class="s12">
+          <div class="field label border">
+           <input type="text" id="div-create-list-item-title">
+           <label>{{ _('Title') }}</label>
+           </div>
+       </div>
+    </div>
+ </dialog>
+
+ <script>
+   function saveNewListItem() {
+
+   var formData = new FormData();
+   formData.append("title", document.getElementById("div-create-list-item-title").value);
+   formData.append("content", 0); // Checkbox nicht gecheckt
+   formData.append("contentType", 'list');
+   formData.append("listType", listType);
+
+   fetch("/api/v2/items", {
+      method: "POST",
+      body: formData,
+   })
+      .then(async (response) => {
+            try {
+               const result = await response.json();
+               if (result.status === "success") {
+                  document.getElementById("div-render-list-items").innerHTML = result.data.rendered_items; // Neue Items in die Seite einfügen
+                  callUi("#dialog-create-new-list-item"); // Modal schließen
+                  document.getElementById('dialog-create-new-list-item').style.overflow = "auto"; // Erlaube das Scrollen im Modal
+
+                  // Eingabefelder der Modal leeren
+                  document.getElementById("div-create-list-item-title").value = "";
+                  showSnackbar('list', true, 'green', result.message, null, false);
+               } else {
+                  showSnackbar('list', true, 'error', result.message, result, true);
+               }
+            } catch (error) { // Kein gültiges JSON
+               showSnackbar('list', true, 'error', error, null, false);
+            }
+      })
+      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         if (error == "TypeError: Failed to fetch") {
+            error = _('Server not reachable');
+         }
+         showSnackbar('list', true, 'error', error, null, false);
+   })
+}
+ </script>

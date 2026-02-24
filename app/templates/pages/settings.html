@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }} </title>
+      {% include 'layouts/head.html' %}
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+
+   <!-- Overlay wenn Edit-Settings Dialog geöffnet -->
+   <div class="overlay" id="div-overlay-settings" onclick="closeEditDialogIfAllowed()"></div>
+
+   <dialog id="dialog-edit-settings">
+    <h5 id="dialog-edit-title">{{ _('Change') }}</h5>
+
+    <!-- Hinweis bei Pflichtfeld -->
+    <p id="edit-field-required-hint" class="error-text" style="display:none;"></p>
+
+    <!-- Text/Number Input -->
+    <div class="field label border" id="edit-field-text" style="display:none;">
+      <input type="text" id="input-edit-setting-value">
+      <label id="label-edit-setting-name"></label>
+    </div>
+
+    <!-- Date Input -->
+    <div class="field label border" id="edit-field-date" style="display:none;">
+      <input type="date" id="input-edit-setting-date">
+      <label id="label-edit-setting-date"></label>
+    </div>
+
+    <!-- Select/Dropdown -->
+    <div class="field label border" id="edit-field-select" style="display:none;">
+      <select id="input-edit-setting-select"></select>
+      <label id="label-edit-setting-select"></label>
+    </div>
+
+    <nav class="right-align no-space">
+       <button class="transparent link" id="cancel-setting" onclick="closeEditDialog()">{{ _('Cancel') }}</button>
+       <button class="transparent link" id="save-setting">{{ _('Save') }}</button>
+    </nav>
+    </dialog>
+
+   <!-- Settings -->
+
+   <main class="responsive">
+    <article class="primary-container">
+            <legend>{{ _('About') }}</legend>
+            {% if settings_type == 'settings' %}
+            {% for setting in settings %}
+            {% if setting.category == 'about' %}
+              {% if setting.name == 'sm_version' %}
+              {# Version: nur Anzeige, nicht editierbar #}
+              <div class="row padding primary-container">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                </div>
+              </div>
+              {% elif setting.name == 'sm_edition' %}
+              {# Edition: Dropdown mit Bestätigungsdialog #}
+              <a class="row padding primary-container wave" onclick="editEdition()">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                </div>
+              </a>
+              {% else %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}')">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endif %}
+              {% endfor %}
+
+
+              <legend>{{ _('General') }}</legend>
+
+              {# Hier namespace, um die Variable edition außerhalb der Schleife verfügbar zu machen #}
+
+              {% set ns = namespace(edition=None) %}
+              {% for setting in settings %}
+                  {% if setting.name == 'sm_edition' %}
+                     {% set ns.edition = setting.value %}
+                  {% endif %}
+              {% endfor %}
+
+              {% for setting in settings %}
+              {% if setting.category == 'general' and setting.edition == ns.edition %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}')">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  {% if setting.name == 'relationship_status' %}
+                  <div id="{{setting.name}}-value" data-value="{{ setting.value }}">
+                    {% for status in relationship_statuses %}
+                      {% if status.id|string == setting.value|string %}{{ status.name }}{% endif %}
+                    {% endfor %}
+                  </div>
+                  {% elif setting.type == 'date' %}
+                  <div id="{{setting.name}}-value">{{ setting.value | format_string_date_dmy if setting.value else '-' }}</div>
+                  {% else %}
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                  {% endif %}
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# share_tracking toggle (edition-independent) #}
+              {% for setting in settings %}
+              {% if setting.name == 'share_tracking' %}
+              <a class="row padding primary-container wave" onclick="toggleShareTracking()">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="share-tracking-toggle" {{ 'checked' if setting.value == 'True' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {% elif settings_type == 'user-settings' %}
+              <!-- Profile picture -->
+              <a class="row padding primary-container wave" onclick="document.getElementById('profile-picture-input').click()">
+                <img class="circle" src="/api/v2/media/static/{{ user_data.profilePicture or 'profile-men.jpg' }}" id="profile-picture-preview" style="width:40px;height:40px;object-fit:cover;">
+                <div class="max">
+                  <h6 class="small">{{ _('Profile picture') }}</h6>
+                  <div>{{ _('Change') }}</div>
+                </div>
+                <i>edit</i>
+              </a>
+              <input type="file" id="profile-picture-input" accept="image/*" style="display:none;" onchange="updateProfilePicture(this)">
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'darkmode' %}
+              <a class="row padding primary-container wave" onclick="toggleDarkmode()">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="darkmode-toggle" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'language' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'language')">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% else %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'text')">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+
+    </article>
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   <div class="snackbar" id="settings-snackbar">
+      <div class="max" id="settings-snackbar-text" onclick="document.getElementById('settings-snackbar').classList.remove('active');"></div>
+      <a id="settings-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-settings-error">
+   </div>
+
+   <dialog id="settings-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="settings-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('settings', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <!-- Edition-Wechsel Bestätigungsdialog -->
+   <div class="overlay" id="div-overlay-edition-confirm" onclick="closeEditionDialog()"></div>
+   <dialog id="dialog-edition-confirm">
+      <h5>{{ _('Change edition') }}</h5>
+      <div class="field label border">
+         <select id="input-edition-select"></select>
+         <label>{{ _('sm_edition') }}</label>
+      </div>
+      <article class="border" id="edition-info-box" style="display:none;">
+         <p><i>info</i> {{ _('No data will be lost when switching editions.') }}</p>
+         <p>{{ _('Only content for the new edition and cross-edition content will be shown.') }}</p>
+         <p>{{ _('You can switch back at any time and all previous content will be available again.') }}</p>
+      </article>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="closeEditionDialog()">{{ _('Cancel') }}</button>
+         <button class="transparent link" id="save-edition-btn" onclick="saveEdition()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+
+   <script src="/static/js/main.js"></script>
+   <script src="/static/js/home.js"></script>
+
+   <script>
+    // Data from backend (must stay inline for Jinja)
+    const relationshipStatuses = {% if relationship_statuses is defined %}{{ relationship_statuses | tojson }}{% else %}[]{% endif %};
+    const supportedLanguages = {% if supported_languages is defined %}{{ supported_languages | tojson }}{% else %}[]{% endif %};
+    const editions = [
+      {id: 'couples', name: 'Couples'},
+      {id: 'family', name: 'Family'},
+      {id: 'friends', name: 'Friends'}
+    ];
+    const currentEdition = '{{ settings.sm_edition.value }}';
+    const settingsType = '{{ settings_type }}';
+   </script>
+   <script src="/static/js/settings.js"></script>
+
+   </body>
+</html>

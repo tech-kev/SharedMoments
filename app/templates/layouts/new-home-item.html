@@ -1,0 +1,62 @@
+<dialog class="max" id="dialog-create-new-home-item">
+
+   <!-- Overlay für Ladeanimation -->
+   <div class="overlay" id="div-overlay-new-home-item">
+      <article class="round center middle" style="max-width: 320px; margin: auto; padding: 24px;">
+         <i class="extra" style="margin-bottom: 12px;">cloud_upload</i>
+         <h6 id="headline-article-new-home-item"></h6>
+         <progress value="1" max="100" id="progress-new-home-item" style="display: none; margin: 12px 0;"></progress>
+         <p class="small-text" style="opacity: 0.8;">{{ _('File') }} <span id="span-progress-file-new-home-item"></span> {{ _('of') }} <span id="span-progress-file-new-home-item-count"></span></p>
+       </article>
+   </div>
+
+    <nav>
+       <button class="circle transparent" id="button-close-dialog-create-new-home-item" onclick="callUi('#dialog-create-new-home-item')"><i>close</i></button>
+       <h5>{{ _('Create new entry') }}</h5>
+       <div class="max"></div>
+       <a onclick="saveNewHomeItem()">{{ _('Save') }}</a>
+    </nav>
+    <div class="grid">
+       <div class="s12">
+          <div class="field label border">
+           <input type="text" id="div-create-home-item-title">
+           <label>{{ _('Title') }}</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label border textarea">
+           <textarea id="textarea-create-home-item-content" oninput="autoResizeTextarea(this)"></textarea>
+           <label>{{ _('Description') }}</label>
+           </div>
+           {% if ai_enabled and has_list_permission('Create', list_type_title) %}
+           <div class="ai-actions right-align" style="margin-top: 4px;">
+              <button class="circle transparent small ai-enhance-btn" id="btn-ai-enhance-create" onclick="enhanceWithAI('create')" title="{{ _('Enhance with AI') }}"><i>auto_awesome</i></button>
+              <button class="circle transparent small ai-undo-btn" id="btn-ai-undo-create" onclick="undoAI('create')" title="{{ _('Undo AI') }}" style="display:none;"><i>undo</i></button>
+              <button class="circle transparent small ai-redo-btn" id="btn-ai-redo-create" onclick="enhanceWithAI('create')" title="{{ _('Regenerate') }}" style="display:none;"><i>refresh</i></button>
+           </div>
+           {% endif %}
+       </div>
+       <div class="s12">
+          <div class="field label border"><input type="date" id="div-create-home-item-date-created">
+           <label>{{ _('Creation Date') }} ({{ _('optional') }})</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label prefix large border">
+             <i>attach_file</i>
+             <input type="file" multiple accept="image/*, video/*, .mov" id="file-input-create-home-item"  onchange="generatePreviewForFileInput(event, 'create')">
+             <input type="text">
+             <label>{{ _('Images or videos') }}</label>
+          </div>
+       </div>
+       <div class="s12">
+          <label class="checkbox">
+             <input type="checkbox" id="checkbox-create-home-item-all-editions">
+             <span>{{ _('Show in all editions') }}</span>
+          </label>
+       </div>
+    </div>
+    <div class="grid center-align" id="div-create-home-item-preview-grid">
+      <!-- Hier kommen die Vorschaubilder dynamisch hin -->
+    </div>
+ </dialog>

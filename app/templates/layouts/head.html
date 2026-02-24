@@ -1,0 +1,62 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<!-- BeerCSS -->
+<link href="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.css" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.js"></script>
+<script type="module"
+    src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/material-dynamic-colors.min.js"></script>
+<!-- BeerCSS -->
+<style>
+   /* Skeleton/Shimmer Loading */
+   .skeleton {
+      background: var(--surface-variant);
+      overflow: hidden;
+      position: relative;
+   }
+   .skeleton::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+      animation: shimmer 1.5s ease-in-out infinite;
+   }
+   .dark .skeleton::after {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+   }
+   @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+   }
+   .img-skeleton-wrapper {
+      position: relative;
+      overflow: hidden;
+   }
+   .img-skeleton-wrapper.loaded .skeleton-overlay {
+      display: none;
+   }
+   .skeleton-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+   }
+   .skeleton-image {
+      aspect-ratio: 4/3;
+   }
+   .skeleton-text {
+      height: 1rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+   }
+   .skeleton-text.short { width: 40%; }
+   .skeleton-text.medium { width: 70%; }
+   .skeleton-text.long { width: 100%; }
+   .skeleton-card {
+      padding: 0;
+      overflow: hidden;
+   }
+</style>

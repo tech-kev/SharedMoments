@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ item.title }} - SharedMoments</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta charset="UTF-8">
+      <link href="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.css" rel="stylesheet">
+      <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.js"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/material-dynamic-colors.min.js"></script>
+      {% if item.contentType in ['galleryStartWithImage', 'galleryStartWithVideo'] %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-video.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lg-thumbnail.min.css">
+      {% endif %}
+      <style>
+         .share-header {
+            padding: 1rem 1.5rem;
+            text-align: center;
+         }
+         .share-footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            opacity: 0.6;
+            font-size: 0.85rem;
+         }
+         {% if item.contentType in ['galleryStartWithImage', 'galleryStartWithVideo'] %}
+         #share-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-gap: 10px;
+         }
+         #share-gallery a img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+         }
+         {% endif %}
+      </style>
+   </head>
+   <body>
+      <header class="share-header">
+         <h5>SharedMoments</h5>
+      </header>
+
+      <main class="responsive" style="max-width: 700px; margin: 0 auto;">
+         <article class="no-padding primary-container">
+            {% if item.contentType == 'image' %}
+               <img class="responsive" src="/s/{{ token }}/media/{{ media_urls[0] }}">
+            {% elif item.contentType == 'video' %}
+               <video class="responsive" controls>
+                  <source src="/s/{{ token }}/media/{{ media_urls[0] }}">
+               </video>
+            {% elif item.contentType in ['galleryStartWithImage', 'galleryStartWithVideo'] %}
+               <div class="padding" id="share-gallery">
+                  {% for url in media_urls %}
+                     {% set video_extensions = ['.mp4', '.mov', '.avi', '.mkv'] %}
+                     {% set lower_url = url|lower %}
+                     {% if lower_url[-4:] in video_extensions %}
+                     <a
+                        data-lg-size="1200-720"
+                        data-video='{"source": [{"src":"/s/{{ token }}/media/{{ url }}", "type":"video/mp4"}], "attributes": {"preload": false, "controls": true}}'
+                     >
+                        <div style="display:flex;align-items:center;justify-content:center;aspect-ratio:1;background:var(--surface-variant);border-radius:8px;">
+                           <i style="font-size:3rem;color:var(--on-surface-variant);">play_circle</i>
+                        </div>
+                     </a>
+                     {% else %}
+                        <a href="/s/{{ token }}/media/{{ url }}" data-lg-size="150-100">
+                           <img src="/s/{{ token }}/media/{{ url }}" style="border-radius:8px;">
+                        </a>
+                     {% endif %}
+                  {% endfor %}
+               </div>
+            {% endif %}
+
+            <div class="padding">
+               <h5>{{ item.title }}</h5>
+               {% if item.content %}
+               <p>{{ item.content|nl2br }}</p>
+               {% endif %}
+               <nav class="right-align">
+                  <div class="max"></div>
+                  <a class="chip no-border secondary small round">
+                     <span>{{ item.dateCreated.strftime('%d.%m.%Y') }}</span>
+                  </a>
+               </nav>
+            </div>
+         </article>
+      </main>
+
+      <div class="share-footer">
+         Shared via SharedMoments
+      </div>
+
+      {% if item.contentType in ['galleryStartWithImage', 'galleryStartWithVideo'] %}
+      <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.umd.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/video/lg-video.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
+      <script>
+         lightGallery(document.getElementById('share-gallery'), {
+            plugins: [lgThumbnail, lgVideo],
+            speed: 500,
+            thumbnail: true,
+            animateThumb: true,
+            zoomFromOrigin: false,
+            download: false,
+            hideScrollbar: true
+         });
+      </script>
+      {% endif %}
+   </body>
+</html>

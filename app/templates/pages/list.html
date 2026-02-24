@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title.value }}</title>
+    {% include 'layouts/head.html' %}
+</head>
+
+<body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+    <!-- Header -->
+    {% include 'layouts/header.html' %}
+
+       <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+
+      <!-- Overlay für New-List-Item-Dialog -->
+      <div class="overlay" id="div-overlay-new-list-item" onclick="callUi('#dialog-create-new-list-item')"></div>
+
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+
+    <!-- Feed-Karten -->
+    <main class="responsive">
+
+        <div id="div-render-list-items">
+            {% include 'layouts/list-items.html' %}
+         </div>
+
+        <!-- Dialog zum Erstellen eines neuen Eintrags -->
+      {% if has_list_permission('Create', list_type_title) %}
+      <div id="div-render-new-list-item">
+        {% include 'layouts/new-list-item.html' %}
+     </div>
+      {% endif %}
+
+       
+        <script>
+            function checkCheckbox(element) {
+                var checkbox = element.querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+            }
+        </script>
+        <!-- Footer -->
+        {% include 'layouts/footer.html' %}
+    </main>
+
+    <!-- FAB um neuen Eintrag zu erstellen -->
+    {% if has_list_permission('Create', list_type_title) %}
+    <div id="div-fab-create-new-list-entry" class="fixed bottom right" style="margin-right: 8px;margin-bottom: 16px;" onclick="callUi('#dialog-create-new-list-item')">
+        <button class="square round extra"
+            style="box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);">
+            <i>add</i>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="snackbar" id="list-snackbar">
+        <div class="max" id="list-snackbar-text" onclick="document.getElementById('list-snackbar').classList.remove('active');"></div>
+        <a id="list-snackbar-more-link"></a>
+     </div>
+
+     <div class="overlay" id="div-overlay-list-error">
+    </div>
+ 
+    <dialog id="list-error-more-details">
+    <h5>{{ _('Error details') }}</h5>
+    <div id="list-error-more-details-text"></div>
+    <nav class="right-align no-space">
+       <button class="transparent link" onclick="showMoreInfo('list', null,'close')">{{ _('OK') }}</button>
+    </nav>
+    </dialog>
+
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/list.js"></script>
+
+<script>
+    let listType;
+    listType = '{{ list_type }}';
+</script>
+
+<!-- Verstecktes Eingabefeld zur Speicherung des listen Types -->
+<input type="hidden" id="input-list-type" value="{{ list_type }}">
+
+</body>
+
+</html>
