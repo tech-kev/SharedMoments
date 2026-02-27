@@ -5,7 +5,7 @@ from app.db_queries import (get_all_list_types, get_all_relationship_statuses,
     get_supported_languages, get_translation_for_entity, get_translation_progress,
     get_translations_by_language, get_user_by_id, get_user_setting, get_setting_by_name,
     get_item_by_id, get_user_settings, get_list_type_by_content_url, get_all_settings,
-    get_shared_item_ids)
+    get_shared_item_ids, get_list_type_by_title, ensure_countdown_list_type)
 from app.logger import log
 import os
 from app.utils import generate_banner_text
@@ -109,7 +109,12 @@ def home():
         banner_text = generate_banner_text() if sm_edition == 'couples' else None
         shared_item_ids = get_shared_item_ids()
 
-        return render_template('pages/home.html', items=items, list_types=list_types, list_type=list_type, title=title, darkmode=darkmode, user_data=user_data, moments=moments, settings=settings, banner_text=banner_text, sm_edition=sm_edition, list_type_title='Home', moments_title='Moments', shared_item_ids=shared_item_ids)
+        ensure_countdown_list_type()
+        countdown_list_type = get_list_type_by_title('Countdown')
+        countdowns = get_items_by_type(countdown_list_type.id, 'asc', edition=sm_edition) if countdown_list_type else []
+        countdown_list_type_id = countdown_list_type.id if countdown_list_type else ''
+
+        return render_template('pages/home.html', items=items, list_types=list_types, list_type=list_type, title=title, darkmode=darkmode, user_data=user_data, moments=moments, settings=settings, banner_text=banner_text, sm_edition=sm_edition, list_type_title='Home', moments_title='Moments', shared_item_ids=shared_item_ids, countdowns=countdowns, countdown_title='Countdown', countdown_list_type_id=countdown_list_type_id)
     except Exception as e:
         log('error', f'Error while rendering the pages/home.html-Template: {e}')
         return "An error occurred while rendering the page. Please check the server logs for details.", 500

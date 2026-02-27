@@ -9,7 +9,7 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     create_user_setting, update_translation, update_user_setting, update_user_profile_picture,
     create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions,
     create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids,
-    get_all_media_urls)
+    get_all_media_urls, get_list_type_by_title)
 from datetime import datetime
 from app.logger import log
 import os, json
@@ -432,6 +432,9 @@ def item():
             elif list_type == 2:
                 items = get_items_by_type(list_type, 'asc', edition=sm_edition)
                 rendered_items = render_template('layouts/timeline-card.html', moments=items, moments_title=list_type_title)
+            elif list_type_title == 'Countdown':
+                items = get_items_by_type(list_type, 'asc', edition=sm_edition)
+                rendered_items = render_template('layouts/countdown-card.html', countdowns=items, countdown_title='Countdown')
             else:
                 items = get_items_by_type(list_type, 'desc', edition=sm_edition, checked_last=True)
                 rendered_items = render_template('layouts/list-items.html', items=items, mainTitle=list_type_obj.mainTitle, list_type_title=list_type_title)
@@ -478,6 +481,9 @@ def item():
                 if list_type == 2:
                     items = get_items_by_type(list_type, sort_by='asc', edition=sm_edition)
                     rendered_items = render_template('layouts/timeline-card.html', moments=items, moments_title=list_type_title)
+                elif list_type_title == 'Countdown':
+                    items = get_items_by_type(list_type, sort_by='asc', edition=sm_edition)
+                    rendered_items = render_template('layouts/countdown-card.html', countdowns=items, countdown_title='Countdown')
                 else:
                     items = get_items_by_type(list_type, edition=sm_edition)
                     shared_item_ids = get_shared_item_ids()
@@ -590,6 +596,9 @@ def item_by_id(id):
             elif list_type == 2:
                 items = get_items_by_type(list_type, sort_by='asc', edition=sm_edition)
                 rendered_items = render_template('layouts/timeline-card.html', moments=items, moments_title=list_type_title)
+            elif list_type_title == 'Countdown':
+                items = get_items_by_type(list_type, sort_by='asc', edition=sm_edition)
+                rendered_items = render_template('layouts/countdown-card.html', countdowns=items, countdown_title='Countdown')
             else:
                 items = get_items_by_type(list_type, edition=sm_edition, checked_last=True)
                 rendered_items = render_template('layouts/list-items.html', items=items, mainTitle=list_type_obj.mainTitle, list_type_title=list_type_title)

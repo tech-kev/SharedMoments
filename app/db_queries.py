@@ -36,6 +36,7 @@ def init_db():
             'Moments': ListType(title='Moments', icon='', contentURL='', createdByUser=1, navbar=False, navbarOrder=0, routeID='', mainTitle='Moments'),
             'Movie List': ListType(title='Movie List', icon='movie', contentURL='movie-list', createdByUser=1, navbar=True, navbarOrder=4, routeID='movie-list', mainTitle='Movie List'),
             'Bucket List': ListType(title='Bucket List', icon='list', contentURL='bucket-list', createdByUser=1, navbar=True, navbarOrder=5, routeID='bucket-list', mainTitle='Bucket List'),
+            'Countdown': ListType(title='Countdown', icon='timer', contentURL='', createdByUser=1, navbar=False, navbarOrder=0, routeID='', mainTitle='Countdown'),
         }
         session.add_all(list_types.values())
         session.flush()  # IDs for list_types and roles available
@@ -47,7 +48,7 @@ def init_db():
         # Per-list permissions (linked to list type)
         list_perm_actions = ['View', 'Create', 'Update', 'Delete']
         list_perm_names = []
-        for lt_name in ['Home', 'Moments', 'Movie List', 'Bucket List']:
+        for lt_name in ['Home', 'Moments', 'Movie List', 'Bucket List', 'Countdown']:
             for action in list_perm_actions:
                 list_perm_names.append(f'{action} {lt_name}')
 
@@ -83,6 +84,7 @@ def init_db():
             'View Moments', 'Create Moments', 'Update Moments', 'Delete Moments',
             'View Movie List', 'Create Movie List', 'Update Movie List', 'Delete Movie List',
             'View Bucket List', 'Create Bucket List', 'Update Bucket List', 'Delete Bucket List',
+            'View Countdown', 'Create Countdown',
             'Share Items',
         ]
         for perm_name in adult_perms:
@@ -95,6 +97,7 @@ def init_db():
             'View Moments', 'Create Moments',
             'View Movie List', 'Create Movie List',
             'View Bucket List', 'Create Bucket List',
+            'View Countdown',
         ]
         for perm_name in child_perms:
             session.add(RolePermission(roleID=child_role.id, permissionID=permissions[perm_name].id))
@@ -131,6 +134,7 @@ def init_db():
             'Moments':     {'en': 'Moments',     'de': 'Momente'},
             'Movie List':  {'en': 'Movie List',  'de': 'Filmliste'},
             'Bucket List': {'en': 'Bucket List', 'de': 'Bucketliste'},
+            'Countdown':   {'en': 'Countdown',   'de': 'Countdown'},
         }
         for field_name, langs in list_type_translations.items():
             for lang_code, text in langs.items():
@@ -813,6 +817,45 @@ def delete_list_type(list_type_id):
         if list_type:
             session.delete(list_type)
             session.commit()
+    finally:
+        session.close()
+
+
+def get_list_type_by_title(title):
+    session = SessionLocal()
+    try:
+        list_type = session.query(ListType).filter(ListType.title == title).first()
+        return list_type
+    finally:
+        session.close()
+
+
+def ensure_countdown_list_type():
+    """For existing databases: creates the Countdown ListType + permissions if missing."""
+    session = SessionLocal()
+    try:
+        existing = session.query(ListType).filter(ListType.title == 'Countdown').first()
+        if existing:
+            return
+        lt = ListType(title='Countdown', icon='timer', contentURL='', createdByUser=1, navbar=False, navbarOrder=0, routeID='', mainTitle='Countdown')
+        session.add(lt)
+        session.flush()
+        admin_role = session.query(Role).filter(Role.roleName == 'Admin').first()
+        for action in ('View', 'Create', 'Update', 'Delete'):
+            perm = Permission(permissionName=f'{action} Countdown', listTypeID=lt.id)
+            session.add(perm)
+            session.flush()
+            if admin_role:
+                session.add(RolePermission(roleID=admin_role.id, permissionID=perm.id))
+        # Seed translations
+        for lang_code, text in [('en', 'Countdown'), ('de', 'Countdown')]:
+            exists = session.query(Translation).filter(
+                Translation.entityType == 'ui', Translation.entityID == 0,
+                Translation.languageCode == lang_code, Translation.fieldName == 'Countdown'
+            ).first()
+            if not exists:
+                session.add(Translation(entityType='ui', entityID=0, languageCode=lang_code, fieldName='Countdown', translatedText=text))
+        session.commit()
     finally:
         session.close()
 

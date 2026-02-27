@@ -57,6 +57,10 @@
    <!-- Overlay für Edit-Timeline-Dialog -->
    <div class="overlay" id="div-overlay-edit-timeline-item" onclick="callUi('#dialog-edit-timeline-item')"></div>
 
+   <!-- Overlay für Countdown-Dialoge -->
+   <div class="overlay" id="div-overlay-create-countdown" onclick="callUi('#dialog-create-countdown')"></div>
+   <div class="overlay" id="div-overlay-edit-countdown" onclick="callUi('#dialog-edit-countdown')"></div>
+
    <!-- Feed-Karten -->
    <main class="responsive">
 
@@ -68,6 +72,13 @@
       {% if has_list_permission('View', moments_title) %}
       <div id="div-render-timeline-card">
          {% include 'layouts/timeline-card.html' %}
+      </div>
+      <br>
+      {% endif %}
+
+      {% if has_list_permission('View', countdown_title) %}
+      <div id="div-render-countdown-card">
+         {% include 'layouts/countdown-card.html' %}
       </div>
       <br>
       {% endif %}
@@ -187,10 +198,12 @@
    <script>
       window.currentEdition = '{{ sm_edition }}';
       window.canSelectItems = {{ 'true' if has_list_permission('Update', list_type_title) or has_list_permission('Delete', list_type_title) else 'false' }};
+      window.countdownListTypeId = '{{ countdown_list_type_id }}';
    </script>
    <script src="/static/js/main.js"></script>
    <script src="/static/js/home.js"></script>
    <script src="/static/js/timeline.js"></script>
+   <script src="/static/js/countdown.js"></script>
 
    <!-- Verstecktes Eingabefeld zur Speicherung des listen Types TODO: Umbauen auf variable -->
    <input type="hidden" id="input-list-type" value="{{ list_type }}">

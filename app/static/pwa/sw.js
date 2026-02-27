@@ -2,7 +2,7 @@
 const SW_VERSION = '1.6.0';
 
 // Cache names
-const APP_SHELL_CACHE = 'app-shell-v8';
+const APP_SHELL_CACHE = 'app-shell-v10';
 const CDN_CACHE = 'cdn-v1';
 const API_CACHE = 'api-v1';
 const MEDIA_CACHE = 'media-v1';
@@ -14,8 +14,8 @@ const ALL_CACHES = [APP_SHELL_CACHE, CDN_CACHE, API_CACHE, MEDIA_CACHE, PINNED_M
 const PRECACHE_URLS = [
   '/offline',
   '/manifest.json',
-  '/static/pwa/icon-192.png',
-  '/static/pwa/icon-512.png',
+  '/static/pwa/sm-icon-192.png',
+  '/static/pwa/sm-icon-512.png',
   '/static/pwa/pwa.js',
   '/static/pwa/idb-manager.js',
 ];
@@ -30,6 +30,7 @@ const AUTH_JS_URLS = [
   '/static/js/admin.js',
   '/static/js/nav-drawer.js',
   '/static/js/setup.js',
+  '/static/js/countdown.js',
 ];
 
 // CDN patterns (cache-first)
