@@ -1,4 +1,9 @@
 function updateListItem(id, value) {
+    if (!navigator.onLine) {
+        revertCheckbox(id, value ? 1 : 0);
+        showSnackbar('list', true, 'error', _('You are offline'), null, false);
+        return;
+    }
 
     var value = value ? 1 : 0;
 

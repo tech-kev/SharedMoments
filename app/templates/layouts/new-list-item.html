@@ -17,41 +17,97 @@
  </dialog>
 
  <script>
-   function saveNewListItem() {
+   async function saveNewListItem() {
+      var title = document.getElementById("div-create-list-item-title").value;
 
-   var formData = new FormData();
-   formData.append("title", document.getElementById("div-create-list-item-title").value);
-   formData.append("content", 0); // Checkbox nicht gecheckt
-   formData.append("contentType", 'list');
-   formData.append("listType", listType);
+      // Offline: direkt in Outbox speichern ohne Fetch-Versuch
+      if (!navigator.onLine && typeof addToOutbox === 'function') {
+         return saveListItemToOutbox(title);
+      }
 
-   fetch("/api/v2/items", {
-      method: "POST",
-      body: formData,
-   })
-      .then(async (response) => {
-            try {
-               const result = await response.json();
-               if (result.status === "success") {
-                  document.getElementById("div-render-list-items").innerHTML = result.data.rendered_items; // Neue Items in die Seite einfügen
-                  callUi("#dialog-create-new-list-item"); // Modal schließen
-                  document.getElementById('dialog-create-new-list-item').style.overflow = "auto"; // Erlaube das Scrollen im Modal
+      var formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", 0);
+      formData.append("contentType", 'list');
+      formData.append("listType", listType);
 
-                  // Eingabefelder der Modal leeren
-                  document.getElementById("div-create-list-item-title").value = "";
-                  showSnackbar('list', true, 'green', result.message, null, false);
-               } else {
-                  showSnackbar('list', true, 'error', result.message, result, true);
-               }
-            } catch (error) { // Kein gültiges JSON
-               showSnackbar('list', true, 'error', error, null, false);
-            }
+      fetch("/api/v2/items", {
+         method: "POST",
+         body: formData,
       })
-      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
-         if (error == "TypeError: Failed to fetch") {
-            error = _('Server not reachable');
+         .then(async (response) => {
+               try {
+                  const result = await response.json();
+                  if (result.status === "success") {
+                     document.getElementById("div-render-list-items").innerHTML = result.data.rendered_items;
+                     callUi("#dialog-create-new-list-item");
+                     document.getElementById("div-create-list-item-title").value = "";
+                     showSnackbar('list', true, 'green', result.message, null, false);
+                  } else {
+                     showSnackbar('list', true, 'error', result.message, result, true);
+                  }
+               } catch (error) {
+                  showSnackbar('list', true, 'error', error, null, false);
+               }
+         })
+         .catch(async (error) => {
+            // Netzwerkfehler: auch in Outbox speichern
+            if (typeof addToOutbox === 'function') {
+               return saveListItemToOutbox(title);
+            }
+            if (String(error) === "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('list', true, 'error', error, null, false);
+         })
+   }
+
+   async function saveListItemToOutbox(title) {
+      try {
+         await addToOutbox({
+            title: title,
+            content: '0',
+            contentType: 'list',
+            listType: listType,
+            dateCreated: '',
+            edition: 'all',
+            files: [],
+            contentURL: '',
+         });
+         if ('serviceWorker' in navigator && 'SyncManager' in window) {
+            const reg = await navigator.serviceWorker.ready;
+            await reg.sync.register('sync-outbox');
          }
-         showSnackbar('list', true, 'error', error, null, false);
-   })
-}
+         callUi("#dialog-create-new-list-item");
+         document.getElementById("div-create-list-item-title").value = "";
+         showSnackbar('list', true, 'green', _('Item saved offline. Will sync when online.'), null, false);
+         if (typeof updateOutboxBadge === 'function') updateOutboxBadge();
+         renderListOutboxGhostItems();
+      } catch (err) {
+         console.error('[PWA] Failed to save to outbox:', err);
+         showSnackbar('list', true, 'error', _('Server not reachable'), null, false);
+      }
+   }
+
+   async function renderListOutboxGhostItems() {
+      if (typeof getOutboxItems !== 'function') return;
+      const container = document.getElementById('div-render-list-items');
+      if (!container) return;
+      // Alte Ghost-Items entfernen
+      container.querySelectorAll('.outbox-ghost-item').forEach(el => el.remove());
+      const items = await getOutboxItems();
+      const listItems = items.filter(i => i.contentType === 'list' && String(i.listType) === String(listType));
+      for (const item of listItems) {
+         const el = document.createElement('a');
+         el.className = 'row padding surface-container wave outbox-ghost-item';
+         el.style.opacity = '0.5';
+         el.innerHTML = '<i class="small">cloud_upload</i><div class="max"><h6 class="small">' +
+            (item.title || '') + '</h6><span class="small-text">' +
+            (typeof _ === 'function' ? _('Pending sync') : 'Pending sync') + '</span></div>';
+         container.appendChild(el);
+      }
+   }
+
+   // Ghost-Items beim Laden anzeigen
+   document.addEventListener('DOMContentLoaded', renderListOutboxGhostItems);
  </script>

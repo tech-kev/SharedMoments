@@ -8,7 +8,8 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     get_all_settings, update_setting, create_user, get_role_by_name, create_user_role,
     create_user_setting, update_translation, update_user_setting, update_user_profile_picture,
     create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions,
-    create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids)
+    create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids,
+    get_all_media_urls)
 from datetime import datetime
 from app.logger import log
 import os, json
@@ -310,6 +311,13 @@ def static_media(filename):
 def export_media(filename):
     basedir = os.path.abspath(os.path.dirname(__file__))
     return _safe_send_file(os.path.join(basedir, '..', 'export'), filename)
+
+
+@api_bp.route('/api/v2/all-media-urls')
+@jwt_required
+def all_media_urls():
+    urls = get_all_media_urls()
+    return jsonify({'status': 'success', 'data': {'urls': urls}})
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'mp4', 'mov', 'avi', 'webm', 'mkv'}

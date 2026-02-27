@@ -40,6 +40,11 @@
                     <i>home</i>
                     <span>{{ _('Login with passkey') }}</span>
                 </button>
+                <div class="space"></div>
+                <button class="pwa-install-btn transparent border" style="display:none;" onclick="installPWA()">
+                    <i>install_mobile</i>
+                    <span>{{ _('Install App') }}</span>
+                </button>
             </div>
         </article>
 
@@ -80,6 +85,7 @@
                     showSnackbar('setup', true, 'error', result.message, null, false);
                 }
             } catch (error) {
+                if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
                 showSnackbar('setup', true, 'error', error, null, false);
             }
         });

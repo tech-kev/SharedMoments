@@ -119,8 +119,12 @@
    <script>
    
    function createNewLanguage() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
       var language = document.getElementById('input-new-language').value;
-      
+
       if (language == "") {
          showSnackbar("Bitte geben Sie eine Sprache ein.");
          return;
@@ -167,9 +171,13 @@ let currentTranslationIndex
 let translationsToTranslateOrigLength
 
 function getTranslations(language) {
-   
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
+
    languageCode = language;
-   
+
    fetch("/api/v2/translations/" + languageCode, {
       method: "GET",
    })
@@ -247,6 +255,10 @@ function getTranslations(language) {
    }
 
    function saveTranslation() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
       var formData = new FormData();
       formData.append("entityType", currentTranslation.entityType);
       formData.append("entityID", currentTranslation.entityID);
@@ -285,6 +297,10 @@ function getTranslations(language) {
    }
 
    function showLanguages() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
 
       fetch("/api/v2/translations", {
          method: "GET",
@@ -315,6 +331,10 @@ function getTranslations(language) {
    }
 
    function devToolsAction(mode) {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
 
       if (!confirm("{{ _('Are you sure? This action cannot be undone!') }}")) {
          return;
@@ -349,6 +369,10 @@ function getTranslations(language) {
    }
 
    function exportTranslations(language) {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
       var formData = new FormData();
       formData.append("languageCode", language);
       formData.append("type", "JSON");

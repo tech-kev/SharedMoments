@@ -81,6 +81,10 @@ function previewUserImage(input) {
 }
 
 function saveUser() {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     const userId = document.getElementById('edit-user-id').value;
     const isEdit = !!userId;
 
@@ -153,6 +157,10 @@ function saveUser() {
 }
 
 function deleteUser() {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     const userId = document.getElementById('edit-user-id').value;
     if (!userId) return;
 
@@ -189,6 +197,10 @@ function editUserRoles(userId, userName) {
 }
 
 function saveUserRoles() {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     const userId = document.getElementById('edit-user-roles-user-id').value;
     const checkboxes = document.querySelectorAll('#edit-user-roles-only-checkboxes input[type="checkbox"]:checked');
     const roleIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
@@ -343,6 +355,10 @@ function editRolePermissions(roleId, roleName) {
 }
 
 function togglePermission(roleId, permId, checked) {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     const currentPerms = rolePermissionsMap[roleId] || [];
 
     // Find the toggled permission
@@ -401,6 +417,10 @@ function togglePermission(roleId, permId, checked) {
 
 // --- Create / Delete Roles ---
 function createRole() {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     const roleName = document.getElementById('create-role-name').value.trim();
     if (!roleName) {
         showAdminSnackbar(_('Role name is required'), true);
@@ -429,6 +449,10 @@ function createRole() {
 }
 
 function deleteRole(roleId, roleName) {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     if (!confirm(_('Do you really want to delete this entry? All associated entries will also be deleted.'))) {
         return;
     }
@@ -451,6 +475,10 @@ function deleteRole(roleId, roleName) {
 
 // --- Share Management ---
 function revokeShareAdmin(shareId) {
+    if (!navigator.onLine) {
+        showAdminSnackbar(_('You are offline'), true);
+        return;
+    }
     if (!confirm(_('Revoke this share link?'))) return;
 
     fetch(`/api/v2/admin/shares/${shareId}`, { method: 'DELETE' })

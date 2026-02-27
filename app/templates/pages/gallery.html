@@ -101,19 +101,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/autoplay/lg-autoplay.min.js"></script>
 
 <script>
-  lightGallery(document.getElementById('lightgallery'), {
-    plugins: [lgThumbnail, lgVideo, lgAutoplay],
-    speed: 500,
-    thumbnail: true,
-    animateThumb: true,
-    zoomFromOrigin: false,
-    toggleThumb: true,
-    download: true,
-    hideScrollbar: true,
-    mobileSettings: { download: true, },
-    autoplay: true
-
-  });
+  if (typeof lightGallery === 'function') {
+    lightGallery(document.getElementById('lightgallery'), {
+      plugins: [lgThumbnail, lgVideo, lgAutoplay],
+      speed: 500,
+      thumbnail: true,
+      animateThumb: true,
+      zoomFromOrigin: false,
+      toggleThumb: true,
+      download: true,
+      hideScrollbar: true,
+      mobileSettings: { download: true, },
+      autoplay: true
+    });
+  }
 </script>
    
    </body>

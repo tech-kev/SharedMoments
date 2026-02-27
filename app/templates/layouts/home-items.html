@@ -37,7 +37,12 @@
    </a>
    {% endif %}
    <div class="absolute top right padding white-text">
-      <nav style="display: flex; gap: 4px;">
+      <nav style="display: flex; gap: 4px; align-items: center;">
+         <button class="circle transparent small pwa-pin-btn" data-item-id="{{ item.id }}"
+                 data-media-urls="{{ item.contentURL }}" data-item-title="{{ item.title }}"
+                 onclick="event.stopPropagation(); togglePinItem(this)" style="min-width:32px; min-height:32px;">
+            <i class="small">download</i>
+         </button>
          {% if shared_item_ids is defined and item.id in shared_item_ids %}
          <a class="chip no-border tertiary small round">
          <i class="small">share</i>

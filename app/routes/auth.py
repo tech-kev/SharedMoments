@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import Blueprint, g, make_response, request, jsonify, redirect, url_for, session
-from app.db_queries import get_user_by_credential_id, get_user_by_email, get_setting_by_name, get_user_by_id, update_passkey_sign_count
+from app.db_queries import get_user_by_credential_id, get_user_by_email, get_setting_by_name, get_user_by_id, update_passkey_sign_count, ensure_pwa_settings
 from app.permissions import load_user_permissions
 from datetime import datetime, timedelta
 from app.logger import log
@@ -108,6 +108,14 @@ def before_request():
                     set_locale(user.id)
                 except Exception as e:
                     log('warning', f'Failed to set user locale for user {user_id}, falling back to "en": {e}')
+
+                # Ensure PWA settings exist (once per session)
+                if not session.get('pwa_settings_ensured'):
+                    try:
+                        ensure_pwa_settings(user_id)
+                        session['pwa_settings_ensured'] = True
+                    except Exception as e:
+                        log('warning', f'Failed to ensure PWA settings for user {user_id}: {e}')
 
                 if request.endpoint == 'auth.login':
                     return redirect(url_for('pages.home'))

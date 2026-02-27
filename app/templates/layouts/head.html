@@ -1,11 +1,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6750a4">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/static/pwa/sm-icon-192.png">
 <!-- BeerCSS -->
 <link href="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.css" rel="stylesheet">
 <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.js"></script>
 <script type="module"
     src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/material-dynamic-colors.min.js"></script>
 <!-- BeerCSS -->
+<!-- PWA Scripts -->
+<script>var translationsArray = {{ translations_json|safe }};</script>
+<script src="/static/pwa/idb-manager.js"></script>
+<script src="/static/pwa/pwa.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { scope: '/' });
+}
+</script>
 <style>
    /* Skeleton/Shimmer Loading */
    .skeleton {
@@ -58,5 +73,16 @@
    .skeleton-card {
       padding: 0;
       overflow: hidden;
+   }
+   /* PWA Sync Animation */
+   @keyframes pwa-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+   }
+   .pwa-syncing .outbox-ghost-card i {
+      animation: pwa-spin 1s linear infinite;
+   }
+   .pwa-syncing #pwa-outbox-badge {
+      animation: pwa-spin 1.5s linear infinite;
    }
 </style>

@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, g, make_response, render_template, send_file, request, redirect, url_for, session
 from app.db_queries import (get_all_list_types, get_all_relationship_statuses,
     get_relationship_statuses_with_names, get_items_by_type,
@@ -15,9 +16,39 @@ from app.permissions import require_permission, has_list_permission
 pages_bp = Blueprint('pages', __name__)
 
 
+# ===== PWA Routes (no auth required) =====
+
+@pages_bp.route('/manifest.json')
+def manifest():
+    return send_file('static/pwa/manifest.json', mimetype='application/manifest+json')
+
+
+@pages_bp.route('/sw.js')
+def service_worker():
+    response = make_response(send_file('static/pwa/sw.js', mimetype='application/javascript'))
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
+
+
+@pages_bp.route('/offline')
+def offline():
+    return render_template('pages/offline.html')
+
+
 @pages_bp.app_context_processor
 def inject_static_text():
-    return dict(_=_)
+    translations_json = '{}'
+    try:
+        lang = session.get('lang', os.environ.get('LANG', 'en'))
+        translations = get_translations_by_language(lang)
+        translations_json = json.dumps({
+            t.fieldName: {'translatedText': t.translatedText}
+            for t in translations
+        }, ensure_ascii=False)
+    except Exception:
+        pass
+    return dict(_=_, translations_json=translations_json)
 
 
 @pages_bp.route('/')

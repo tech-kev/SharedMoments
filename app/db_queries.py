@@ -618,6 +618,29 @@ def update_user_setting(userID, name=None, value=None):
         session.close()
 
 
+def ensure_pwa_settings(userID):
+    """Creates default PWA settings for a user if they don't exist yet."""
+    pwa_defaults = {
+        'pwa_offline_all': 'FALSE',
+        'pwa_auto_cache_count': '20',
+        'pwa_cache_expiry_days': '14',
+        'pwa_wifi_only_upload': 'FALSE',
+        'pwa_preload_on_wifi': 'FALSE',
+    }
+    session = SessionLocal()
+    try:
+        for name, default_value in pwa_defaults.items():
+            existing = session.query(UserSetting).filter(
+                UserSetting.userID == userID,
+                UserSetting.name == name
+            ).first()
+            if not existing:
+                session.add(UserSetting(userID=userID, name=name, value=default_value))
+        session.commit()
+    finally:
+        session.close()
+
+
 # Table Item
 
 def create_item(title, content, contentType, listType, contentURL, createdByUser, dateCreated, edition='all'):
@@ -645,6 +668,23 @@ def get_item_by_id(item_id):
     try:
         item = session.query(Item).filter(Item.id == item_id).first()
         return item
+    finally:
+        session.close()
+
+def get_all_media_urls():
+    session = SessionLocal()
+    try:
+        items = session.query(Item.id, Item.contentType, Item.contentURL).filter(Item.contentURL.isnot(None), Item.contentURL != '').all()
+        urls = []
+        for item_id, content_type, content_url in items:
+            for filename in content_url.split(';'):
+                filename = filename.strip()
+                if filename:
+                    urls.append(f'/api/v2/media/{filename}')
+            # Gallery-Seiten auch cachen
+            if content_type and content_type.startswith('gallery'):
+                urls.append(f'/gallery/{item_id}')
+        return urls
     finally:
         session.close()
 
@@ -1126,6 +1166,8 @@ def verify_share_password(share, password):
     if not share.passwordHash:
         return True
     return check_password_hash(share.passwordHash, password)
+
+
 
 
 def approve_new_translations_to_all_languages():

@@ -1,37 +1,4 @@
-let translationsArray;
-getTranslations();
-
-async function getTranslations() {
-   language = 'currentLang'
-   fetch("/api/v2/translations/" + language, {
-   })
-      .then(async (response) => {
-         try {
-            const result = await response.json();
-            if (result.status === "success") {
-               translationsArray = result.data.translations_by_fieldName;
-            } 
-            else {
-               //showSnackbar('home', true, 'error', result.message, result, true);
-            }
-         } catch (error) { // Kein gültiges JSON
-            //showSnackbar('home', true, 'error', error, null, false);
-         }
-      })
-      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
-//         if (error == "TypeError: Failed to fetch") {
-//            error = _('Server not reachable');
-//         }
-//         showSnackbar('home', true, 'error', error, null, false);
-      });
-}
-
-function _(key) {
-   if (translationsArray && translationsArray[key] && translationsArray[key].translatedText) {
-       return translationsArray[key].translatedText;
-   }
-   return key;
-}
+// Translations: translationsArray is set inline in head.html, _() is defined in pwa.js
 
 // Umschalten zwischen Modal anzeigen und verstecken
 function callUi(id) {

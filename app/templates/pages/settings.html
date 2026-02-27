@@ -166,6 +166,8 @@
                   <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
                 </div>
               </a>
+              {% elif user_setting.name.startswith('pwa_') %}
+              {# PWA settings rendered in dedicated section below #}
               {% else %}
               <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'text')">
                 <i>{{ user_setting.icon }}</i>
@@ -176,6 +178,91 @@
               </a>
               {% endif %}
               {% endfor %}
+
+              <!-- Offline & Storage Section -->
+              <legend>{{ _('Offline & Storage') }}</legend>
+
+              <!-- Storage usage display -->
+              <div class="row padding primary-container">
+                <i>storage</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Storage used') }}</h6>
+                  <div id="pwa-storage-usage">...</div>
+                </div>
+              </div>
+
+              <!-- PWA toggle settings -->
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'pwa_offline_all' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>cloud_download</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_wifi_only_upload' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>wifi</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_preload_on_wifi' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>download_for_offline</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_auto_cache_count' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'number')">
+                <i>format_list_numbered</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% elif user_setting.name == 'pwa_cache_expiry_days' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'number')">
+                <i>schedule</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              <!-- Force update button -->
+              <a class="row padding primary-container wave" onclick="forceUpdatePWA()">
+                <i>system_update</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Check for updates') }}</h6>
+                  <div>{{ _('Force download latest version') }}</div>
+                </div>
+              </a>
+
+              <!-- Clear cache button -->
+              <a class="row padding primary-container wave" onclick="clearPwaCache()">
+                <i>delete_sweep</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Clear offline cache') }}</h6>
+                  <div>{{ _('Remove all cached content') }}</div>
+                </div>
+              </a>
+
               {% endif %}
 
     </article>

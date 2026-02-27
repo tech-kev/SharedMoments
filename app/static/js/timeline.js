@@ -21,6 +21,10 @@ function editTimelineItem() {
 }
 
 function saveEditedTimelineItem() {
+    if (!navigator.onLine) {
+        showSnackbar('home', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const id = document.getElementById('edit-timeline-item-id').value;
     const formData = new FormData();
     formData.append('title', document.getElementById('edit-timeline-item-title').value);
@@ -53,6 +57,10 @@ function saveEditedTimelineItem() {
 }
 
 function deleteTimelineItem() {
+    if (!navigator.onLine) {
+        showSnackbar('home', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const formData = new FormData();
     formData.append('ids', currentTimelineItemId);
     formData.append('listType', 2);

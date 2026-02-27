@@ -70,6 +70,10 @@ function undoAI(mode) {
 
 // KI-Textassistent: Stichpunkte in Fließtext umwandeln
 async function enhanceWithAI(mode) {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
    const textareaId = mode === 'create' ? 'textarea-create-home-item-content' : 'edit-home-item-content';
    const titleId = mode === 'create' ? 'div-create-home-item-title' : 'edit-home-item-title';
    const enhanceBtn = document.getElementById('btn-ai-enhance-' + mode);
@@ -212,8 +216,83 @@ function getFileContentType (dataUrl=null, filename=null) {
 
 let errorOnUpload = false; // Variable zum Speichern eines Fehlers beim Hochladen
 
+// Hilfsfunktion: Home-Item in Outbox speichern
+async function saveHomeItemToOutbox() {
+   if (typeof addToOutbox !== 'function') return false;
+   try {
+      const title = document.getElementById("div-create-home-item-title").value;
+      const content = document.getElementById("textarea-create-home-item-content").value;
+      const listType = document.getElementById("input-list-type").value;
+      const dateCreated = document.getElementById("div-create-home-item-date-created").value;
+      const allEditionsChecked = document.getElementById("checkbox-create-home-item-all-editions").checked;
+      const edition = allEditionsChecked ? 'all' : (window.currentEdition || 'all');
+
+      const files = [];
+      for (let i = 0; i < selectedImages.length; i++) {
+         const idx = selectedImages[i];
+         // Pre-gelesene Buffer verwenden (Mobile-safe)
+         if (selectedFileBuffers[idx]) {
+            files.push(selectedFileBuffers[idx]);
+         } else {
+            // Fallback: direkt lesen (Desktop)
+            const fileInput = document.getElementById('file-input-create-home-item');
+            const file = fileInput.files[idx];
+            if (file) {
+               try {
+                  const buffer = await file.arrayBuffer();
+                  files.push({ name: file.name, type: file.type, data: buffer });
+               } catch (e) {
+                  console.warn('[PWA] Could not read file', idx, e);
+               }
+            }
+         }
+      }
+
+      let contentType = 'text';
+      if (files.length > 0) {
+         const firstFileType = getFileContentType(null, files[0].name);
+         if (firstFileType === 'image' && files.length > 1) contentType = 'galleryStartWithImage';
+         else if ((firstFileType === 'video' || firstFileType === 'video-mov') && files.length > 1) contentType = 'galleryStartWithVideo';
+         else contentType = firstFileType || 'text';
+      }
+
+      await addToOutbox({
+         title: title, content: content, contentType: contentType,
+         listType: listType, dateCreated: dateCreated, edition: edition,
+         files: files, contentURL: '',
+      });
+
+      callUi("#dialog-create-new-home-item");
+      document.getElementById("div-create-home-item-title").value = "";
+      document.getElementById("textarea-create-home-item-content").value = "";
+      document.getElementById("input-uploaded-urls").value = "";
+      document.getElementById("div-create-home-item-date-created").value = "";
+      document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
+      document.getElementById("file-input-create-home-item").value = "";
+      selectedImages = [];
+      selectedFileBuffers = [];
+      document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+
+      showSnackbar('home', true, 'green', _('Item saved offline. Will sync when online.'), null, false);
+      if (typeof updateOutboxBadge === 'function') updateOutboxBadge();
+      if (typeof renderOutboxGhostCards === 'function') renderOutboxGhostCards();
+      return true;
+   } catch (err) {
+      console.error('[PWA] Failed to save to outbox:', err);
+      showSnackbar('home', true, 'error', String(err), null, false);
+      return false;
+   }
+}
+
 // Speichern eines neuen Homeitems
 async function saveNewHomeItem() {
+   // === Offline-Erstellung: Wenn offline, in IndexedDB Outbox speichern ===
+   if (!navigator.onLine && typeof addToOutbox === 'function') {
+      await saveHomeItemToOutbox();
+      return;
+   }
+
+   // === Online-Erstellung (Original-Logik) ===
    errorOnUpload = false; // Reset error state
    document.getElementById('dialog-create-new-home-item').style.overflow = "hidden"; // Verhindere das Scrollen im Modal
 
@@ -228,8 +307,10 @@ async function saveNewHomeItem() {
       document.getElementById('progress-new-home-item').style.display = "none";
 
       if (errorOnUpload) {
-         document.getElementById('dialog-create-new-home-item').style.overflow = "auto"; // Erlaube das Scrollen im Modal
-         return; // Breche den Speichervorgang ab, wenn ein Fehler beim Hochladen aufgetreten
+         document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+         // Upload fehlgeschlagen (z.B. offline) → in Outbox speichern
+         await saveHomeItemToOutbox();
+         return;
       }
 
    }
@@ -264,6 +345,7 @@ async function saveNewHomeItem() {
    formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
    formData.append("edition", edition);
 
+   var originalContent = document.getElementById("div-render-home-items").innerHTML;
    showSkeletonCards('div-render-home-items');
 
    fetch("/api/v2/items", {
@@ -287,6 +369,7 @@ async function saveNewHomeItem() {
                   document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
                   document.getElementById("file-input-create-home-item").value ="";
                   selectedImages = []; // Leere die ausgewählten Bilder
+                  selectedFileBuffers = [];
                   showSnackbar('home', true, 'green', result.message, null, false);
                } else {
                   showSnackbar('home', true, 'error', result.message, result, true);
@@ -295,8 +378,16 @@ async function saveNewHomeItem() {
                showSnackbar('home', true, 'error', error, null, false);
             }
       })
-      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
-         if (error == "TypeError: Failed to fetch") {
+      .catch(async (error) => {
+         // Skeleton-Cards durch Originalinhalt ersetzen
+         document.getElementById("div-render-home-items").innerHTML = originalContent;
+         addEventListeners();
+         // Offline-Fallback: Bei Netzwerkfehler in Outbox speichern
+         if (typeof addToOutbox === 'function') {
+            const saved = await saveHomeItemToOutbox();
+            if (saved) return;
+         }
+         if (String(error) === "TypeError: Failed to fetch") {
             error = _('Server not reachable');
          }
          document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
@@ -306,6 +397,10 @@ async function saveNewHomeItem() {
 
 // Speichern eines bearbeiteten Homeitems
 async function saveEditedHomeItem() {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
    errorOnUpload = false; // Reset error state
    document.getElementById('dialog-edit-home-item').style.overflow = "hidden"; // Verhindere das Scrollen im Modal
    document.getElementById('div-overlay-edit-home-item').classList.add('active');
@@ -354,6 +449,7 @@ async function saveEditedHomeItem() {
 
    selectedArticles = selectedArticles.map((id) => id.replace("article_", "")); // Entferne "article_" aus der ID, um diese im nächsten Schritt zu verwenden
 
+   var originalEditContent = document.getElementById("div-render-home-items").innerHTML;
    showSkeletonCards('div-render-home-items');
 
    fetch("/api/v2/item/" + selectedArticles, {
@@ -372,6 +468,7 @@ async function saveEditedHomeItem() {
                addEventListeners(); // Event-Listener neu hinzufügen
                selectedArticles = []; // Leere die ausgewählten Artikel
                selectedImages = []; // Leere die ausgewählten Bilder
+               selectedFileBuffers = [];
                showSnackbar('home', true, 'green', result.message, null, false);
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
@@ -381,6 +478,8 @@ async function saveEditedHomeItem() {
          }
       })
       .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         document.getElementById("div-render-home-items").innerHTML = originalEditContent;
+         addEventListeners();
          if (error == "TypeError: Failed to fetch") {
             error = _('Server not reachable');
          }
@@ -392,6 +491,10 @@ async function saveEditedHomeItem() {
 
 // Löschen eines oder mehrerer Homeitems
 async function deleteHomeItems() {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
 
    if (!confirm(_('Delete selected items?'))) {
       return;
@@ -401,6 +504,7 @@ async function deleteHomeItems() {
    formData.append("ids", selectedArticles.map((id) => id.replace("article_", "")));
    formData.append("listType", document.getElementById("input-list-type").value);
 
+   var originalDeleteContent = document.getElementById("div-render-home-items").innerHTML;
    showSkeletonCards('div-render-home-items');
 
    fetch("/api/v2/items", {
@@ -424,6 +528,8 @@ async function deleteHomeItems() {
          }
       })
       .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         document.getElementById("div-render-home-items").innerHTML = originalDeleteContent;
+         addEventListeners();
          if (error == "TypeError: Failed to fetch") {
             error = _('Server not reachable');
          }
@@ -433,6 +539,10 @@ async function deleteHomeItems() {
 
 // Laden eines zu bearbeitenden Homeitems
 function getHomeItem(selectedArticles) {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
 
    selectedArticles = selectedArticles.map((id) => id.replace("article_", "")); // Entferne "article_" aus der ID, um diese im nächsten Schritt zu verwenden
 
@@ -463,6 +573,7 @@ function getHomeItem(selectedArticles) {
 
 // Globale Variable für die Reihenfolge der ausgewählten Bilder
 let selectedImages = [];
+let selectedFileBuffers = []; // Pre-read file data for offline support
 
 // Funktion zum Generieren der Vorschau für das File-Input
 async function generatePreviewForFileInput(event, mode) {
@@ -507,10 +618,22 @@ async function generatePreviewForFileInput(event, mode) {
 
    const existingImagesCount = containerDiv.querySelectorAll('.preview-image-container').length;
 
+   // Reset file buffers bei neuer Auswahl im Create-Modus
+   if (mode === "create" && event && existingImagesCount === 0) {
+      selectedFileBuffers = [];
+   }
+
    for (let i = 0; i < files.length; i++) {
       const newIndex = existingImagesCount + i;
       if (mode === "create" && event) {
          renderFile(files[i], newIndex, containerDiv);
+         // File sofort lesen damit die Referenz nicht verloren geht (Mobile)
+         try {
+            const buffer = await files[i].arrayBuffer();
+            selectedFileBuffers[newIndex] = { name: files[i].name, type: files[i].type, data: buffer };
+         } catch (e) {
+            console.warn('[PWA] Could not pre-read file', i, e);
+         }
          document.getElementById('progress-new-home-item').value = i / files.length * 100;
          document.getElementById('span-progress-file-new-home-item').textContent = i + 1;
          document.getElementById('span-progress-file-new-home-item-count').textContent = files.length;
@@ -1005,6 +1128,10 @@ function closeShareDialog() {
 }
 
 async function createShareLink() {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
    const itemId = document.getElementById('input-share-item-id').value;
    const expiresAt = document.getElementById('input-share-expires-at').value;
    const password = document.getElementById('input-share-password').value;

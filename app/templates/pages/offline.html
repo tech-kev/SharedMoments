@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SharedMoments - Offline</title>
+    {% include 'layouts/head.html' %}
+    <meta name="theme-color" content="#6750a4">
+</head>
+<body>
+    <main class="responsive">
+        <article class="medium middle-align center-align primary-container" style="margin-top: 20vh;">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="72" viewBox="0 -960 960 960" width="72" fill="currentColor" style="opacity:0.6;">
+                    <path d="M792-56 686-160H260q-92 0-156-64T40-380q0-77 47.5-137T210-594q3-14 7.5-27.5T228-648L56-822l56-56L848-114l-56 58ZM260-220h366L324-522q-3 13-5.5 26t-2.5 26h-16q-58 0-99 41t-41 99q0 58 41 99t59 41h0Zm534-54-62-64q36-18 62-50.5t30-73.5q4-68-44-116.5T664-628h-68q-8-68-48.5-119.5T440-820q-44 0-82.5 18T296-754l-60-60q40-44 93.5-75T440-920q100 0 173 60t97 152q68 6 119 57t51 121q0 50-25.5 93.5T794-274ZM590-468Z"/>
+                </svg>
+                <h5>{{ _('You are offline') }}</h5>
+                <p>{{ _('This page is not available offline. Please check your internet connection and try again.') }}</p>
+                <div class="space"></div>
+                <nav class="center-align">
+                    <button onclick="window.location.reload()">
+                        <i>refresh</i>
+                        <span>{{ _('Retry') }}</span>
+                    </button>
+                    <a href="/home" class="button transparent">
+                        <i>home</i>
+                        <span>{{ _('Home') }}</span>
+                    </a>
+                </nav>
+            </div>
+        </article>
+    </main>
+</body>
+</html>

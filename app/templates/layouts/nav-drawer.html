@@ -48,6 +48,11 @@
        </a>
        {% endif %}
 
+       <a class="pwa-install-btn" style="display:none;" onclick="installPWA()">
+       <i>install_mobile</i>
+       <span>{{ _('Install App') }}</span>
+       </a>
+
        <!-- hr-Tag vor den Setting-Elementen einblenden -->
        <script>
           const anchors = document.querySelectorAll('a');

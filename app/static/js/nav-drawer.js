@@ -167,6 +167,10 @@ document.addEventListener('click', function(e) {
 });
 
 function saveListType() {
+    if (!navigator.onLine) {
+        showSnackbar('navbar', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const id = document.getElementById('manage-list-type-id').value;
     const title = document.getElementById('manage-list-type-title').value.trim();
     const mainTitle = document.getElementById('manage-list-type-main-title').value.trim();
@@ -222,6 +226,10 @@ function saveListType() {
 }
 
 function deleteListTypeFromDialog() {
+    if (!navigator.onLine) {
+        showSnackbar('navbar', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const id = document.getElementById('manage-list-type-id').value;
     if (!id) return;
 
@@ -269,6 +277,10 @@ function changeNavOrder(mode) {
         document.getElementById('a-change-nav-order').setAttribute('onclick', "changeNavOrder('save')");
 
     } else if (mode == 'save') {
+        if (!navigator.onLine) {
+            showSnackbar('navbar', true, 'error', _('You are offline'), null, false);
+            return;
+        }
         const listTypes = document.querySelectorAll('[id^="div-nav"]');
 
         for (let i = 0; i < listTypes.length; i++) {

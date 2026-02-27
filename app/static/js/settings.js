@@ -8,6 +8,10 @@ let pendingRequiredDates = [];
 // --- Profile Picture ---
 function updateProfilePicture(input) {
     if (!input.files || !input.files[0]) return;
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const formData = new FormData();
     formData.append('file', input.files[0]);
 
@@ -27,7 +31,10 @@ function updateProfilePicture(input) {
             showSnackbar('settings', true, 'error', result.message, result, true);
         }
     })
-    .catch(error => showSnackbar('settings', true, 'error', error, null, false));
+    .catch(error => {
+        if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', error, null, false);
+    });
 }
 
 // --- Edit Dialog ---
@@ -146,6 +153,10 @@ function saveSettingSelect(setting) {
 }
 
 function sendSettingUpdate(setting, value) {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const formData = new FormData();
     formData.append("setting", setting);
     formData.append("value", value);
@@ -196,6 +207,10 @@ function sendSettingUpdate(setting, value) {
 }
 
 function sendSettingUpdateWithCallback(setting, value, callback) {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const formData = new FormData();
     formData.append("setting", setting);
     formData.append("value", value);
@@ -221,12 +236,17 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
             }
         })
         .catch((error) => {
+            if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
         });
 }
 
 // --- Darkmode ---
 function toggleDarkmode() {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const toggle = document.getElementById('darkmode-toggle');
     toggle.checked = !toggle.checked;
     const value = toggle.checked ? 'TRUE' : 'FALSE';
@@ -252,6 +272,7 @@ function toggleDarkmode() {
             }
         })
         .catch((error) => {
+            if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
             toggle.checked = !toggle.checked;
             document.body.classList.toggle('dark', toggle.checked);
@@ -260,6 +281,10 @@ function toggleDarkmode() {
 
 // --- Share Tracking ---
 function toggleShareTracking() {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const toggle = document.getElementById('share-tracking-toggle');
     toggle.checked = !toggle.checked;
     const value = toggle.checked ? 'True' : 'False';
@@ -282,6 +307,7 @@ function toggleShareTracking() {
             }
         })
         .catch((error) => {
+            if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
             toggle.checked = !toggle.checked;
         });
@@ -310,6 +336,10 @@ function closeEditionDialog() {
 }
 
 function saveEdition() {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
     const value = document.getElementById('input-edition-select').value;
     const formData = new FormData();
     formData.append("setting", "sm_edition");
@@ -329,6 +359,7 @@ function saveEdition() {
             }
         })
         .catch((error) => {
+            if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
         });
 }
@@ -380,4 +411,146 @@ function openNextRequiredDate() {
         hint.textContent = _('This date is required for your relationship status.');
         hint.style.display = '';
     }, 500);
+}
+
+// --- PWA Settings ---
+
+function togglePwaSetting(settingName) {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+    const toggle = document.getElementById('pwa-toggle-' + settingName);
+    toggle.checked = !toggle.checked;
+    const value = toggle.checked ? 'TRUE' : 'FALSE';
+
+    const formData = new FormData();
+    formData.append("setting", settingName);
+    formData.append("value", value);
+
+    fetch("/api/v2/user-settings", {
+        method: "PUT",
+        body: formData,
+    })
+        .then(async (response) => {
+            const result = await response.json();
+            if (result.status === "success") {
+                showSnackbar('settings', true, 'green', result.message, null, false);
+                syncAllPwaSettings();
+                // If pwa_offline_all was toggled ON, preload all content
+                if (settingName === 'pwa_offline_all' && toggle.checked) {
+                    localStorage.setItem('pwa_offline_all', 'true');
+                    window._pwaPreloadManual = true;
+                    if (typeof preloadAllContent === 'function') preloadAllContent();
+                } else if (settingName === 'pwa_offline_all' && !toggle.checked) {
+                    localStorage.removeItem('pwa_offline_all');
+                }
+            } else {
+                showSnackbar('settings', true, 'error', result.message, result, true);
+                toggle.checked = !toggle.checked;
+            }
+        })
+        .catch((error) => {
+            if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
+            showSnackbar('settings', true, 'error', error, null, false);
+            toggle.checked = !toggle.checked;
+        });
+}
+
+async function forceUpdatePWA() {
+    if (!('serviceWorker' in navigator)) {
+        showSnackbar('settings', true, 'error', _('Service Worker not supported'), null, false);
+        return;
+    }
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        showSnackbar('settings', true, 'green', _('Checking for updates...'), null, false);
+        await registration.update();
+
+        if (registration.waiting) {
+            // Neue Version gefunden — sofort aktivieren
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        } else if (registration.installing) {
+            // SW wird gerade installiert — auf fertig warten
+            registration.installing.addEventListener('statechange', (e) => {
+                if (e.target.state === 'installed') {
+                    e.target.postMessage({ type: 'SKIP_WAITING' });
+                }
+            });
+        } else {
+            showSnackbar('settings', true, 'green', _('App is up to date'), null, false);
+        }
+    } catch (err) {
+        showSnackbar('settings', true, 'error', String(err), null, false);
+    }
+}
+
+function clearPwaCache() {
+    if (typeof clearOfflineCache === 'function') {
+        clearOfflineCache().then(() => {
+            localStorage.removeItem('pwa_offline_all');
+            localStorage.removeItem('pwa_pinned_items');
+            // Toggle in UI zurücksetzen
+            const toggle = document.getElementById('pwa-toggle-pwa_offline_all');
+            if (toggle) toggle.checked = false;
+            // Server-Setting auch auf FALSE setzen
+            const formData = new FormData();
+            formData.append('setting', 'pwa_offline_all');
+            formData.append('value', 'FALSE');
+            fetch('/api/v2/user-settings', { method: 'PUT', body: formData }).catch(() => {});
+            // Pin-Icons aktualisieren
+            if (typeof initPinButtons === 'function') initPinButtons();
+            // Seiten erneut cachen
+            if (typeof cacheAllPages === 'function') cacheAllPages();
+            showSnackbar('settings', true, 'green', _('Cache cleared'), null, false);
+            updateStorageDisplay();
+        });
+    }
+}
+
+async function updateStorageDisplay() {
+    const el = document.getElementById('pwa-storage-usage');
+    if (!el) return;
+    if (typeof getStorageEstimate === 'function') {
+        const estimate = await getStorageEstimate();
+        if (estimate) {
+            el.textContent = estimate.usageMB + ' MB / ' + estimate.quotaMB + ' MB';
+        } else {
+            el.textContent = _('Not available');
+        }
+    }
+}
+
+function syncAllPwaSettings() {
+    if (typeof syncPwaSettingsToSW !== 'function') return;
+    const settings = {};
+    const toggleNames = ['pwa_offline_all', 'pwa_wifi_only_upload', 'pwa_preload_on_wifi'];
+    toggleNames.forEach(name => {
+        const toggle = document.getElementById('pwa-toggle-' + name);
+        if (toggle) settings[name] = toggle.checked;
+    });
+    const numberNames = ['pwa_auto_cache_count', 'pwa_cache_expiry_days'];
+    numberNames.forEach(name => {
+        const el = document.getElementById(name + '-value');
+        if (el) settings[name] = parseInt(el.textContent.trim(), 10) || 0;
+    });
+    syncPwaSettingsToSW(settings);
+}
+
+// PWA-Toggles mit localStorage synchronisieren (gecachte HTML kann veraltet sein)
+function syncPwaTogglesFromLocalStorage() {
+    const toggle = document.getElementById('pwa-toggle-pwa_offline_all');
+    if (toggle) {
+        const localState = localStorage.getItem('pwa_offline_all') === 'true';
+        toggle.checked = localState;
+    }
+}
+
+// Init storage display on page load
+if (settingsType === 'user-settings') {
+    document.addEventListener('DOMContentLoaded', () => {
+        syncPwaTogglesFromLocalStorage();
+        updateStorageDisplay();
+        syncAllPwaSettings();
+    });
 }
