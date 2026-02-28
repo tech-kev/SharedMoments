@@ -114,16 +114,16 @@ def setup_complete():
 
             user_id = new_user.id
 
-            new_passkey = Passkey(
-                userID=new_user.id,
-                name=_('Security Key'),
-                credential_id=credential_id,
-                public_key=public_key,
-                sign_count=sign_count
-            )
-
-            db_session.add(new_passkey)
-            db_session.flush()
+            if credential_id:
+                new_passkey = Passkey(
+                    userID=new_user.id,
+                    name=_('Security Key'),
+                    credential_id=credential_id,
+                    public_key=public_key,
+                    sign_count=sign_count
+                )
+                db_session.add(new_passkey)
+                db_session.flush()
 
             roleId = db_session.query(Role).filter_by(roleName=user_role).first().id
 
@@ -267,7 +267,7 @@ def update_profile_picture():
             return jsonify({'status': 'error', 'message': _('No file provided')}), 400
 
         filename = secure_filename(f"{datetime.now().strftime('%Y%m%d')}-{file.filename}")
-        upload_dir = os.path.join(os.path.dirname(__file__), '..', 'static', 'images')
+        upload_dir = os.path.join(os.path.dirname(__file__), '..', 'uploads', 'profiles')
         os.makedirs(upload_dir, exist_ok=True)
         file.save(os.path.join(upload_dir, filename))
 
@@ -368,7 +368,16 @@ def media_thumb(filename):
 @jwt_required
 def static_media(filename):
     basedir = os.path.abspath(os.path.dirname(__file__))
-    return _safe_send_file(os.path.join(basedir, '..', 'static', 'images'), filename)
+    # Check uploads/profiles first (user-uploaded), then fall back to static/images (stock)
+    profiles_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'profiles'))
+    static_folder = os.path.abspath(os.path.join(basedir, '..', 'static', 'images'))
+    safe = secure_filename(filename)
+    if not safe or safe != filename:
+        abort(400)
+    profile_path = os.path.join(profiles_folder, safe)
+    if os.path.exists(profile_path):
+        return _safe_send_file(profiles_folder, filename)
+    return _safe_send_file(static_folder, filename)
 
 
 @api_bp.route('/api/v2/media/export/<filename>')
