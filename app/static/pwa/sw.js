@@ -1,10 +1,10 @@
 // SharedMoments Service Worker
-const SW_VERSION = '1.6.0';
+const SW_VERSION = '1.7.0';
 
 // Cache names
-const APP_SHELL_CACHE = 'app-shell-v10';
+const APP_SHELL_CACHE = 'app-shell-v11';
 const CDN_CACHE = 'cdn-v1';
-const API_CACHE = 'api-v1';
+const API_CACHE = 'api-v2';
 const MEDIA_CACHE = 'media-v1';
 const PINNED_MEDIA_CACHE = 'media-pinned-v1';
 
@@ -254,7 +254,7 @@ async function mediaStrategy(request) {
   const cached = await mediaCache.match(request);
 
   const fetchPromise = fetch(request).then((response) => {
-    if (response.ok) {
+    if (response.ok && response.status !== 206) {
       mediaCache.put(request, response.clone());
     }
     return response;

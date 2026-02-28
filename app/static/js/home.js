@@ -1103,6 +1103,31 @@ function addEventListeners() {
 addEventListeners(); // Füge die Event Listener zu allen Artikeln hinzu
 
 
+// ===== Banner Song =====
+
+let bannerAudio = null;
+
+function toggleSong() {
+   const btn = document.getElementById('btn-play-song');
+   if (!btn) return;
+   const icon = btn.querySelector('i');
+
+   if (!bannerAudio) {
+      bannerAudio = new Audio(btn.getAttribute('data-song'));
+      bannerAudio.addEventListener('ended', () => {
+         icon.textContent = 'play_arrow';
+      });
+   }
+
+   if (bannerAudio.paused) {
+      bannerAudio.play();
+      icon.textContent = 'pause';
+   } else {
+      bannerAudio.pause();
+      icon.textContent = 'play_arrow';
+   }
+}
+
 // ===== Share Functions =====
 
 function shareSelectedItems() {

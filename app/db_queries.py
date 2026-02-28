@@ -118,6 +118,7 @@ def init_db():
             Setting(name='engaged_date', value='', icon='event', edition='couples', category='general', type='date'),
             Setting(name='wedding_date', value='', icon='event', edition='couples', category='general', type='date'),
             Setting(name='share_tracking', value='True', icon='analytics', edition='all', category='general', type='toggle'),
+            Setting(name='banner_song', value='', icon='music_note', edition='couples', category='general', type='file'),
         ]
         session.add_all(settings)
 
@@ -826,6 +827,19 @@ def get_list_type_by_title(title):
     try:
         list_type = session.query(ListType).filter(ListType.title == title).first()
         return list_type
+    finally:
+        session.close()
+
+
+def ensure_banner_song_setting():
+    """For existing databases: creates the banner_song setting if missing."""
+    session = SessionLocal()
+    try:
+        existing = session.query(Setting).filter(Setting.name == 'banner_song').first()
+        if existing:
+            return
+        session.add(Setting(name='banner_song', value='', icon='music_note', edition='couples', category='general', type='file'))
+        session.commit()
     finally:
         session.close()
 

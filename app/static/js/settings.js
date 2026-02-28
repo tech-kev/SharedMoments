@@ -546,6 +546,85 @@ function syncPwaTogglesFromLocalStorage() {
     }
 }
 
+// --- Banner Song ---
+function uploadBannerSong(input) {
+    if (!input.files || !input.files[0]) return;
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', input.files[0]);
+
+    fetch('/api/v2/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status === 'success') {
+            const filename = result.data.filename;
+            const settingForm = new FormData();
+            settingForm.append('setting', 'banner_song');
+            settingForm.append('value', filename);
+
+            return fetch('/api/v2/settings', {
+                method: 'PUT',
+                body: settingForm,
+            }).then(res => res.json());
+        } else {
+            throw new Error(result.message);
+        }
+    })
+    .then(result => {
+        if (result && result.status === 'success') {
+            document.getElementById('banner_song-value').textContent = result.data.value;
+            showSnackbar('settings', true, 'green', result.message, null, false);
+            location.reload();
+        } else if (result) {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+        }
+    })
+    .catch(error => {
+        if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    })
+    .finally(() => {
+        input.value = '';
+    });
+}
+
+function deleteBannerSong() {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('setting', 'banner_song');
+    formData.append('value', '');
+
+    fetch('/api/v2/settings', {
+        method: 'PUT',
+        body: formData,
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status === 'success') {
+            document.getElementById('banner_song-value').textContent = _('No song');
+            showSnackbar('settings', true, 'green', result.message, null, false);
+            location.reload();
+        } else {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+        }
+    })
+    .catch(error => {
+        if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    });
+}
+
 // Init storage display on page load
 if (settingsType === 'user-settings') {
     document.addEventListener('DOMContentLoaded', () => {

@@ -12,6 +12,13 @@
          {% endif %}
       </h5>
        <p class="middle-align center-align">{{ banner_text }}</p>
+       {% if settings.banner_song.value %}
+       <div style="display:flex;justify-content:flex-end;">
+         <button class="circle" id="btn-play-song" data-song="/api/v2/media/{{ settings.banner_song.value }}" onclick="toggleSong()">
+           <i>play_arrow</i>
+         </button>
+       </div>
+       {% endif %}
     </div>
  </article>
 {% endif %}

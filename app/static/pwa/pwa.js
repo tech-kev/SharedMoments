@@ -748,7 +748,7 @@ function cacheAllPages() {
 
   navigator.serviceWorker.controller.postMessage({
     type: 'CACHE_URLS',
-    data: { urls: Array.from(pageUrls), cacheName: 'api-v1' },
+    data: { urls: Array.from(pageUrls), cacheName: 'api-v2' },
   });
 }
 
@@ -771,7 +771,7 @@ function cacheAuthJSFiles() {
         '/static/js/nav-drawer.js',
         '/static/js/setup.js',
       ],
-      cacheName: 'app-shell-v8',
+      cacheName: 'app-shell-v11',
     },
   });
 }

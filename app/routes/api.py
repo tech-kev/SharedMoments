@@ -192,6 +192,15 @@ def update_settings():
         setting = request.form['setting']
         value = request.form['value']
 
+        if setting == 'banner_song' and value:
+            ext = value.rsplit('.', 1)[-1].lower() if '.' in value else ''
+            if ext != 'mp3':
+                return jsonify({
+                    'status': 'error',
+                    'message': _('Only MP3 files are allowed for the banner song.'),
+                    'data': {'error_code': 400}
+                }), 400
+
         update_setting(setting, value)
 
         log('info', f'Setting updated: {setting}')
@@ -320,7 +329,7 @@ def all_media_urls():
     return jsonify({'status': 'success', 'data': {'urls': urls}})
 
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'mp4', 'mov', 'avi', 'webm', 'mkv'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'mp3'}
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
 
 @api_bp.route('/api/v2/upload', methods=['POST'])
