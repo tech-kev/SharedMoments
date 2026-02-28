@@ -12,7 +12,7 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     get_all_media_urls, get_list_type_by_title)
 from datetime import datetime
 from app.logger import log
-import os, json
+import os, json, subprocess, shutil
 from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role
 from app.utils import export_data, find_unmatched_translations
 from app.translation import _, load_translation_in_cache, set_locale, migrateTranslations
@@ -298,7 +298,9 @@ def _safe_send_file(base_folder, filename):
         abort(403)
     if not os.path.exists(file_path):
         abort(404)
-    return send_file(file_path)
+    response = send_file(file_path, conditional=True)
+    response.headers['Accept-Ranges'] = 'bytes'
+    return response
 
 
 @api_bp.route('/api/v2/media/<filename>')
@@ -306,6 +308,60 @@ def _safe_send_file(base_folder, filename):
 def media(filename):
     basedir = os.path.abspath(os.path.dirname(__file__))
     return _safe_send_file(os.path.join(basedir, '..', 'uploads', 'images'), filename)
+
+
+@api_bp.route('/api/v2/media/thumb/<filename>')
+@jwt_required
+def media_thumb(filename):
+    """Generate and serve a JPEG thumbnail for a video file using ffmpeg."""
+    safe = secure_filename(filename)
+    if not safe or safe != filename:
+        abort(400)
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    images_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'images'))
+    video_path = os.path.abspath(os.path.join(images_folder, safe))
+
+    if not video_path.startswith(images_folder) or not os.path.exists(video_path):
+        abort(404)
+
+    # Thumbnail-Cache-Ordner
+    thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
+    os.makedirs(thumb_folder, exist_ok=True)
+
+    thumb_name = os.path.splitext(safe)[0] + '.jpg'
+    thumb_path = os.path.join(thumb_folder, thumb_name)
+
+    # Thumbnail nur generieren wenn es noch nicht existiert
+    if not os.path.exists(thumb_path):
+        try:
+            ffmpeg_bin = shutil.which('ffmpeg')
+            if not ffmpeg_bin:
+                try:
+                    import imageio_ffmpeg
+                    ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
+                except ImportError:
+                    pass
+            if not ffmpeg_bin:
+                log('error', 'ffmpeg not found')
+                abort(500)
+            subprocess.run([
+                ffmpeg_bin, '-i', video_path,
+                '-ss', '00:00:00.5',
+                '-frames:v', '1',
+                '-vf', 'scale=800:-1',
+                '-q:v', '5',
+                '-update', '1',
+                '-y', thumb_path
+            ], capture_output=True, timeout=10)
+        except Exception as e:
+            log('error', f'Thumbnail generation failed for {filename}: {e}')
+            abort(500)
+
+    if not os.path.exists(thumb_path):
+        abort(500)
+
+    return send_file(thumb_path, mimetype='image/jpeg')
 
 
 @api_bp.route('/api/v2/media/static/<filename>')
@@ -330,7 +386,81 @@ def all_media_urls():
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'mp3'}
-MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
+MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024  # 2 GB
+
+
+@api_bp.route('/api/v2/upload-chunk', methods=['POST'])
+@jwt_required
+def upload_chunk():
+    """Chunked upload endpoint — receives file in small chunks to bypass browser upload limits."""
+    try:
+        upload_id = request.headers.get('X-Upload-ID', '')
+        chunk_index = int(request.headers.get('X-Chunk-Index', 0))
+        total_chunks = int(request.headers.get('X-Total-Chunks', 1))
+        filename = request.headers.get('X-Filename', '')
+
+        if not upload_id or not filename:
+            return jsonify({'status': 'error', 'message': _('No file provided'), 'data': {'error_code': 400}}), 400
+
+        safe_name = secure_filename(filename)
+        if not safe_name:
+            return jsonify({'status': 'error', 'message': _('Invalid filename'), 'data': {'error_code': 400}}), 400
+
+        ext = safe_name.rsplit('.', 1)[-1].lower() if '.' in safe_name else ''
+        if ext not in ALLOWED_EXTENSIONS:
+            return jsonify({
+                'status': 'error',
+                'message': _('File type not allowed. Allowed types: ') + ', '.join(ALLOWED_EXTENSIONS),
+                'data': {'error_code': 400}
+            }), 400
+
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        temp_dir = os.path.join(basedir, '..', 'uploads', 'temp')
+        os.makedirs(temp_dir, exist_ok=True)
+
+        temp_path = os.path.join(temp_dir, secure_filename(upload_id))
+
+        with open(temp_path, 'ab') as f:
+            while True:
+                data = request.stream.read(1024 * 1024)
+                if not data:
+                    break
+                f.write(data)
+
+        # Last chunk: move to final location
+        if chunk_index == total_chunks - 1:
+            file_size = os.path.getsize(temp_path)
+            if file_size > MAX_FILE_SIZE:
+                os.remove(temp_path)
+                max_mb = MAX_FILE_SIZE // (1024 * 1024)
+                return jsonify({
+                    'status': 'error',
+                    'message': _('File too large. Maximum size: ') + f'{max_mb} MB',
+                    'data': {'error_code': 400}
+                }), 400
+
+            images_folder = os.path.join(basedir, '..', 'uploads', 'images')
+            os.makedirs(images_folder, exist_ok=True)
+            final_name = datetime.now().strftime("%Y%m%d") + '-' + safe_name
+            final_path = os.path.join(images_folder, final_name)
+            os.rename(temp_path, final_path)
+
+            return jsonify({
+                'status': 'success',
+                'message': _('File uploaded successfully'),
+                'data': {'filename': final_name}
+            })
+
+        return jsonify({'status': 'success', 'data': {'chunk': chunk_index}})
+
+    except Exception as e:
+        log('error', f'Error during chunk upload: {e}')
+        return jsonify({
+            'status': 'error',
+            'message': _('An error occurred during file upload'),
+            'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}
+        }), 500
+
 
 @api_bp.route('/api/v2/upload', methods=['POST'])
 @jwt_required

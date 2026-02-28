@@ -1,12 +1,14 @@
 <dialog class="max" id="dialog-create-new-home-item">
 
    <!-- Overlay für Ladeanimation -->
-   <div class="overlay" id="div-overlay-new-home-item">
-      <article class="round center middle" style="max-width: 320px; margin: auto; padding: 24px;">
+   <div class="overlay" id="div-overlay-new-home-item" style="display:flex;align-items:center;justify-content:center;">
+      <article class="round" style="max-width: 420px; width: 85%; padding: 24px; text-align:center;">
          <i class="extra" style="margin-bottom: 12px;">cloud_upload</i>
          <h6 id="headline-article-new-home-item"></h6>
          <progress value="1" max="100" id="progress-new-home-item" style="display: none; margin: 12px 0;"></progress>
          <p class="small-text" style="opacity: 0.8;">{{ _('File') }} <span id="span-progress-file-new-home-item"></span> {{ _('of') }} <span id="span-progress-file-new-home-item-count"></span></p>
+         <p class="small-text" id="upload-mb-new-home-item" style="opacity: 0.8; display:none;"></p>
+         <p class="small-text" id="upload-time-new-home-item" style="opacity: 0.8; display:none;"></p>
        </article>
    </div>
 

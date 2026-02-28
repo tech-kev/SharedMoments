@@ -52,9 +52,16 @@
                    <a
                    data-lg-size="1200-720"
                    data-video='{"source": [{"src":"/api/v2/media/{{ url }}", "type":"video/mp4"}], "attributes": {"preload": false, "controls": true}}'
+                   data-thumb="/api/v2/media/thumb/{{ url }}"
+                   data-poster="/api/v2/media/thumb/{{ url }}"
                >
-                   <div class="img-responsive" style="display:flex;align-items:center;justify-content:center;aspect-ratio:1;background:var(--surface-variant);">
-                       <i style="font-size:3rem;color:var(--on-surface-variant);">play_circle</i>
+                   <div style="position:relative;aspect-ratio:1;background:var(--surface-variant);overflow:hidden;">
+                       <img src="/api/v2/media/thumb/{{ url }}"
+                            style="width:100%;height:100%;object-fit:cover;"
+                            loading="lazy">
+                       <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+                           <i style="font-size:3rem;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);">play_circle</i>
+                       </div>
                    </div>
                </a>
                    {% else %}
@@ -101,20 +108,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/autoplay/lg-autoplay.min.js"></script>
 
 <script>
-  if (typeof lightGallery === 'function') {
-    lightGallery(document.getElementById('lightgallery'), {
-      plugins: [lgThumbnail, lgVideo, lgAutoplay],
-      speed: 500,
-      thumbnail: true,
-      animateThumb: true,
-      zoomFromOrigin: false,
-      toggleThumb: true,
-      download: true,
-      hideScrollbar: true,
-      mobileSettings: { download: true, },
-      autoplay: true
-    });
-  }
+  (function() {
+    if (typeof lightGallery === 'function') {
+      lightGallery(document.getElementById('lightgallery'), {
+        plugins: [lgThumbnail, lgVideo, lgAutoplay],
+        speed: 500,
+        thumbnail: true,
+        animateThumb: true,
+        zoomFromOrigin: false,
+        toggleThumb: true,
+        download: true,
+        hideScrollbar: true,
+        mobileSettings: { download: true },
+        autoplay: true
+      });
+    }
+  })();
 </script>
    
    </body>

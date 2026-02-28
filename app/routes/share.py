@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from app.db_queries import get_share_by_token, verify_share_password, increment_share_view_count, get_setting_by_name
 from app.logger import log
 from datetime import datetime
-import os
+import os, subprocess, shutil
 
 share_bp = Blueprint('share', __name__)
 
@@ -97,3 +97,66 @@ def share_media(token, filename):
         abort(404)
 
     return send_file(file_path)
+
+
+@share_bp.route('/s/<token>/media/thumb/<filename>')
+def share_media_thumb(token, filename):
+    share, item = get_share_by_token(token)
+
+    if not share or not item:
+        abort(404)
+
+    if share.expiresAt and datetime.utcnow() > share.expiresAt:
+        abort(410)
+
+    if share.passwordHash:
+        verified_shares = session.get('verified_shares', [])
+        if token not in verified_shares:
+            abort(403)
+
+    if not item.contentURL or filename not in item.contentURL.split(';'):
+        abort(404)
+
+    safe = secure_filename(filename)
+    if not safe or safe != filename:
+        abort(400)
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    images_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'images'))
+    video_path = os.path.abspath(os.path.join(images_folder, safe))
+    if not video_path.startswith(images_folder) or not os.path.exists(video_path):
+        abort(404)
+
+    thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
+    os.makedirs(thumb_folder, exist_ok=True)
+    thumb_name = os.path.splitext(safe)[0] + '.jpg'
+    thumb_path = os.path.join(thumb_folder, thumb_name)
+
+    if not os.path.exists(thumb_path):
+        try:
+            ffmpeg_bin = shutil.which('ffmpeg')
+            if not ffmpeg_bin:
+                try:
+                    import imageio_ffmpeg
+                    ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
+                except ImportError:
+                    pass
+            if not ffmpeg_bin:
+                abort(500)
+            subprocess.run([
+                ffmpeg_bin, '-i', video_path,
+                '-ss', '00:00:00.5',
+                '-frames:v', '1',
+                '-vf', 'scale=800:-1',
+                '-q:v', '5',
+                '-update', '1',
+                '-y', thumb_path
+            ], capture_output=True, timeout=10)
+        except Exception as e:
+            log('error', f'Thumbnail generation failed for {filename}: {e}')
+            abort(500)
+
+    if not os.path.exists(thumb_path):
+        abort(500)
+
+    return send_file(thumb_path, mimetype='image/jpeg')

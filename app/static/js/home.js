@@ -217,7 +217,8 @@ function getFileContentType (dataUrl=null, filename=null) {
 let errorOnUpload = false; // Variable zum Speichern eines Fehlers beim Hochladen
 
 // Hilfsfunktion: Home-Item in Outbox speichern
-async function saveHomeItemToOutbox() {
+// uploadedContentURL: Falls Dateien bereits hochgeladen wurden, deren URLs (z.B. "file1.mp4;file2.mp4")
+async function saveHomeItemToOutbox(uploadedContentURL) {
    if (typeof addToOutbox !== 'function') return false;
    try {
       const title = document.getElementById("div-create-home-item-title").value;
@@ -227,29 +228,39 @@ async function saveHomeItemToOutbox() {
       const allEditionsChecked = document.getElementById("checkbox-create-home-item-all-editions").checked;
       const edition = allEditionsChecked ? 'all' : (window.currentEdition || 'all');
 
+      // Wenn Dateien bereits hochgeladen wurden, keine rohen Dateien speichern
       const files = [];
-      for (let i = 0; i < selectedImages.length; i++) {
-         const idx = selectedImages[i];
-         // Pre-gelesene Buffer verwenden (Mobile-safe)
-         if (selectedFileBuffers[idx]) {
-            files.push(selectedFileBuffers[idx]);
-         } else {
-            // Fallback: direkt lesen (Desktop)
-            const fileInput = document.getElementById('file-input-create-home-item');
-            const file = fileInput.files[idx];
-            if (file) {
-               try {
-                  const buffer = await file.arrayBuffer();
-                  files.push({ name: file.name, type: file.type, data: buffer });
-               } catch (e) {
-                  console.warn('[PWA] Could not read file', idx, e);
+      if (!uploadedContentURL) {
+         for (let i = 0; i < selectedImages.length; i++) {
+            const idx = selectedImages[i];
+            // Pre-gelesene Buffer verwenden (Mobile-safe)
+            if (selectedFileBuffers[idx]) {
+               files.push(selectedFileBuffers[idx]);
+            } else {
+               // Fallback: direkt lesen (Desktop)
+               const fileInput = document.getElementById('file-input-create-home-item');
+               const file = fileInput.files[idx];
+               if (file) {
+                  try {
+                     const buffer = await file.arrayBuffer();
+                     files.push({ name: file.name, type: file.type, data: buffer });
+                  } catch (e) {
+                     console.warn('[PWA] Could not read file', idx, e);
+                  }
                }
             }
          }
       }
 
       let contentType = 'text';
-      if (files.length > 0) {
+      if (uploadedContentURL) {
+         const firstUrl = uploadedContentURL.split(';')[0];
+         const urlCount = uploadedContentURL.split(';').length;
+         const firstFileType = getFileContentType(null, firstUrl);
+         if (firstFileType === 'image' && urlCount > 1) contentType = 'galleryStartWithImage';
+         else if ((firstFileType === 'video' || firstFileType === 'video-mov') && urlCount > 1) contentType = 'galleryStartWithVideo';
+         else contentType = firstFileType || 'text';
+      } else if (files.length > 0) {
          const firstFileType = getFileContentType(null, files[0].name);
          if (firstFileType === 'image' && files.length > 1) contentType = 'galleryStartWithImage';
          else if ((firstFileType === 'video' || firstFileType === 'video-mov') && files.length > 1) contentType = 'galleryStartWithVideo';
@@ -259,7 +270,7 @@ async function saveHomeItemToOutbox() {
       await addToOutbox({
          title: title, content: content, contentType: contentType,
          listType: listType, dateCreated: dateCreated, edition: edition,
-         files: files, contentURL: '',
+         files: files, contentURL: uploadedContentURL || '',
       });
 
       callUi("#dialog-create-new-home-item");
@@ -306,11 +317,15 @@ async function saveNewHomeItem() {
       document.getElementById('div-overlay-new-home-item').classList.remove('active');
       document.getElementById('progress-new-home-item').style.display = "none";
 
+      var uploadedURLs = document.getElementById("input-uploaded-urls").value;
+
       if (errorOnUpload) {
-         document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
-         // Upload fehlgeschlagen (z.B. offline) → in Outbox speichern
-         await saveHomeItemToOutbox();
-         return;
+         // Wenn trotz Fehler schon URLs vorhanden sind, trotzdem Item erstellen versuchen
+         if (!uploadedURLs) {
+            document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+            await saveHomeItemToOutbox();
+            return;
+         }
       }
 
    }
@@ -348,51 +363,80 @@ async function saveNewHomeItem() {
    var originalContent = document.getElementById("div-render-home-items").innerHTML;
    showSkeletonCards('div-render-home-items');
 
-   fetch("/api/v2/items", {
-      method: "POST",
-      body: formData,
-   })
-      .then(async (response) => {
-            try {
-               const result = await response.json();
-               if (result.status === "success") {
-                  document.getElementById("div-render-home-items").innerHTML = result.data.rendered_items; // Neue Items in die Seite einfügen
-                  callUi("#dialog-create-new-home-item"); // Modal schließen
-                  document.getElementById('dialog-create-new-home-item').style.overflow = "auto"; // Erlaube das Scrollen im Modal
-                  addEventListeners(); // Event-Listener neu hinzufügen
+   // Item erstellen mit Retry bei 5xx/Netzwerkfehler (z.B. 502 Bad Gateway)
+   var maxRetries = 3;
+   var createSuccess = false;
 
-                  // Eingabefelder der Modal leeren
-                  document.getElementById("div-create-home-item-title").value = "";
-                  document.getElementById("textarea-create-home-item-content").value = "";
-                  document.getElementById("input-uploaded-urls").value = "";
-                  document.getElementById("div-create-home-item-date-created").value = "";
-                  document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
-                  document.getElementById("file-input-create-home-item").value ="";
-                  selectedImages = []; // Leere die ausgewählten Bilder
-                  selectedFileBuffers = [];
-                  showSnackbar('home', true, 'green', result.message, null, false);
-               } else {
-                  showSnackbar('home', true, 'error', result.message, result, true);
-               }
-            } catch (error) { // Kein gültiges JSON
-               showSnackbar('home', true, 'error', error, null, false);
+   for (var attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+         var response = await fetch("/api/v2/items", { method: "POST", body: formData });
+
+         if (response.ok && !response.redirected) {
+            var result = await response.json();
+            if (result.status === "success") {
+               document.getElementById("div-render-home-items").innerHTML = result.data.rendered_items;
+               callUi("#dialog-create-new-home-item");
+               document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+               addEventListeners();
+               document.getElementById("div-create-home-item-title").value = "";
+               document.getElementById("textarea-create-home-item-content").value = "";
+               document.getElementById("input-uploaded-urls").value = "";
+               document.getElementById("div-create-home-item-date-created").value = "";
+               document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
+               document.getElementById("file-input-create-home-item").value = "";
+               selectedImages = [];
+               selectedFileBuffers = [];
+               showSnackbar('home', true, 'green', result.message, null, false);
+               createSuccess = true;
+               break;
+            } else {
+               showSnackbar('home', true, 'error', result.message, result, true);
+               break; // Kein Retry bei Business-Logik-Fehler
             }
-      })
-      .catch(async (error) => {
-         // Skeleton-Cards durch Originalinhalt ersetzen
-         document.getElementById("div-render-home-items").innerHTML = originalContent;
-         addEventListeners();
-         // Offline-Fallback: Bei Netzwerkfehler in Outbox speichern
-         if (typeof addToOutbox === 'function') {
-            const saved = await saveHomeItemToOutbox();
-            if (saved) return;
+         } else if (response.status >= 500 && attempt < maxRetries) {
+            await new Promise(r => setTimeout(r, 2000));
+            // FormData neu erstellen (body wurde konsumiert)
+            formData = new FormData();
+            formData.append("title", document.getElementById("div-create-home-item-title").value);
+            formData.append("content", document.getElementById("textarea-create-home-item-content").value);
+            formData.append("contentType", contentType);
+            formData.append("listType", document.getElementById("input-list-type").value);
+            formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+            formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
+            formData.append("edition", edition);
+            continue;
+         } else {
+            // Redirect oder anderer Fehler ohne Retry
+            throw new Error('HTTP ' + response.status);
          }
-         if (String(error) === "TypeError: Failed to fetch") {
-            error = _('Server not reachable');
+      } catch (error) {
+         if (attempt < maxRetries) {
+            await new Promise(r => setTimeout(r, 2000));
+            // FormData neu erstellen für Retry
+            formData = new FormData();
+            formData.append("title", document.getElementById("div-create-home-item-title").value);
+            formData.append("content", document.getElementById("textarea-create-home-item-content").value);
+            formData.append("contentType", contentType);
+            formData.append("listType", document.getElementById("input-list-type").value);
+            formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+            formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
+            formData.append("edition", edition);
+            continue;
          }
-         document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
-         showSnackbar('home', true, 'error', error, null, false);
-   })
+      }
+   }
+
+   if (!createSuccess) {
+      document.getElementById("div-render-home-items").innerHTML = originalContent;
+      addEventListeners();
+      var alreadyUploadedURLs = document.getElementById("input-uploaded-urls").value;
+      if (typeof addToOutbox === 'function' && alreadyUploadedURLs) {
+         await saveHomeItemToOutbox(alreadyUploadedURLs);
+      } else {
+         showSnackbar('home', true, 'error', _('Server not reachable'), null, false);
+      }
+      document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+   }
 }
 
 // Speichern eines bearbeiteten Homeitems
@@ -696,13 +740,8 @@ async function generatePreviewForFileInput(event, mode) {
 
 // Funktion zum Rendern eines Bildes aus einer Datei
 function renderFile(file, index, containerDiv) {
-   const reader = new FileReader(); // Erstelle einen neuen FileReader
-
-   reader.onload = function (e) {
-       createPreview(e.target.result, index, containerDiv, 'create');
-   };
-
-   reader.readAsDataURL(file); // Lese die Datei als Data-URL
+   const url = URL.createObjectURL(file);
+   createPreview(url, index, containerDiv, 'create', file.name);
 }
 
 // Funktion zum Rendern eines Bildes aus einer URL
@@ -712,7 +751,7 @@ function renderImageFromURL(fileObj, containerDiv) {
 }
 
 // Funktion zum Erstellen der Bildvorschau
-function createPreview(src, index, containerDiv, mode) {
+function createPreview(src, index, containerDiv, mode, filename) {
    // Erstelle einen Container für das Bild/Video-Thumbnail und den Chip
    const container = document.createElement("div");
    container.className = "preview-image-container";
@@ -725,7 +764,7 @@ function createPreview(src, index, containerDiv, mode) {
    chip.style.display = "none";
 
    if (mode === "create") {
-      var fileType = getFileContentType(src, null);
+      var fileType = filename ? getFileContentType(null, filename) : getFileContentType(src, null);
    } else if (mode === "edit") {
       var fileType = getFileContentType(null, src);
    }
@@ -844,6 +883,60 @@ function selectImage(event) {
    }
 }
 
+// XHR-Upload mit Progress-Callback
+function uploadFileXHR(file, onProgress) {
+   const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
+   const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+   const uploadId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+   function sendChunk(index) {
+      return new Promise((resolve, reject) => {
+         const start = index * CHUNK_SIZE;
+         const end = Math.min(start + CHUNK_SIZE, file.size);
+         const chunk = file.slice(start, end);
+
+         const xhr = new XMLHttpRequest();
+         xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable && onProgress) {
+               onProgress(start + e.loaded, file.size);
+            }
+         });
+         xhr.addEventListener('load', () => {
+            try { resolve(JSON.parse(xhr.responseText)); }
+            catch (e) { reject(new Error(_('Server not reachable'))); }
+         });
+         xhr.addEventListener('error', () => reject(new Error(_('Server not reachable'))));
+         xhr.open('POST', '/api/v2/upload-chunk');
+         xhr.setRequestHeader('X-Upload-ID', uploadId);
+         xhr.setRequestHeader('X-Chunk-Index', index);
+         xhr.setRequestHeader('X-Total-Chunks', totalChunks);
+         xhr.setRequestHeader('X-Filename', file.name);
+         xhr.send(chunk);
+      });
+   }
+
+   return (async () => {
+      for (let i = 0; i < totalChunks; i++) {
+         const result = await sendChunk(i);
+         if (result.status !== 'success') return result;
+         // Last chunk returns the final filename
+         if (i === totalChunks - 1) return result;
+      }
+   })();
+}
+
+function formatMB(bytes) {
+   return (bytes / (1024 * 1024)).toFixed(1);
+}
+
+function formatTime(seconds) {
+   seconds = Math.round(seconds);
+   if (seconds < 60) return seconds + 's';
+   var m = Math.floor(seconds / 60);
+   var s = seconds % 60;
+   return m + ':' + (s < 10 ? '0' : '') + s + ' min';
+}
+
 // Funktion zum Hochladen der ausgewählten Bilder
 async function uploadImages(mode) {
    let uploadedImages = []; // Liste zum Speichern der hochgeladenen Bilder
@@ -870,6 +963,21 @@ async function uploadImages(mode) {
 
    console.log(`Anzahl ausgewählter Bilder: ${selectedImages.length}`);
 
+   // Calculate total size of all files to upload
+   let totalBytes = 0;
+   let completedBytes = 0;
+   let uploadStartTime = Date.now();
+   for (const index of selectedImages) {
+      if (mode === "create") {
+         totalBytes += fileInput.files[index].size;
+      } else if (mode === "edit") {
+         if (index >= existingImages.length) {
+            const newFileIndex = index - existingImages.length;
+            totalBytes += fileInput.files[newFileIndex].size;
+         }
+      }
+   }
+
    let i = 0;
 
    for (const index of selectedImages) { // Schleife über alle ausgewählten Bilder
@@ -882,20 +990,28 @@ async function uploadImages(mode) {
 
       if (mode === "create") {
 
-         document.getElementById('progress-new-home-item').value = i / selectedImages.length * 100;
          document.getElementById('span-progress-file-new-home-item').textContent = i;
          document.getElementById('span-progress-file-new-home-item-count').textContent = selectedImages.length;
-
-         const formData = new FormData();
-         formData.append("file", file);
+         const mbEl = document.getElementById('upload-mb-new-home-item');
+         const timeEl = document.getElementById('upload-time-new-home-item');
+         mbEl.style.display = '';
+         timeEl.style.display = '';
 
          try {
-            const response = await fetch('/api/v2/upload', {
-               method: "POST",
-               body: formData,
+            const result = await uploadFileXHR(file, (loaded, total) => {
+               const fileProgress = (i - 1 + loaded / total) / selectedImages.length * 100;
+               document.getElementById('progress-new-home-item').value = fileProgress;
+               const currentBytes = completedBytes + loaded;
+               const elapsedSec = (Date.now() - uploadStartTime) / 1000;
+               const speed = elapsedSec > 0 ? currentBytes / elapsedSec : 0;
+               mbEl.textContent = formatMB(currentBytes) + ' / ' + formatMB(totalBytes) + ' MB — ' + formatMB(speed) + ' MB/s';
+               const remainingBytes = totalBytes - currentBytes;
+               const remainingSec = speed > 0 ? remainingBytes / speed : 0;
+               timeEl.textContent = formatTime(elapsedSec) + ' / ~' + formatTime(remainingSec) + ' ' + _('remaining');
             });
 
-            const result = await response.json();
+            completedBytes += file.size;
+
             if (result.status === "success") {
                uploadedImages.push(result.data.filename);
                console.log(`Bild mit Index ${index} hochgeladen`);
@@ -904,54 +1020,50 @@ async function uploadImages(mode) {
                errorOnUpload = true;
             }
          } catch (error) {
-            if (error == "TypeError: Failed to fetch") {
-               error = _('Server not reachable');
-            }
-            showSnackbar('home', true, 'error', error, null, false);
+            showSnackbar('home', true, 'error', error.message || error, null, false);
             errorOnUpload = true;
          }
 
       } else if (mode === "edit") {
-         document.getElementById('progress-edit-home-item').value = i / selectedImages.length * 100;
          document.getElementById('span-progress-file-edit-home-item').textContent = i;
          document.getElementById('span-progress-file-edit-home-item-count').textContent = selectedImages.length;
+         const mbElEdit = document.getElementById('upload-mb-edit-home-item');
+         const timeElEdit = document.getElementById('upload-time-edit-home-item');
 
          if (index < existingImages.length) { // Bild ist bereits vorhanden
-            uploadedImages.push(existingImages[index]); // Fügt die bereits vorhandene URL zur Liste hinzu
-            console.log(`Bild mit Index ${index} ist bereits vorhanden`);
+            uploadedImages.push(existingImages[index]);
+            document.getElementById('progress-edit-home-item').value = i / selectedImages.length * 100;
          } else { // Bild ist neu
-            console.log(`Bild mit Index ${index} ist neu`);
-      
-            const newFileIndex = index - existingImages.length; // Berechne den Index der neuen Datei
-            const file = fileInput.files[newFileIndex]; // Hole die Datei aus dem File-Input
+            mbElEdit.style.display = '';
+            timeElEdit.style.display = '';
 
-            const formData = new FormData();
-            formData.append("file", file);
+            const newFileIndex = index - existingImages.length;
+            const file = fileInput.files[newFileIndex];
 
             try {
-               const response = await fetch('/api/v2/upload', {
-                  method: "POST",
-                  body: formData,
+               const result = await uploadFileXHR(file, (loaded, total) => {
+                  const fileProgress = (i - 1 + loaded / total) / selectedImages.length * 100;
+                  document.getElementById('progress-edit-home-item').value = fileProgress;
+                  const currentBytes = completedBytes + loaded;
+                  const elapsedSec = (Date.now() - uploadStartTime) / 1000;
+                  const speed = elapsedSec > 0 ? currentBytes / elapsedSec : 0;
+                  mbElEdit.textContent = formatMB(currentBytes) + ' / ' + formatMB(totalBytes) + ' MB — ' + formatMB(speed) + ' MB/s';
+                  const remainingBytes = totalBytes - currentBytes;
+                  const remainingSec = speed > 0 ? remainingBytes / speed : 0;
+                  timeElEdit.textContent = formatTime(elapsedSec) + ' / ~' + formatTime(remainingSec) + ' ' + _('remaining');
                });
 
-               if (response.ok) {
-                  const result = await response.json();
-                  if (result.status === "success") {
-                     uploadedImages.push(result.data.filename); // Fügt die zurückgegebene URL zur Liste hinzu
-                     console.log(`Bild mit Index ${index} hochgeladen`);
-                  } else {
-                     showSnackbar('home', true, 'error', result.message, result, true);
-                     errorOnUpload = true;
-                  }
+               completedBytes += file.size;
+
+               if (result.status === "success") {
+                  uploadedImages.push(result.data.filename);
+                  console.log(`Bild mit Index ${index} hochgeladen`);
                } else {
-                  showSnackbar('home', true, 'error', _('Error while uploading') + ': ' + response.statusText, null, false);
+                  showSnackbar('home', true, 'error', result.message, result, true);
                   errorOnUpload = true;
                }
             } catch (error) {
-               if (error == "TypeError: Failed to fetch") {
-                  error = _('Server not reachable');
-               }
-               showSnackbar('home', true, 'error', error, null, false);
+               showSnackbar('home', true, 'error', error.message || error, null, false);
                errorOnUpload = true;
             }
          }

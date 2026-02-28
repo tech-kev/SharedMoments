@@ -1,5 +1,5 @@
 // SharedMoments Service Worker
-const SW_VERSION = '1.7.0';
+const SW_VERSION = '1.7.1';
 
 // Cache names
 const APP_SHELL_CACHE = 'app-shell-v11';
@@ -325,9 +325,10 @@ async function syncOutbox() {
       // Mark as syncing
       await updateOutboxStatus(db, item.id, 'syncing');
 
-      // Upload files first
-      const uploadedUrls = [];
-      if (item.files && item.files.length > 0) {
+      // Upload files first (nur wenn contentURL noch nicht gesetzt)
+      let contentURL = item.contentURL || '';
+      if (!contentURL && item.files && item.files.length > 0) {
+        const uploadedUrls = [];
         for (const file of item.files) {
           const formData = new FormData();
           formData.append('file', new Blob([file.data], { type: file.type }), file.name);
@@ -342,6 +343,7 @@ async function syncOutbox() {
           if (uploadResult.status !== 'success') throw new Error(uploadResult.message);
           uploadedUrls.push(uploadResult.data.filename);
         }
+        contentURL = uploadedUrls.join(';');
       }
 
       // Create item
@@ -350,7 +352,7 @@ async function syncOutbox() {
       formData.append('content', item.content);
       formData.append('contentType', item.contentType);
       formData.append('listType', item.listType);
-      formData.append('contentURL', uploadedUrls.join(';') || item.contentURL || '');
+      formData.append('contentURL', contentURL);
       formData.append('dateCreated', item.dateCreated);
       formData.append('edition', item.edition || 'all');
 
