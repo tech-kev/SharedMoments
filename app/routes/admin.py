@@ -244,11 +244,11 @@ def create_user_route():
             file = request.files['profilePicture']
             if file and file.filename:
                 basedir = os.path.abspath(os.path.dirname(__file__))
-                images_folder = os.path.join(basedir, '..', 'static', 'images')
-                if not os.path.exists(images_folder):
-                    os.makedirs(images_folder)
+                profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
+                if not os.path.exists(profiles_folder):
+                    os.makedirs(profiles_folder)
                 filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
-                file.save(os.path.join(images_folder, filename))
+                file.save(os.path.join(profiles_folder, filename))
                 profilePicture = filename
 
         new_user = User(
@@ -332,11 +332,11 @@ def update_user_route(id):
             file = request.files['profilePicture']
             if file and file.filename:
                 basedir = os.path.abspath(os.path.dirname(__file__))
-                images_folder = os.path.join(basedir, '..', 'static', 'images')
-                if not os.path.exists(images_folder):
-                    os.makedirs(images_folder)
+                profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
+                if not os.path.exists(profiles_folder):
+                    os.makedirs(profiles_folder)
                 filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
-                file.save(os.path.join(images_folder, filename))
+                file.save(os.path.join(profiles_folder, filename))
                 user.profilePicture = filename
 
         db_session.commit()
