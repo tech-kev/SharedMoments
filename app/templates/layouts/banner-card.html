@@ -1,6 +1,6 @@
 {% if banner_text %}
 <article class="no-padding primary-container">
-    <img class="responsive" src="/api/v2/media/static/setup-friends.jpg">
+    <img class="responsive" src="{{ '/api/v2/media/' + settings.banner_image.value if settings.banner_image.value else '/api/v2/media/static/setup-' + settings.sm_edition.value + '.jpg' }}">
     <div class="padding">
        <h5 class="middle-align center-align">
          {% if settings.relationship_status.value == '1' or settings.relationship_status.value == '4' or settings.relationship_status.value == '5' %}

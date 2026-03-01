@@ -192,6 +192,15 @@ def update_settings():
         setting = request.form['setting']
         value = request.form['value']
 
+        if setting == 'banner_image' and value:
+            ext = value.rsplit('.', 1)[-1].lower() if '.' in value else ''
+            if ext not in IMAGE_EXTENSIONS:
+                return jsonify({
+                    'status': 'error',
+                    'message': _('Only image files are allowed for the banner.'),
+                    'data': {'error_code': 400}
+                }), 400
+
         if setting == 'banner_song' and value:
             ext = value.rsplit('.', 1)[-1].lower() if '.' in value else ''
             if ext != 'mp3':

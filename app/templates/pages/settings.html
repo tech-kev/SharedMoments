@@ -98,7 +98,7 @@
               {% endfor %}
 
               {% for setting in settings %}
-              {% if setting.category == 'general' and setting.edition == ns.edition and setting.name != 'banner_song' %}
+              {% if setting.category == 'general' and setting.edition == ns.edition and setting.name not in ['banner_song', 'banner_image'] %}
               <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}'){% endif %}">
                 <i>{{ setting.icon }}</i>
                 <div class="max">
@@ -116,6 +116,27 @@
                   {% endif %}
                 </div>
               </a>
+              {% endif %}
+              {% endfor %}
+
+              {# banner_image file upload #}
+              {% for setting in settings %}
+              {% if setting.name == 'banner_image' %}
+              <div class="row padding primary-container">
+                <a class="row max{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-image-input').click()"{% endif %} style="padding:0;text-decoration:none;">
+                  <i>{{ setting.icon }}</i>
+                  <div class="max">
+                    <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                    <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No image') }}</div>
+                  </div>
+                </a>
+                {% if setting.value and has_permission('Update Setting') %}
+                <button class="transparent circle" onclick="deleteBannerImage()">
+                  <i>delete</i>
+                </button>
+                {% endif %}
+              </div>
+              <input type="file" id="banner-image-input" accept="image/*" style="display:none;" onchange="uploadBannerImage(this)">
               {% endif %}
               {% endfor %}
 
