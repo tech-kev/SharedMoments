@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session, send_f
 from werkzeug.utils import secure_filename
 from app.db_queries import get_share_by_token, verify_share_password, increment_share_view_count, get_setting_by_name
 from app.logger import log
+from app.routes.api import _find_media_folder
 from datetime import datetime
 import os, subprocess, shutil
 
@@ -87,10 +88,9 @@ def share_media(token, filename):
     if not safe or safe != filename:
         abort(400)
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    images_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'images'))
-    file_path = os.path.abspath(os.path.join(images_folder, safe))
-    if not file_path.startswith(images_folder):
+    media_folder = os.path.abspath(_find_media_folder(filename))
+    file_path = os.path.abspath(os.path.join(media_folder, safe))
+    if not file_path.startswith(media_folder):
         abort(403)
 
     if not os.path.exists(file_path):
@@ -121,12 +121,12 @@ def share_media_thumb(token, filename):
     if not safe or safe != filename:
         abort(400)
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    images_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'images'))
-    video_path = os.path.abspath(os.path.join(images_folder, safe))
-    if not video_path.startswith(images_folder) or not os.path.exists(video_path):
+    media_folder = os.path.abspath(_find_media_folder(filename))
+    video_path = os.path.abspath(os.path.join(media_folder, safe))
+    if not video_path.startswith(media_folder) or not os.path.exists(video_path):
         abort(404)
 
+    basedir = os.path.abspath(os.path.dirname(__file__))
     thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
     os.makedirs(thumb_folder, exist_ok=True)
     thumb_name = os.path.splitext(safe)[0] + '.jpg'

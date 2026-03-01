@@ -306,8 +306,7 @@ def _safe_send_file(base_folder, filename):
 @api_bp.route('/api/v2/media/<filename>')
 @jwt_required
 def media(filename):
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    return _safe_send_file(os.path.join(basedir, '..', 'uploads', 'images'), filename)
+    return _safe_send_file(_find_media_folder(filename), filename)
 
 
 @api_bp.route('/api/v2/media/thumb/<filename>')
@@ -318,14 +317,14 @@ def media_thumb(filename):
     if not safe or safe != filename:
         abort(400)
 
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    images_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'images'))
-    video_path = os.path.abspath(os.path.join(images_folder, safe))
+    videos_folder = os.path.abspath(_find_media_folder(filename))
+    video_path = os.path.abspath(os.path.join(videos_folder, safe))
 
-    if not video_path.startswith(images_folder) or not os.path.exists(video_path):
+    if not video_path.startswith(videos_folder) or not os.path.exists(video_path):
         abort(404)
 
     # Thumbnail-Cache-Ordner
+    basedir = os.path.abspath(os.path.dirname(__file__))
     thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
     os.makedirs(thumb_folder, exist_ok=True)
 
@@ -394,8 +393,35 @@ def all_media_urls():
     return jsonify({'status': 'success', 'data': {'urls': urls}})
 
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'mp3'}
+IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'}
+VIDEO_EXTENSIONS = {'mp4', 'mov', 'avi', 'webm', 'mkv'}
+MUSIC_EXTENSIONS = {'mp3'}
+ALLOWED_EXTENSIONS = IMAGE_EXTENSIONS | VIDEO_EXTENSIONS | MUSIC_EXTENSIONS
 MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024  # 2 GB
+
+
+def _get_upload_folder(ext):
+    """Return the upload folder path based on file extension."""
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    if ext in VIDEO_EXTENSIONS:
+        return os.path.join(basedir, '..', 'uploads', 'videos')
+    elif ext in MUSIC_EXTENSIONS:
+        return os.path.join(basedir, '..', 'uploads', 'music')
+    return os.path.join(basedir, '..', 'uploads', 'images')
+
+
+def _find_media_folder(filename):
+    """Find which upload folder contains the file (with fallback to images/)."""
+    safe = secure_filename(filename)
+    ext = safe.rsplit('.', 1)[-1].lower() if '.' in safe else ''
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    primary = _get_upload_folder(ext)
+    fallback = os.path.join(basedir, '..', 'uploads', 'images')
+    if os.path.exists(os.path.join(os.path.abspath(primary), safe)):
+        return primary
+    if os.path.exists(os.path.join(os.path.abspath(fallback), safe)):
+        return fallback
+    return primary
 
 
 @api_bp.route('/api/v2/upload-chunk', methods=['POST'])
@@ -448,10 +474,10 @@ def upload_chunk():
                     'data': {'error_code': 400}
                 }), 400
 
-            images_folder = os.path.join(basedir, '..', 'uploads', 'images')
-            os.makedirs(images_folder, exist_ok=True)
+            dest_folder = _get_upload_folder(ext)
+            os.makedirs(dest_folder, exist_ok=True)
             final_name = datetime.now().strftime("%Y%m%d") + '-' + safe_name
-            final_path = os.path.join(images_folder, final_name)
+            final_path = os.path.join(dest_folder, final_name)
             os.rename(temp_path, final_path)
 
             return jsonify({
@@ -475,16 +501,8 @@ def upload_chunk():
 @jwt_required
 def upload():
     try:
-        static_media = request.form.get('staticMedia', False)
+        static_media_flag = request.form.get('staticMedia', False)
         basedir = os.path.abspath(os.path.dirname(__file__))
-
-        if static_media == 'true':
-            images_folder = os.path.join(basedir, '..', 'static', 'images')
-        else:
-            images_folder = os.path.join(basedir, '..', 'uploads', 'images')
-
-        if not os.path.exists(images_folder):
-            os.makedirs(images_folder)
 
         if 'file' not in request.files:
             return jsonify({
@@ -521,7 +539,12 @@ def upload():
             }), 400
 
         filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
-        file.save(os.path.join(images_folder, filename))
+        if static_media_flag == 'true':
+            dest_folder = os.path.join(basedir, '..', 'static', 'images')
+        else:
+            dest_folder = _get_upload_folder(ext)
+        os.makedirs(dest_folder, exist_ok=True)
+        file.save(os.path.join(dest_folder, filename))
 
         return jsonify({
             'status': 'success',
