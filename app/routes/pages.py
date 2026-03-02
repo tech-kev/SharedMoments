@@ -16,6 +16,49 @@ from app.permissions import require_permission, has_list_permission
 
 pages_bp = Blueprint('pages', __name__)
 
+# Paths that bypass the migration gate
+_MIGRATION_ALLOWED_PREFIXES = ('/static/', '/api/v2/migration/', '/migration-complete',
+                                '/migration-progress', '/manifest.json', '/sw.js',
+                                '/offline', '/favicon.ico')
+
+
+def _get_migration_target():
+    """Determine where to redirect based on migration state. Returns URL or None."""
+    # 1. Check if migration review is pending (real migration done, user must review)
+    try:
+        review = get_setting_by_name('migration_review_complete')
+        if review and review.value == 'False':
+            return '/migration-complete'
+    except Exception:
+        pass
+
+    # 2. Check if migration is currently running or dry-run completed
+    try:
+        from app.migration.status import load_status
+        status = load_status()
+        if status:
+            if status.get('dry_run', False):
+                return '/migration-progress'
+            if not status.get('completed_at'):
+                return '/migration-progress'
+    except ImportError:
+        pass
+
+    return None
+
+
+@pages_bp.before_app_request
+def _migration_gate():
+    """Redirect all non-migration pages when migration is active."""
+    path = request.path
+    if any(path.startswith(p) for p in _MIGRATION_ALLOWED_PREFIXES):
+        return None
+
+    target = _get_migration_target()
+    if target:
+        return redirect(target)
+    return None
+
 
 # ===== PWA Routes (no auth required) =====
 
@@ -69,6 +112,11 @@ def serve_js(filename):
 @pages_bp.route('/setup')
 def setup():
     try:
+        # If migration is active, go there instead
+        target = _get_migration_target()
+        if target:
+            return redirect(target)
+
         if get_setting_by_name('setup_complete').value == 'True':
             return redirect(url_for('auth.login'))
         else:
@@ -209,6 +257,98 @@ def favicon():
     if os.path.exists(favicon_path):
         return send_file(favicon_path)
     return '', 204
+
+
+@pages_bp.route('/migration-progress')
+def migration_progress():
+    try:
+        from app.migration.status import load_status, STEPS
+        status = load_status()
+    except ImportError:
+        status = None
+        STEPS = []
+
+    # If real migration is done, redirect to review page
+    if status and status.get('completed_at') and not status.get('dry_run', False):
+        return redirect('/migration-complete')
+
+    error = None
+    if status:
+        for step_info in status.get('steps', {}).values():
+            if step_info.get('status') == 'failed' and step_info.get('error'):
+                error = step_info['error']
+                break
+
+    # Build ordered steps list
+    steps_ordered = []
+    status_steps = status.get('steps', {}) if status else {}
+    for step_name in STEPS:
+        steps_ordered.append((step_name, status_steps.get(step_name, {'status': 'pending'})))
+
+    dry_run = status.get('dry_run', False) if status else False
+    return render_template('pages/migration-progress.html', status=status, error=error, dry_run=dry_run, steps_ordered=steps_ordered)
+
+
+@pages_bp.route('/migration-complete')
+def migration_complete():
+    from app.models import User, UserRole, Role, Item, SessionLocal
+    try:
+        from app.migration.status import load_status as load_migration_status
+        status = load_migration_status()
+    except ImportError:
+        status = None
+
+    # Dry-run: show progress instead
+    if status and status.get('dry_run', False):
+        return redirect('/migration-progress')
+
+    # Only block access if migration review is already done (no loop risk)
+    try:
+        review = get_setting_by_name('migration_review_complete')
+        if review and review.value == 'True':
+            return redirect('/')
+    except Exception:
+        pass
+
+    db_session = SessionLocal()
+    try:
+        users = db_session.query(User).filter(User.id > 1).all()
+        roles = db_session.query(Role).all()
+
+        # Build user data with current role
+        user_data = []
+        for u in users:
+            user_role = db_session.query(UserRole).filter(UserRole.userID == u.id).first()
+            current_role = ''
+            if user_role:
+                role = db_session.query(Role).filter(Role.id == user_role.roleID).first()
+                current_role = role.roleName if role else ''
+            user_data.append({
+                'id': u.id,
+                'firstName': u.firstName,
+                'lastName': u.lastName or '',
+                'email': u.email,
+                'role': current_role,
+            })
+
+        has_placeholder = any(u['email'].endswith('@placeholder.local') for u in user_data)
+
+        # Build summary
+        summary = {}
+        summary['Users'] = len(user_data)
+        summary['Home Items'] = db_session.query(Item).filter(Item.listType == 1).count()
+        summary['Moments'] = db_session.query(Item).filter(Item.listType == 2).count()
+        summary['Movie List'] = db_session.query(Item).filter(Item.listType == 3).count()
+        summary['Bucket List'] = db_session.query(Item).filter(Item.listType == 4).count()
+    finally:
+        db_session.close()
+
+    languages = get_supported_languages()
+    role_names = [r.roleName for r in roles]
+
+    return render_template('pages/migration-complete.html',
+        status=status, users=user_data, has_placeholder=has_placeholder, summary=summary,
+        languages=languages, roles=role_names)
 
 
 @pages_bp.route('/<path:content_url>')

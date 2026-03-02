@@ -120,6 +120,7 @@ def init_db():
             Setting(name='share_tracking', value='True', icon='analytics', edition='all', category='general', type='toggle'),
             Setting(name='banner_image', value='', icon='image', edition='all', category='general', type='file'),
             Setting(name='banner_song', value='', icon='music_note', edition='couples', category='general', type='file'),
+            Setting(name='migration_review_complete', value='True', icon='', edition='all', category='', type='text'),
         ]
         session.add_all(settings)
 

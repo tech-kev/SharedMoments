@@ -97,7 +97,8 @@ def before_request():
             setup_complete = get_setting_by_name('setup_complete').value
 
             if user_id != 1 and setup_complete == 'False' and request.endpoint != 'pages.setup':
-                return redirect(url_for('pages.setup'))
+                if not request.path.startswith(('/migration-progress', '/migration-complete', '/api/v2/migration/')):
+                    return redirect(url_for('pages.setup'))
 
             user = get_user_by_id(user_id)
             if user:

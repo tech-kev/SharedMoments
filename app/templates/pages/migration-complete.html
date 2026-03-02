@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Migration Complete</title>
+      {% include 'layouts/head.html' %}
+   </head>
+   <style>
+    .migration-card {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .step-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0;
+    }
+    .step-icon-ok { color: var(--green); }
+    .step-icon-fail { color: var(--error); }
+    .step-icon-skip { color: var(--outline); }
+    .user-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+    }
+    .placeholder-warning {
+        color: var(--error);
+        font-weight: bold;
+    }
+   </style>
+   <body>
+    <script>if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.body.classList.add('dark');</script>
+    <main class="responsive">
+        <div class="migration-card">
+            <article class="primary-container">
+                <nav class="center-align">
+                    <i class="extra">check_circle</i>
+                </nav>
+                <h4 class="center-align">Migration Complete</h4>
+                <p class="center-align">
+                    Your data has been migrated from SharedMoments v1 to v2.<br>
+                    Please configure the settings below and start the app.
+                </p>
+
+                {% if status and status.steps %}
+                <h6>Migration Steps</h6>
+                {% for step_name, step_info in status.steps.items() %}
+                <div class="step-row">
+                    {% if step_info.status == 'completed' %}
+                    <i class="step-icon-ok">check_circle</i>
+                    {% elif step_info.status == 'failed' %}
+                    <i class="step-icon-fail">error</i>
+                    {% else %}
+                    <i class="step-icon-skip">radio_button_unchecked</i>
+                    {% endif %}
+                    <span>{{ step_name.replace('_', ' ').title() }}</span>
+                </div>
+                {% endfor %}
+
+                <div class="space"></div>
+                <p class="small">
+                    Started: {{ status.started_at }}<br>
+                    Completed: {{ status.completed_at }}
+                    {% if status.dry_run %}
+                    <span class="chip">DRY RUN</span>
+                    {% endif %}
+                </p>
+                {% endif %}
+            </article>
+
+            <!-- User accounts -->
+            <article class="primary-container">
+                <h5>User Accounts</h5>
+                <p class="small">Update names, emails, passwords and roles. At least one user must be Admin.</p>
+                <div id="migration-users-list">
+                    {% for user in users %}
+                    <div class="surface-container user-card" id="user-card-{{ user.id }}">
+                        <div class="grid">
+                            <div class="s12 m6">
+                                <div class="field label border">
+                                    <input type="text" id="firstname-{{ user.id }}" value="{{ user.firstName }}">
+                                    <label>First Name</label>
+                                </div>
+                            </div>
+                            <div class="s12 m6">
+                                <div class="field label border">
+                                    <input type="text" id="lastname-{{ user.id }}" value="{{ user.lastName }}">
+                                    <label>Last Name</label>
+                                </div>
+                            </div>
+                            <div class="s12 m6">
+                                <div class="field label border">
+                                    <input type="email" id="email-{{ user.id }}" value="{% if not user.email.endswith('@placeholder.local') %}{{ user.email }}{% endif %}">
+                                    <label>Email</label>
+                                </div>
+                            </div>
+                            <div class="s12 m6">
+                                <div class="field label border">
+                                    <input type="password" id="password-{{ user.id }}">
+                                    <label>Password</label>
+                                </div>
+                            </div>
+                            <div class="s12 m6">
+                                <div class="field label suffix border">
+                                    <select id="role-{{ user.id }}">
+                                        {% for role in roles %}
+                                        <option value="{{ role }}" {% if role == user.role %}selected{% endif %}>{{ role }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label>Role</label>
+                                    <i>arrow_drop_down</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </article>
+
+            <!-- Summary -->
+            {% if summary %}
+            <article class="primary-container">
+                <h5>Migration Summary</h5>
+                {% for key, value in summary.items() %}
+                <div class="step-row">
+                    <span class="max">{{ key }}</span>
+                    <span><b>{{ value }}</b></span>
+                </div>
+                {% endfor %}
+            </article>
+            {% endif %}
+
+            <!-- Language selection -->
+            <article class="primary-container">
+                <h5>Language</h5>
+                <p class="small">Default language for all users.</p>
+                <div class="field label suffix border">
+                    <select id="migration-language">
+                        {% for lang in languages %}
+                        <option value="{{ lang }}" {% if lang == 'en' %}selected{% endif %}>{{ lang }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Language</label>
+                    <i>arrow_drop_down</i>
+                </div>
+            </article>
+
+            <!-- Save & Start App button -->
+            <article class="primary-container center-align">
+                <button id="btn-start-app" class="extra" onclick="saveAndStart()">
+                    <i>rocket_launch</i>
+                    <span>Save & Start App</span>
+                </button>
+                <div class="space"></div>
+                <p class="small">Don't forget to remove the <code>MIGRATION_V1_*</code> environment variables.</p>
+            </article>
+        </div>
+    </main>
+
+    <script>
+    async function saveAndStart() {
+        const btn = document.getElementById('btn-start-app');
+        btn.disabled = true;
+        btn.querySelector('span').textContent = 'Saving...';
+
+        try {
+            // Collect all user data
+            const userCards = document.querySelectorAll('[id^="user-card-"]');
+            for (const card of userCards) {
+                const userId = card.id.replace('user-card-', '');
+                const firstName = document.getElementById('firstname-' + userId).value.trim();
+                const lastName = document.getElementById('lastname-' + userId).value.trim();
+                const email = document.getElementById('email-' + userId).value.trim();
+                const password = document.getElementById('password-' + userId).value;
+                const role = document.getElementById('role-' + userId).value;
+
+                if (!email) {
+                    showError('Please enter an email for all users');
+                    btn.disabled = false;
+                    btn.querySelector('span').textContent = 'Save & Start App';
+                    return;
+                }
+                if (email.endsWith('@placeholder.local')) {
+                    showError('Please use real email addresses');
+                    btn.disabled = false;
+                    btn.querySelector('span').textContent = 'Save & Start App';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                formData.append('email', email);
+                formData.append('firstName', firstName);
+                formData.append('lastName', lastName);
+                formData.append('role', role);
+                if (password) formData.append('password', password);
+
+                const res = await fetch('/api/v2/migration/update-user', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await res.json();
+                if (result.status !== 'success') {
+                    showError(result.message);
+                    btn.disabled = false;
+                    btn.querySelector('span').textContent = 'Save & Start App';
+                    return;
+                }
+            }
+
+            // Set language
+            const language = document.getElementById('migration-language').value;
+            const langData = new FormData();
+            langData.append('language', language);
+            await fetch('/api/v2/migration/set-language', {
+                method: 'POST',
+                body: langData,
+            });
+
+            // Complete migration
+            const completeRes = await fetch('/api/v2/migration/complete', { method: 'POST' });
+            const completeResult = await completeRes.json();
+            if (completeResult.status === 'success') {
+                window.location.href = '/';
+            } else {
+                showError(completeResult.message);
+                btn.disabled = false;
+                btn.querySelector('span').textContent = 'Save & Start App';
+            }
+        } catch (e) {
+            showError('Error: ' + e);
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'Save & Start App';
+        }
+    }
+
+    function showError(msg) {
+        document.getElementById('snackbar-migration-text').textContent = msg;
+        ui('#snackbar-migration', 3000);
+    }
+    </script>
+
+    <div class="snackbar" id="snackbar-migration">
+        <span id="snackbar-migration-text"></span>
+    </div>
+   </body>
+</html>

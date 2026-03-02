@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{% if dry_run %}Dry Run Complete{% else %}Migration in Progress{% endif %}</title>
+      {% include 'layouts/head.html' %}
+   </head>
+   <style>
+    .migration-card {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .step-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0;
+    }
+    .step-icon-ok { color: var(--green); }
+    .step-icon-fail { color: var(--error); }
+    .step-icon-pending { color: var(--outline); }
+    .step-icon-running { color: var(--primary); }
+   </style>
+   <body>
+    <script>if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.body.classList.add('dark');</script>
+    <main class="responsive">
+        <div class="migration-card">
+            <article class="primary-container">
+                {% if dry_run and status and status.completed_at %}
+                <nav class="center-align">
+                    <i class="extra">science</i>
+                </nav>
+                <h4 class="center-align">Dry Run Complete</h4>
+                <p class="center-align">
+                    The migration was simulated without making any changes.<br>
+                    Set <code>MIGRATION_DRY_RUN=false</code> and restart to run the real migration.
+                </p>
+                {% else %}
+                <nav class="center-align">
+                    <progress class="circle large"></progress>
+                </nav>
+                <div class="space"></div>
+                <h4 class="center-align">Migration in Progress</h4>
+                <p class="center-align">
+                    Your data is being migrated from SharedMoments v1 to v2.<br>
+                    This page updates automatically.
+                </p>
+                {% endif %}
+
+                <div class="space"></div>
+                <h6>Steps</h6>
+                <div id="steps-container">
+                    {% if steps_ordered %}
+                    {% for step_name, step_info in steps_ordered %}
+                    <div class="step-row" id="step-{{ step_name }}">
+                        {% if step_info.status == 'completed' %}
+                        <i class="step-icon-ok">check_circle</i>
+                        {% elif step_info.status == 'failed' %}
+                        <i class="step-icon-fail">error</i>
+                        {% elif step_info.status == 'in_progress' %}
+                        <i class="step-icon-running">pending</i>
+                        {% else %}
+                        <i class="step-icon-pending">radio_button_unchecked</i>
+                        {% endif %}
+                        <span>{{ step_name.replace('_', ' ').title() }}</span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="step-row">
+                        <i class="step-icon-pending">radio_button_unchecked</i>
+                        <span>Waiting for migration to start...</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if status and status.started_at %}
+                <div class="space"></div>
+                <p class="small">
+                    Started: {{ status.started_at }}
+                    {% if status.completed_at %}<br>Completed: {{ status.completed_at }}{% endif %}
+                    {% if dry_run %}<br><span class="chip">DRY RUN</span>{% endif %}
+                </p>
+                {% endif %}
+            </article>
+
+            {% if error %}
+            <article class="primary-container">
+                <h6>Error</h6>
+                <p class="small" style="color: var(--error);">{{ error }}</p>
+            </article>
+            {% endif %}
+        </div>
+    </main>
+
+    {% if not dry_run or not (status and status.completed_at) %}
+    <script>
+    const STEP_ORDER = {{ steps_ordered | map('first') | list | tojson }};
+
+    async function pollStatus() {
+        try {
+            const res = await fetch('/api/v2/migration/status');
+            const data = await res.json();
+
+            if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+            }
+
+            if (data.completed_at && !data.dry_run) {
+                window.location.href = '/migration-complete';
+                return;
+            }
+
+            if (data.steps) {
+                const container = document.getElementById('steps-container');
+                let html = '';
+                for (const name of STEP_ORDER) {
+                    const info = data.steps[name] || {status: 'pending'};
+                    let icon = '';
+                    if (info.status === 'completed') {
+                        icon = '<i class="step-icon-ok">check_circle</i>';
+                    } else if (info.status === 'failed') {
+                        icon = '<i class="step-icon-fail">error</i>';
+                    } else if (info.status === 'in_progress') {
+                        icon = '<i class="step-icon-running">pending</i>';
+                    } else {
+                        icon = '<i class="step-icon-pending">radio_button_unchecked</i>';
+                    }
+                    const label = name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    html += '<div class="step-row">' + icon + '<span>' + label + '</span></div>';
+                }
+                container.innerHTML = html;
+            }
+        } catch (e) {
+            // ignore fetch errors, retry next interval
+        }
+    }
+
+    setInterval(pollStatus, 2000);
+    </script>
+    {% endif %}
+   </body>
+</html>

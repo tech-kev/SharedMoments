@@ -10,6 +10,13 @@ init_db()
 migrateTranslations()
 load_translation_in_cache()
 
+# v1 → v2 Migration (runs only when MIGRATION_V1_MYSQL_HOST is set)
+try:
+    from app.migration import check_and_run_migration
+    check_and_run_migration()
+except ImportError:
+    pass
+
 if __name__ == '__main__':
     import os
     debug = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'

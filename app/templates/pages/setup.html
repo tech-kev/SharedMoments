@@ -299,6 +299,19 @@
 
    <script src="/static/js/main.js"></script>
    <script src="/static/js/setup.js"></script>
+   <script>
+   setInterval(async () => {
+       try {
+           const res = await fetch('/api/v2/migration/status');
+           const data = await res.json();
+           if (data.redirect) {
+               window.location.href = data.redirect;
+           } else if (data.steps) {
+               window.location.href = '/migration-progress';
+           }
+       } catch (e) {}
+   }, 3000);
+   </script>
 
    </body>
 </html>
