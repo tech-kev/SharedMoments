@@ -25,4 +25,6 @@ def nl2br(value):
     """Escape HTML, then convert newlines to <br> tags."""
     if not value:
         return ""
-    return Markup(escape(value).replace('\n', '<br>'))
+    import re
+    s = re.sub(r'<br\s*/?>', '\n', str(value), flags=re.IGNORECASE)
+    return Markup(Markup('<br>').join(escape(line) for line in s.split('\n')))
