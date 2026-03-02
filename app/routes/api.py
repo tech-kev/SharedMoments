@@ -296,9 +296,14 @@ def update_profile_picture():
         }), 500
 
 
+def _secure_filename_preserve(filename):
+    """secure_filename that preserves tildes in filenames."""
+    return secure_filename(filename.replace('~', '_TILDE_')).replace('_TILDE_', '~')
+
+
 def _safe_send_file(base_folder, filename):
     """Send a file after validating against path traversal."""
-    safe = secure_filename(filename)
+    safe = _secure_filename_preserve(filename)
     if not safe or safe != filename:
         abort(400)
     base_folder = os.path.abspath(base_folder)
@@ -322,7 +327,7 @@ def media(filename):
 @jwt_required
 def media_thumb(filename):
     """Generate and serve a JPEG thumbnail for a video file using ffmpeg."""
-    safe = secure_filename(filename)
+    safe = _secure_filename_preserve(filename)
     if not safe or safe != filename:
         abort(400)
 
@@ -379,7 +384,7 @@ def static_media(filename):
     # Check uploads/profiles first (user-uploaded), then fall back to static/images (stock)
     profiles_folder = os.path.abspath(os.path.join(basedir, '..', 'uploads', 'profiles'))
     static_folder = os.path.abspath(os.path.join(basedir, '..', 'static', 'images'))
-    safe = secure_filename(filename)
+    safe = _secure_filename_preserve(filename)
     if not safe or safe != filename:
         abort(400)
     profile_path = os.path.join(profiles_folder, safe)
@@ -421,7 +426,7 @@ def _get_upload_folder(ext):
 
 def _find_media_folder(filename):
     """Find which upload folder contains the file (with fallback to images/)."""
-    safe = secure_filename(filename)
+    safe = _secure_filename_preserve(filename)
     ext = safe.rsplit('.', 1)[-1].lower() if '.' in safe else ''
     basedir = os.path.abspath(os.path.dirname(__file__))
     primary = _get_upload_folder(ext)
@@ -1309,3 +1314,175 @@ def delete_share(id, share_id):
                 'error_message': str(e) if app.debug else None
             }
         }), 500
+
+
+# ==================== Migration API ====================
+
+@api_bp.route('/api/v2/migration/status', methods=['GET'])
+def migration_status():
+    """Return current migration status for progress polling."""
+    try:
+        from app.migration.status import load_status
+        status = load_status()
+    except ImportError:
+        return jsonify({'steps': None, 'message': 'Migration module not available'}), 200
+
+    if status is None:
+        return jsonify({'steps': None, 'message': 'No migration running'}), 200
+
+    # If real migration is complete, tell the client to redirect
+    if status.get('completed_at') and not status.get('dry_run', False):
+        return jsonify({'redirect': '/migration-complete'}), 200
+
+    return jsonify({
+        'steps': status.get('steps', {}),
+        'started_at': status.get('started_at'),
+        'completed_at': status.get('completed_at'),
+        'dry_run': status.get('dry_run', False),
+    }), 200
+
+
+@api_bp.route('/api/v2/migration/update-user', methods=['POST'])
+def migration_update_user():
+    """Update a migrated user's email and password during migration review."""
+    db_session = SessionLocal()
+    try:
+        review_setting = db_session.query(Setting).filter(Setting.name == 'migration_review_complete').first()
+        if not review_setting or review_setting.value != 'False':
+            return jsonify({'status': 'error', 'message': 'Migration review is not active'}), 403
+
+        user_id = request.form.get('user_id', type=int)
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+
+        if not user_id or not email:
+            return jsonify({'status': 'error', 'message': 'User ID and email are required'}), 400
+
+        if email.endswith('@placeholder.local'):
+            return jsonify({'status': 'error', 'message': 'Please use a real email address'}), 400
+
+        user = db_session.query(User).filter(User.id == user_id).first()
+        if not user:
+            return jsonify({'status': 'error', 'message': 'User not found'}), 404
+
+        existing = db_session.query(User).filter(User.email == email, User.id != user_id).first()
+        if existing:
+            return jsonify({'status': 'error', 'message': 'Email already in use'}), 400
+
+        user.email = email
+        if password:
+            user.hash_password(password)
+
+        first_name = request.form.get('firstName', '').strip()
+        last_name = request.form.get('lastName', '').strip()
+        if first_name:
+            user.firstName = first_name
+        if last_name is not None and request.form.get('lastName') is not None:
+            user.lastName = last_name
+
+        # Update role if provided
+        role_name = request.form.get('role', '').strip()
+        if role_name:
+            role = db_session.query(Role).filter(Role.roleName == role_name).first()
+            if role:
+                user_role = db_session.query(UserRole).filter(UserRole.userID == user_id).first()
+                if user_role:
+                    user_role.roleID = role.id
+                else:
+                    db_session.add(UserRole(userID=user_id, roleID=role.id))
+
+        db_session.commit()
+        return jsonify({'status': 'success', 'message': 'User updated'}), 200
+    except Exception as e:
+        log('error', f'[Migration] Error updating user: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        db_session.close()
+
+
+@api_bp.route('/api/v2/migration/set-language', methods=['POST'])
+def migration_set_language():
+    """Set the language for all migrated users."""
+    db_session = SessionLocal()
+    try:
+        review_setting = db_session.query(Setting).filter(Setting.name == 'migration_review_complete').first()
+        if not review_setting or review_setting.value != 'False':
+            return jsonify({'status': 'error', 'message': 'Migration review is not active'}), 403
+
+        language = request.form.get('language', 'en').strip()
+        users = db_session.query(User).filter(User.id > 1).all()
+        for user in users:
+            lang_setting = db_session.query(UserSetting).filter(
+                UserSetting.userID == user.id, UserSetting.name == 'language'
+            ).first()
+            if lang_setting:
+                lang_setting.value = language
+            else:
+                db_session.add(UserSetting(userID=user.id, name='language', value=language, icon='language', edition='all', category='about', type='text'))
+
+        # Set app-wide language
+        os.environ['LANG'] = language
+
+        db_session.commit()
+        return jsonify({'status': 'success', 'message': f'Language set to {language} for {len(users)} users'}), 200
+    except Exception as e:
+        log('error', f'[Migration] Error setting language: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        db_session.close()
+
+
+@api_bp.route('/api/v2/migration/complete', methods=['POST'])
+def migration_review_complete():
+    """Mark migration review as complete. Only works when no placeholder emails remain."""
+    db_session = SessionLocal()
+    try:
+        review_setting = db_session.query(Setting).filter(Setting.name == 'migration_review_complete').first()
+        if not review_setting or review_setting.value != 'False':
+            return jsonify({'status': 'error', 'message': 'Migration review is not active'}), 403
+
+        placeholder_users = db_session.query(User).filter(
+            User.id > 1, User.email.endswith('@placeholder.local')
+        ).count()
+        if placeholder_users > 0:
+            return jsonify({'status': 'error', 'message': f'{placeholder_users} user(s) still have placeholder emails'}), 400
+
+        # Validate at least one Admin exists
+        admin_role = db_session.query(Role).filter(Role.roleName == 'Admin').first()
+        if admin_role:
+            admin_count = db_session.query(UserRole).filter(
+                UserRole.roleID == admin_role.id,
+                UserRole.userID > 1
+            ).count()
+            if admin_count == 0:
+                return jsonify({'status': 'error', 'message': 'At least one user must have the Admin role'}), 400
+
+        # Ensure all migrated users have required UserSettings
+        users = db_session.query(User).filter(User.id > 1).all()
+        for user in users:
+            for setting_name, default_value, icon in [
+                ('darkmode', 'FALSE', 'dark_mode'),
+                ('language', os.environ.get('LANG', 'en'), 'language'),
+            ]:
+                existing = db_session.query(UserSetting).filter(
+                    UserSetting.userID == user.id, UserSetting.name == setting_name
+                ).first()
+                if not existing:
+                    db_session.add(UserSetting(
+                        userID=user.id, name=setting_name, value=default_value,
+                        icon=icon, edition='all', category='about', type='text'
+                    ))
+
+        review_setting.value = 'True'
+        db_session.commit()
+
+        # Clear session and JWT cookie so user must log in fresh
+        session.clear()
+        response = jsonify({'status': 'success', 'message': 'Migration review complete'})
+        response.delete_cookie('jwt_token')
+        return response, 200
+    except Exception as e:
+        log('error', f'[Migration] Error completing review: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        db_session.close()
