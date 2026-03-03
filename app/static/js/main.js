@@ -31,6 +31,10 @@ function callUi(id) {
          document.getElementById("div-overlay-create-countdown").classList.remove("active");
       } else if (id == "#dialog-edit-countdown") {
          document.getElementById("div-overlay-edit-countdown").classList.remove("active");
+      } else if (id == "#dialog-create-reminder") {
+         document.getElementById("div-overlay-create-reminder").classList.remove("active");
+      } else if (id == "#dialog-edit-reminder") {
+         document.getElementById("div-overlay-edit-reminder").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -63,6 +67,10 @@ function callUi(id) {
          document.getElementById("div-overlay-create-countdown").classList.add("active");
       } else if (id == "#dialog-edit-countdown") {
          document.getElementById("div-overlay-edit-countdown").classList.add("active");
+      } else if (id == "#dialog-create-reminder") {
+         document.getElementById("div-overlay-create-reminder").classList.add("active");
+      } else if (id == "#dialog-edit-reminder") {
+         document.getElementById("div-overlay-edit-reminder").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }

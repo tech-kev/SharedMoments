@@ -208,8 +208,8 @@
                   <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
                 </div>
               </a>
-              {% elif user_setting.name.startswith('pwa_') %}
-              {# PWA settings rendered in dedicated section below #}
+              {% elif user_setting.name.startswith('pwa_') or user_setting.name.startswith('notification_') %}
+              {# PWA and notification settings rendered in dedicated sections below #}
               {% else %}
               <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'text')">
                 <i>{{ user_setting.icon }}</i>
@@ -218,6 +218,95 @@
                   <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
                 </div>
               </a>
+              {% endif %}
+              {% endfor %}
+
+              <!-- Notifications Section -->
+              <legend>{{ _('Notifications') }}</legend>
+
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'notification_push_enabled' %}
+              <!-- Browser Push -->
+              <a class="row padding primary-container wave" onclick="togglePush(!document.getElementById('toggle-push').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Browser Push') }}</h6>
+                  <div id="push-status-text">{{ _('Not configured') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-push" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); togglePush(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="push-permission-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="requestPushPermission()">
+                  <i>notifications_active</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Allow Notifications') }}</h6>
+                  </div>
+                </a>
+              </div>
+              <div id="push-test-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="testNotification('push')">
+                  <i>send</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Send test notification') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              {% elif user_setting.name == 'notification_email_enabled' and smtp_available %}
+              <!-- E-Mail -->
+              <a class="row padding primary-container wave" onclick="toggleEmail(!document.getElementById('toggle-email').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">{{ _('E-Mail') }}</h6>
+                  <div>{{ user_data.email or _('No email address') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-email" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); toggleEmail(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="email-test-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="testNotification('email')">
+                  <i>send</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Send test email') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              {% elif user_setting.name == 'notification_telegram_enabled' and telegram_available %}
+              <!-- Telegram -->
+              <a class="row padding primary-container wave" onclick="toggleTelegram(!document.getElementById('toggle-telegram').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">Telegram</h6>
+                  <div id="telegram-status-text">{{ telegram_chat_id or _('Not configured') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-telegram" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); toggleTelegram(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="telegram-config-section" style="display:none;">
+                <div class="padding">
+                  <div class="field label border small">
+                    <input type="text" id="input-telegram-chat-id" value="{{ telegram_chat_id }}">
+                    <label>Chat-ID</label>
+                  </div>
+                  <p class="small" style="opacity:0.7;">{{ _('Send /start to the bot, then enter your Chat-ID here.') }}</p>
+                  <div class="row" style="margin-top: 0.5rem; gap: 0.5rem;">
+                    <button class="small" onclick="saveTelegramConfig()">
+                      <i>save</i><span>{{ _('Save') }}</span>
+                    </button>
+                    <button class="small border" onclick="testNotification('telegram')">
+                      <i>send</i><span>{{ _('Test') }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
               {% endif %}
               {% endfor %}
 
@@ -363,6 +452,11 @@
     ];
     const currentEdition = '{{ settings.sm_edition.value }}';
     const settingsType = '{{ settings_type }}';
+    {% if settings_type == 'user-settings' %}
+    {% set push_val = 'True' %}
+    {% for s in user_settings if s.name == 'notification_push_enabled' %}{% set push_val = s.value %}{% endfor %}
+    window.pushEnabled = {{ (push_val == 'True')|tojson }};
+    {% endif %}
    </script>
    <script src="/static/js/settings.js"></script>
 

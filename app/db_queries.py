@@ -1,5 +1,7 @@
 from sqlalchemy.exc import IntegrityError
-from .models import Passkey, User, Role, Permission, RolePermission, UserRole, Setting, UserSetting, Item, ItemShare, ListType, SessionLocal, RelationshipStatus, Translation
+from .models import (Passkey, User, Role, Permission, RolePermission, UserRole, Setting,
+    UserSetting, Item, ItemShare, ListType, SessionLocal, RelationshipStatus, Translation,
+    Reminder, ReminderMute, PushSubscription, NotificationLog)
 from sqlalchemy.orm import joinedload
 from datetime import date
 from sqlalchemy import desc, asc, and_, or_
@@ -53,7 +55,8 @@ def init_db():
                 list_perm_names.append(f'{action} {lt_name}')
 
         # Global permissions
-        global_perm_names = ['Manage Lists', 'Manage Translations', 'Access Admin Panel', 'Share Items']
+        global_perm_names = ['Manage Lists', 'Manage Translations', 'Access Admin Panel', 'Share Items',
+                             'View Reminders', 'Create Reminder', 'Update Reminder', 'Delete Reminder']
 
         all_perm_names = perm_names + list_perm_names + global_perm_names
         permissions = {}
@@ -86,6 +89,7 @@ def init_db():
             'View Bucket List', 'Create Bucket List', 'Update Bucket List', 'Delete Bucket List',
             'View Countdown', 'Create Countdown',
             'Share Items',
+            'View Reminders', 'Create Reminder',
         ]
         for perm_name in adult_perms:
             session.add(RolePermission(roleID=adult_role.id, permissionID=permissions[perm_name].id))
@@ -98,6 +102,7 @@ def init_db():
             'View Movie List', 'Create Movie List',
             'View Bucket List', 'Create Bucket List',
             'View Countdown',
+            'View Reminders',
         ]
         for perm_name in child_perms:
             session.add(RolePermission(roleID=child_role.id, permissionID=permissions[perm_name].id))
@@ -620,7 +625,40 @@ def update_user_setting(userID, name=None, value=None):
         if user_setting:
             if value is not None:
                 user_setting.value = value
-            session.commit()
+        else:
+            session.add(UserSetting(userID=userID, name=name, value=value or ''))
+        session.commit()
+    finally:
+        session.close()
+
+
+def ensure_notification_settings(userID):
+    """Creates or updates notification settings for a user."""
+    notification_defaults = {
+        'notification_push_enabled': {'value': 'True', 'icon': 'notifications', 'category': 'notifications', 'type': 'toggle'},
+        'notification_email_enabled': {'value': 'False', 'icon': 'email', 'category': 'notifications', 'type': 'toggle'},
+        'notification_telegram_enabled': {'value': 'False', 'icon': 'chat', 'category': 'notifications', 'type': 'toggle'},
+        'notification_telegram_chat_id': {'value': '', 'icon': 'chat', 'category': 'notifications', 'type': 'text'},
+    }
+    session = SessionLocal()
+    try:
+        for name, defaults in notification_defaults.items():
+            existing = session.query(UserSetting).filter(
+                UserSetting.userID == userID,
+                UserSetting.name == name
+            ).first()
+            if not existing:
+                session.add(UserSetting(
+                    userID=userID, name=name, value=defaults['value'],
+                    icon=defaults['icon'], edition='all',
+                    category=defaults['category'], type=defaults['type']
+                ))
+            elif not existing.icon:
+                existing.icon = defaults['icon']
+                existing.category = defaults['category']
+                existing.type = defaults['type']
+                existing.edition = 'all'
+        session.commit()
     finally:
         session.close()
 
@@ -1227,6 +1265,220 @@ def verify_share_password(share, password):
     return check_password_hash(share.passwordHash, password)
 
 
+
+
+def ensure_reminder_permissions():
+    """For existing databases: creates reminder permissions if missing."""
+    session = SessionLocal()
+    try:
+        existing = session.query(Permission).filter(Permission.permissionName == 'View Reminders').first()
+        if existing:
+            return
+        admin_role = session.query(Role).filter(Role.roleName == 'Admin').first()
+        adult_role = session.query(Role).filter(Role.roleName == 'Adult').first()
+        child_role = session.query(Role).filter(Role.roleName == 'Child').first()
+        for perm_name in ('View Reminders', 'Create Reminder', 'Update Reminder', 'Delete Reminder'):
+            perm = Permission(permissionName=perm_name)
+            session.add(perm)
+            session.flush()
+            if admin_role:
+                session.add(RolePermission(roleID=admin_role.id, permissionID=perm.id))
+            if perm_name in ('View Reminders', 'Create Reminder') and adult_role:
+                session.add(RolePermission(roleID=adult_role.id, permissionID=perm.id))
+            if perm_name == 'View Reminders' and child_role:
+                session.add(RolePermission(roleID=child_role.id, permissionID=perm.id))
+        session.commit()
+    finally:
+        session.close()
+
+
+# Reminder CRUD
+
+def get_all_reminders():
+    session = SessionLocal()
+    try:
+        reminders = session.query(Reminder).filter(Reminder.active == True).order_by(Reminder.created_at.desc()).all()
+        for r in reminders:
+            session.expunge(r)
+        return reminders
+    finally:
+        session.close()
+
+
+def get_reminder_by_id(reminder_id):
+    session = SessionLocal()
+    try:
+        reminder = session.query(Reminder).filter(Reminder.id == reminder_id).first()
+        if reminder:
+            session.expunge(reminder)
+        return reminder
+    finally:
+        session.close()
+
+
+def create_reminder(title, description, reminder_type, created_by, month=None, day=None,
+                    target_date=None, milestone_days=None, countdown_id=None,
+                    notify_days_before='0', is_global=True, is_auto=False, auto_source=None):
+    session = SessionLocal()
+    try:
+        reminder = Reminder(
+            title=title, description=description or '', reminder_type=reminder_type,
+            month=month, day=day, target_date=target_date,
+            milestone_days=milestone_days, countdown_id=countdown_id,
+            notify_days_before=notify_days_before, is_global=is_global,
+            is_auto=is_auto, auto_source=auto_source, created_by=created_by, active=True
+        )
+        session.add(reminder)
+        session.commit()
+        session.refresh(reminder)
+        return reminder.id
+    finally:
+        session.close()
+
+
+def update_reminder(reminder_id, **kwargs):
+    session = SessionLocal()
+    try:
+        reminder = session.query(Reminder).filter(Reminder.id == reminder_id).first()
+        if reminder:
+            for key, value in kwargs.items():
+                if hasattr(reminder, key) and value is not None:
+                    setattr(reminder, key, value)
+            session.commit()
+    finally:
+        session.close()
+
+
+def delete_reminder(reminder_id):
+    session = SessionLocal()
+    try:
+        session.query(ReminderMute).filter(ReminderMute.reminder_id == reminder_id).delete()
+        reminder = session.query(Reminder).filter(Reminder.id == reminder_id).first()
+        if reminder:
+            session.delete(reminder)
+            session.commit()
+    finally:
+        session.close()
+
+
+def get_user_muted_reminder_ids(user_id):
+    session = SessionLocal()
+    try:
+        mutes = session.query(ReminderMute.reminder_id).filter(ReminderMute.user_id == user_id).all()
+        return {m[0] for m in mutes}
+    finally:
+        session.close()
+
+
+def mute_reminder(user_id, reminder_id):
+    session = SessionLocal()
+    try:
+        existing = session.query(ReminderMute).filter(
+            ReminderMute.user_id == user_id, ReminderMute.reminder_id == reminder_id
+        ).first()
+        if not existing:
+            session.add(ReminderMute(user_id=user_id, reminder_id=reminder_id))
+            session.commit()
+    finally:
+        session.close()
+
+
+def unmute_reminder(user_id, reminder_id):
+    session = SessionLocal()
+    try:
+        session.query(ReminderMute).filter(
+            ReminderMute.user_id == user_id, ReminderMute.reminder_id == reminder_id
+        ).delete()
+        session.commit()
+    finally:
+        session.close()
+
+
+def get_auto_reminder_by_source(auto_source):
+    session = SessionLocal()
+    try:
+        reminder = session.query(Reminder).filter(
+            Reminder.is_auto == True, Reminder.auto_source == auto_source
+        ).first()
+        if reminder:
+            session.expunge(reminder)
+        return reminder
+    finally:
+        session.close()
+
+
+def delete_auto_reminders_by_source(auto_source):
+    session = SessionLocal()
+    try:
+        reminders = session.query(Reminder).filter(
+            Reminder.is_auto == True, Reminder.auto_source == auto_source
+        ).all()
+        for r in reminders:
+            session.query(ReminderMute).filter(ReminderMute.reminder_id == r.id).delete()
+            session.delete(r)
+        session.commit()
+    finally:
+        session.close()
+
+
+# Push Subscription CRUD
+
+def save_push_subscription(user_id, endpoint, p256dh, auth):
+    session = SessionLocal()
+    try:
+        existing = session.query(PushSubscription).filter(
+            PushSubscription.endpoint == endpoint
+        ).first()
+        if existing:
+            existing.user_id = user_id
+            existing.p256dh = p256dh
+            existing.auth = auth
+        else:
+            session.add(PushSubscription(user_id=user_id, endpoint=endpoint, p256dh=p256dh, auth=auth))
+        session.commit()
+    finally:
+        session.close()
+
+
+def delete_push_subscription(endpoint):
+    session = SessionLocal()
+    try:
+        session.query(PushSubscription).filter(PushSubscription.endpoint == endpoint).delete()
+        session.commit()
+    finally:
+        session.close()
+
+
+def get_push_subscriptions_for_user(user_id):
+    session = SessionLocal()
+    try:
+        subs = session.query(PushSubscription).filter(PushSubscription.user_id == user_id).all()
+        result = [{'endpoint': s.endpoint, 'p256dh': s.p256dh, 'auth': s.auth} for s in subs]
+        return result
+    finally:
+        session.close()
+
+
+# Notification Log
+
+def check_notification_sent(notification_key):
+    session = SessionLocal()
+    try:
+        existing = session.query(NotificationLog).filter(
+            NotificationLog.notification_key == notification_key
+        ).first()
+        return existing is not None
+    finally:
+        session.close()
+
+
+def log_notification(notification_key, reminder_id=None):
+    session = SessionLocal()
+    try:
+        session.add(NotificationLog(notification_key=notification_key, reminder_id=reminder_id))
+        session.commit()
+    finally:
+        session.close()
 
 
 def approve_new_translations_to_all_languages():

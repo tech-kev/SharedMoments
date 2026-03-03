@@ -9,7 +9,11 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     create_user_setting, update_translation, update_user_setting, update_user_profile_picture,
     create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions,
     create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids,
-    get_all_media_urls, get_list_type_by_title)
+    get_all_media_urls, get_list_type_by_title,
+    get_all_reminders, get_reminder_by_id, create_reminder as db_create_reminder,
+    update_reminder as db_update_reminder, delete_reminder as db_delete_reminder,
+    get_user_muted_reminder_ids, mute_reminder, unmute_reminder,
+    save_push_subscription, delete_push_subscription)
 from datetime import datetime
 from app.logger import log
 import os, json, subprocess, shutil
@@ -1314,6 +1318,239 @@ def delete_share(id, share_id):
                 'error_message': str(e) if app.debug else None
             }
         }), 500
+
+
+# ==================== Reminders API ====================
+
+@api_bp.route('/api/v2/reminders', methods=['GET'])
+@jwt_required
+@require_permission('View Reminders')
+def list_reminders():
+    try:
+        reminders = get_all_reminders()
+        muted_ids = get_user_muted_reminder_ids(g.user_id)
+        data = []
+        for r in reminders:
+            data.append({
+                'id': r.id,
+                'title': r.title,
+                'description': r.description,
+                'reminder_type': r.reminder_type,
+                'month': r.month,
+                'day': r.day,
+                'target_date': r.target_date.isoformat() if r.target_date else None,
+                'milestone_days': r.milestone_days,
+                'countdown_id': r.countdown_id,
+                'notify_days_before': r.notify_days_before,
+                'is_global': r.is_global,
+                'is_auto': r.is_auto,
+                'auto_source': r.auto_source,
+                'created_by': r.created_by,
+                'active': r.active,
+                'muted': r.id in muted_ids,
+            })
+        return jsonify({'status': 'success', 'data': {'reminders': data}}), 200
+    except Exception as e:
+        log('error', f'Error loading reminders: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while loading reminders.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/reminders', methods=['POST'])
+@jwt_required
+@require_permission('Create Reminder')
+def create_reminder_endpoint():
+    try:
+        data = request.get_json() if request.is_json else request.form
+        title = data.get('title', '')
+        description = data.get('description', '')
+        reminder_type = data.get('reminder_type', '')
+        notify_days_before = data.get('notify_days_before', '0')
+        target_date_str = data.get('target_date')
+
+        # Parse optional int fields
+        month = data.get('month')
+        day = data.get('day')
+        milestone_days = data.get('milestone_days')
+        countdown_id = data.get('countdown_id')
+        month = int(month) if month is not None and str(month).strip() else None
+        day = int(day) if day is not None and str(day).strip() else None
+        milestone_days = int(milestone_days) if milestone_days is not None and str(milestone_days).strip() else None
+        countdown_id = int(countdown_id) if countdown_id is not None and str(countdown_id).strip() else None
+
+        parsed_target = None
+        if target_date_str:
+            parsed_target = datetime.strptime(target_date_str, '%Y-%m-%d').date()
+
+        if not title or not reminder_type:
+            return jsonify({'status': 'error', 'message': _('Title and type are required')}), 400
+
+        new_id = db_create_reminder(
+            title=title, description=description, reminder_type=reminder_type,
+            created_by=g.user_id, month=month, day=day,
+            target_date=parsed_target, milestone_days=milestone_days,
+            countdown_id=countdown_id, notify_days_before=notify_days_before
+        )
+        log('info', f'Reminder created: ID={new_id} by user {g.user_id}')
+        return jsonify({'status': 'success', 'message': _('Reminder created successfully'), 'data': {'id': new_id}}), 201
+    except Exception as e:
+        log('error', f'Error creating reminder: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while creating the reminder.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/reminders/<int:id>', methods=['PUT'])
+@jwt_required
+@require_permission('Update Reminder')
+def update_reminder_endpoint(id):
+    try:
+        data = request.get_json() if request.is_json else request.form
+        kwargs = {}
+        for field in ('title', 'description', 'reminder_type', 'notify_days_before'):
+            val = data.get(field)
+            if val is not None:
+                kwargs[field] = val
+        for int_field in ('month', 'day', 'milestone_days', 'countdown_id'):
+            val = data.get(int_field)
+            if val is not None and str(val).strip():
+                kwargs[int_field] = int(val)
+        target_date = data.get('target_date')
+        if target_date:
+            kwargs['target_date'] = datetime.strptime(target_date, '%Y-%m-%d').date()
+
+        db_update_reminder(id, **kwargs)
+        log('info', f'Reminder updated: ID={id}')
+        return jsonify({'status': 'success', 'message': _('Reminder updated successfully')}), 200
+    except Exception as e:
+        log('error', f'Error updating reminder {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while updating the reminder.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/reminders/<int:id>', methods=['DELETE'])
+@jwt_required
+@require_permission('Delete Reminder')
+def delete_reminder_endpoint(id):
+    try:
+        db_delete_reminder(id)
+        log('info', f'Reminder deleted: ID={id}')
+        return jsonify({'status': 'success', 'message': _('Reminder deleted successfully')}), 200
+    except Exception as e:
+        log('error', f'Error deleting reminder {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while deleting the reminder.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/reminders/<int:id>/mute', methods=['POST'])
+@jwt_required
+def mute_reminder_endpoint(id):
+    try:
+        mute_reminder(g.user_id, id)
+        return jsonify({'status': 'success', 'message': _('Reminder muted')}), 200
+    except Exception as e:
+        log('error', f'Error muting reminder {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while muting the reminder.')}), 500
+
+
+@api_bp.route('/api/v2/reminders/<int:id>/mute', methods=['DELETE'])
+@jwt_required
+def unmute_reminder_endpoint(id):
+    try:
+        unmute_reminder(g.user_id, id)
+        return jsonify({'status': 'success', 'message': _('Reminder unmuted')}), 200
+    except Exception as e:
+        log('error', f'Error unmuting reminder {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while unmuting the reminder.')}), 500
+
+
+# ==================== Push Subscription API ====================
+
+@api_bp.route('/api/v2/push/subscribe', methods=['POST'])
+@jwt_required
+def push_subscribe():
+    try:
+        data = request.get_json() if request.is_json else {}
+        endpoint = data.get('endpoint', '')
+        keys = data.get('keys', {})
+        p256dh = keys.get('p256dh', '')
+        auth = keys.get('auth', '')
+        if not endpoint or not p256dh or not auth:
+            return jsonify({'status': 'error', 'message': 'Invalid subscription data'}), 400
+        save_push_subscription(g.user_id, endpoint, p256dh, auth)
+        return jsonify({'status': 'success', 'message': 'Subscription saved'}), 200
+    except Exception as e:
+        log('error', f'Error saving push subscription: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@api_bp.route('/api/v2/push/subscribe', methods=['DELETE'])
+@jwt_required
+def push_unsubscribe():
+    try:
+        data = request.get_json() if request.is_json else {}
+        endpoint = data.get('endpoint', '')
+        if endpoint:
+            delete_push_subscription(endpoint)
+        return jsonify({'status': 'success', 'message': 'Subscription removed'}), 200
+    except Exception as e:
+        log('error', f'Error removing push subscription: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@api_bp.route('/api/v2/push/vapid-key', methods=['GET'])
+@jwt_required
+def get_vapid_key():
+    try:
+        from app.notifications import get_vapid_public_key
+        key = get_vapid_public_key()
+        if not key:
+            return jsonify({'status': 'error', 'message': 'VAPID key not available'}), 503
+        return jsonify({'status': 'success', 'data': {'publicKey': key}}), 200
+    except Exception as e:
+        log('error', f'Error getting VAPID key: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# ==================== Notification Test API ====================
+
+@api_bp.route('/api/v2/notifications/test', methods=['POST'])
+@jwt_required
+def test_notification():
+    try:
+        from app.notifications import send_notification, send_push_notification, send_email_notification, send_telegram_notification
+        data = request.get_json() if request.is_json else request.form
+        channel = data.get('channel', 'push')
+
+        if channel == 'push':
+            from app.db_queries import get_push_subscriptions_for_user
+            subs = get_push_subscriptions_for_user(g.user_id)
+            if not subs:
+                return jsonify({'status': 'error', 'message': _('No push subscription found. Please allow notifications first.')}), 400
+            result = send_push_notification(g.user_id, 'SharedMoments Test', _('This is a test notification!'))
+        elif channel == 'email':
+            user = get_user_by_id(g.user_id)
+            if not user or not user.email:
+                return jsonify({'status': 'error', 'message': _('No email address in your profile')}), 400
+            if not os.environ.get('SMTP_HOST'):
+                return jsonify({'status': 'error', 'message': _('SMTP server not configured')}), 400
+            result = send_email_notification(user.email, 'SharedMoments Test', _('This is a test notification!'))
+        elif channel == 'telegram':
+            chat_id_setting = get_user_setting(g.user_id, 'notification_telegram_chat_id')
+            if not chat_id_setting or not chat_id_setting.value:
+                return jsonify({'status': 'error', 'message': _('No Telegram Chat-ID configured')}), 400
+            if not os.environ.get('TELEGRAM_BOT_TOKEN'):
+                return jsonify({'status': 'error', 'message': _('Telegram bot not configured')}), 400
+            result = send_telegram_notification(chat_id_setting.value, '<b>SharedMoments Test</b>\n' + _('This is a test notification!'))
+        else:
+            return jsonify({'status': 'error', 'message': 'Unknown channel'}), 400
+
+        if result:
+            return jsonify({'status': 'success', 'message': _('Test notification sent!')}), 200
+        else:
+            return jsonify({'status': 'error', 'message': _('Failed to send test notification. Check configuration.')}), 500
+    except Exception as e:
+        log('error', f'Error sending test notification: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
 # ==================== Migration API ====================

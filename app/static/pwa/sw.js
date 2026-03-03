@@ -1,5 +1,5 @@
 // SharedMoments Service Worker
-const SW_VERSION = '1.7.1';
+const SW_VERSION = '1.8.0';
 
 // Cache names
 const APP_SHELL_CACHE = 'app-shell-v11';
@@ -31,6 +31,7 @@ const AUTH_JS_URLS = [
   '/static/js/nav-drawer.js',
   '/static/js/setup.js',
   '/static/js/countdown.js',
+  '/static/js/reminders.js',
 ];
 
 // CDN patterns (cache-first)
@@ -55,7 +56,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(APP_SHELL_CACHE).then((cache) => {
       return cache.addAll(PRECACHE_URLS);
-    })
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -127,6 +128,41 @@ self.addEventListener('fetch', (event) => {
 
   // Default: network-first
   event.respondWith(networkFirst(event.request, API_CACHE));
+});
+
+// ===== Push Notifications =====
+self.addEventListener('push', (event) => {
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data = { title: 'SharedMoments', body: event.data.text() };
+    }
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'SharedMoments', {
+      body: data.body || '',
+      icon: '/static/pwa/sm-icon-192.png',
+      badge: '/static/pwa/sm-icon-192.png',
+      data: { url: data.url || '/reminders' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(event.notification.data.url);
+          return client.focus();
+        }
+      }
+      return clients.openWindow(event.notification.data.url);
+    })
+  );
 });
 
 // ===== Sync =====

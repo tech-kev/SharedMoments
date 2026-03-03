@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }} - {{ _('Reminders') }}</title>
+      {% include 'layouts/head.html' %}
+      <style>
+         .reminder-card { margin-bottom: 1rem; }
+         .reminder-type-chip { font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; }
+         .channel-section { margin-bottom: 1.5rem; }
+         .channel-status { font-size: 0.85rem; opacity: 0.7; }
+      </style>
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   {% include 'layouts/header.html' %}
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+
+   <!-- Overlay für Reminder-Dialoge -->
+   <div class="overlay" id="div-overlay-create-reminder" onclick="callUi('#dialog-create-reminder')"></div>
+   <div class="overlay" id="div-overlay-edit-reminder" onclick="callUi('#dialog-edit-reminder')"></div>
+
+   <main class="responsive">
+      <h5 class="small">{{ _('Reminders') }}</h5>
+
+      <!-- Erinnerungen-Liste -->
+      <div id="reminders-container">
+         {% for reminder in reminders %}
+         <article class="reminder-card surface-container" data-id="{{ reminder.id }}">
+            <div class="row padding">
+               <div class="max">
+                  <h6 class="small">{{ translate_title(reminder) }}</h6>
+                  <div class="row" style="gap: 4px; margin-top: 4px;">
+                     {% if reminder.reminder_type == 'annual' %}
+                     <span class="chip small primary-container reminder-type-chip">{{ _('Annual') }}</span>
+                     {% elif reminder.reminder_type == 'one_time' %}
+                     <span class="chip small tertiary-container reminder-type-chip">{{ _('One-time') }}</span>
+                     {% elif reminder.reminder_type == 'milestone' %}
+                     <span class="chip small secondary-container reminder-type-chip">{{ _('Milestone') }}</span>
+                     {% elif reminder.reminder_type == 'countdown' %}
+                     <span class="chip small secondary-container reminder-type-chip">{{ _('Countdown') }}</span>
+                     {% endif %}
+
+                     {% if reminder.is_auto %}
+                     <span class="chip small surface-variant reminder-type-chip">{{ _('Auto') }}</span>
+                     {% endif %}
+
+                     {% for d in reminder.notify_days_before.split(',') %}
+                     {% set dv = d|trim|int %}
+                     {% if dv == 0 %}
+                     <span class="chip small outline reminder-type-chip">{{ _('On the day') }}</span>
+                     {% elif dv == 1 %}
+                     <span class="chip small outline reminder-type-chip">{{ _('1 day before') }}</span>
+                     {% else %}
+                     <span class="chip small outline reminder-type-chip">{{ dv }} {{ _('days before') }}</span>
+                     {% endif %}
+                     {% endfor %}
+                  </div>
+                  {% if reminder.description %}
+                  <p class="small" style="opacity: 0.7; margin-top: 4px;">{{ translate_desc(reminder) }}</p>
+                  {% endif %}
+               </div>
+               <div class="row" style="gap: 4px;">
+                  {% if reminder.id in muted_ids %}
+                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, false)" title="{{ _('Unmute') }}">
+                     <i>notifications_off</i>
+                  </button>
+                  {% else %}
+                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, true)" title="{{ _('Mute') }}">
+                     <i>notifications_active</i>
+                  </button>
+                  {% endif %}
+
+                  {% if has_permission('Update Reminder') and not reminder.is_auto %}
+                  <button class="circle transparent small" onclick="openEditReminder({{ reminder.id }})" title="{{ _('Edit') }}">
+                     <i>edit</i>
+                  </button>
+                  {% endif %}
+
+                  {% if has_permission('Delete Reminder') %}
+                  <button class="circle transparent small" onclick="deleteReminder({{ reminder.id }})" title="{{ _('Delete') }}">
+                     <i>delete</i>
+                  </button>
+                  {% endif %}
+               </div>
+            </div>
+         </article>
+         {% endfor %}
+
+         {% if not reminders %}
+         <div class="center-align padding">
+            <i class="extra" style="opacity: 0.3;">notifications</i>
+            <p style="opacity: 0.5;">{{ _('No reminders yet') }}</p>
+         </div>
+         {% endif %}
+      </div>
+   </main>
+
+   <!-- FAB: Create Reminder -->
+   {% if has_permission('Create Reminder') %}
+   <button class="circle extra large-elevate fixed bottom right" style="margin: 1.5rem;" onclick="callUi('#dialog-create-reminder')">
+      <i>add</i>
+   </button>
+   {% endif %}
+
+   <!-- Dialog: Create Reminder -->
+   <dialog id="dialog-create-reminder">
+      <h5>{{ _('Create Reminder') }}</h5>
+      <div class="field label border">
+         <input type="text" id="create-reminder-title">
+         <label>{{ _('Title') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="text" id="create-reminder-description">
+         <label>{{ _('Description') }}</label>
+      </div>
+      <div class="field label border">
+         <select id="create-reminder-type" onchange="onReminderTypeChange('create')">
+            <option value="annual">{{ _('Annual') }}</option>
+            <option value="one_time">{{ _('One-time') }}</option>
+            <option value="milestone">{{ _('Milestone') }}</option>
+         </select>
+         <label>{{ _('Type') }}</label>
+      </div>
+      <!-- Annual fields -->
+      <div id="create-annual-fields">
+         <div class="grid">
+            <div class="s6">
+               <div class="field label border">
+                  <select id="create-reminder-month">
+                     {% for m in range(1, 13) %}
+                     <option value="{{ m }}">{{ m }}</option>
+                     {% endfor %}
+                  </select>
+                  <label>{{ _('Month') }}</label>
+               </div>
+            </div>
+            <div class="s6">
+               <div class="field label border">
+                  <select id="create-reminder-day">
+                     {% for d in range(1, 32) %}
+                     <option value="{{ d }}">{{ d }}</option>
+                     {% endfor %}
+                  </select>
+                  <label>{{ _('Day') }}</label>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- One-time fields -->
+      <div id="create-onetime-fields" style="display:none;">
+         <div class="field label border">
+            <input type="date" id="create-reminder-target-date">
+            <label>{{ _('Date') }}</label>
+         </div>
+      </div>
+      <!-- Milestone fields -->
+      <div id="create-milestone-fields" style="display:none;">
+         <div class="field label border">
+            <input type="number" id="create-reminder-milestone-days" min="1">
+            <label>{{ _('Days') }}</label>
+         </div>
+      </div>
+      <!-- Notify timing -->
+      <p class="small" style="margin-top: 1rem;">{{ _('Notify me') }}:</p>
+      <div class="row" style="gap: 8px; flex-wrap: wrap;">
+         <label class="chip">
+            <input type="checkbox" id="create-notify-0" checked><span>{{ _('On the day') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="create-notify-1"><span>{{ _('1 day before') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="create-notify-3"><span>{{ _('3 days before') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="create-notify-7"><span>{{ _('7 days before') }}</span>
+         </label>
+      </div>
+      <nav class="right-align no-space" style="margin-top: 1rem;">
+         <button class="transparent link" onclick="callUi('#dialog-create-reminder')">{{ _('Cancel') }}</button>
+         <button class="transparent link" onclick="saveReminder()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+   <!-- Dialog: Edit Reminder -->
+   <dialog id="dialog-edit-reminder">
+      <h5>{{ _('Edit Reminder') }}</h5>
+      <input type="hidden" id="edit-reminder-id">
+      <div class="field label border">
+         <input type="text" id="edit-reminder-title">
+         <label>{{ _('Title') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="text" id="edit-reminder-description">
+         <label>{{ _('Description') }}</label>
+      </div>
+      <div class="field label border">
+         <select id="edit-reminder-type" onchange="onReminderTypeChange('edit')">
+            <option value="annual">{{ _('Annual') }}</option>
+            <option value="one_time">{{ _('One-time') }}</option>
+            <option value="milestone">{{ _('Milestone') }}</option>
+         </select>
+         <label>{{ _('Type') }}</label>
+      </div>
+      <div id="edit-annual-fields">
+         <div class="grid">
+            <div class="s6">
+               <div class="field label border">
+                  <select id="edit-reminder-month">
+                     {% for m in range(1, 13) %}
+                     <option value="{{ m }}">{{ m }}</option>
+                     {% endfor %}
+                  </select>
+                  <label>{{ _('Month') }}</label>
+               </div>
+            </div>
+            <div class="s6">
+               <div class="field label border">
+                  <select id="edit-reminder-day">
+                     {% for d in range(1, 32) %}
+                     <option value="{{ d }}">{{ d }}</option>
+                     {% endfor %}
+                  </select>
+                  <label>{{ _('Day') }}</label>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="edit-onetime-fields" style="display:none;">
+         <div class="field label border">
+            <input type="date" id="edit-reminder-target-date">
+            <label>{{ _('Date') }}</label>
+         </div>
+      </div>
+      <div id="edit-milestone-fields" style="display:none;">
+         <div class="field label border">
+            <input type="number" id="edit-reminder-milestone-days" min="1">
+            <label>{{ _('Days') }}</label>
+         </div>
+      </div>
+      <p class="small" style="margin-top: 1rem;">{{ _('Notify me') }}:</p>
+      <div class="row" style="gap: 8px; flex-wrap: wrap;">
+         <label class="chip">
+            <input type="checkbox" id="edit-notify-0"><span>{{ _('On the day') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="edit-notify-1"><span>{{ _('1 day before') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="edit-notify-3"><span>{{ _('3 days before') }}</span>
+         </label>
+         <label class="chip">
+            <input type="checkbox" id="edit-notify-7"><span>{{ _('7 days before') }}</span>
+         </label>
+      </div>
+      <nav class="right-align no-space" style="margin-top: 1rem;">
+         <button class="transparent link" onclick="callUi('#dialog-edit-reminder')">{{ _('Cancel') }}</button>
+         <button class="transparent link" onclick="updateReminder()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+   <!-- Snackbar -->
+   <div class="snackbar" id="reminders-snackbar">
+      <div class="max" id="reminders-snackbar-text" onclick="document.getElementById('reminders-snackbar').classList.remove('active');"></div>
+      <a id="reminders-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-reminders-error"></div>
+   <dialog id="reminders-error-more-details">
+      <h5>{{ _('Error details') }}</h5>
+      <div id="reminders-error-more-details-text"></div>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="showMoreInfo('reminders', null, 'close')">{{ _('OK') }}</button>
+      </nav>
+   </dialog>
+
+   <script src="/static/js/main.js"></script>
+   <script src="/static/js/reminders.js"></script>
+   </body>
+</html>

@@ -25,6 +25,13 @@
        </a>
        {% endif %}
 
+       {% if has_permission('View Reminders') %}
+       <a href="/reminders">
+       <i>notifications</i>
+       <span>{{ _('Reminders') }}</span>
+       </a>
+       {% endif %}
+
        <hr>
 
        {% if has_permission('Manage Translations') %}

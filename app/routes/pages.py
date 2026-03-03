@@ -6,7 +6,8 @@ from app.db_queries import (get_all_list_types, get_all_relationship_statuses,
     get_translations_by_language, get_user_by_id, get_user_setting, get_setting_by_name,
     get_item_by_id, get_user_settings, get_list_type_by_content_url, get_all_settings,
     get_shared_item_ids, get_list_type_by_title, ensure_countdown_list_type,
-    ensure_banner_song_setting)
+    ensure_banner_song_setting, get_all_reminders, get_user_muted_reminder_ids,
+    ensure_notification_settings)
 from app.logger import log
 import os
 from app.utils import generate_banner_text
@@ -216,6 +217,7 @@ def settings():
 @jwt_required
 def user_settings():
     try:
+        ensure_notification_settings(g.user_id)
         settings = get_all_settings()
         list_types = get_all_list_types()
         title = get_setting_by_name('title')
@@ -225,7 +227,13 @@ def user_settings():
         settings_type = 'user-settings'
         supported_languages = get_supported_languages()
 
-        return render_template('pages/settings.html', settings=settings, list_types=list_types, title=title, darkmode=darkmode, user_data=user_data, user_settings=user_settings, settings_type=settings_type, supported_languages=supported_languages)
+        smtp_available = bool(os.environ.get('SMTP_HOST', ''))
+        telegram_available = bool(os.environ.get('TELEGRAM_BOT_TOKEN', ''))
+        telegram_chat_id_setting = get_user_setting(g.user_id, 'notification_telegram_chat_id')
+        telegram_chat_id = telegram_chat_id_setting.value if telegram_chat_id_setting else ''
+
+        return render_template('pages/settings.html', settings=settings, list_types=list_types, title=title, darkmode=darkmode, user_data=user_data, user_settings=user_settings, settings_type=settings_type, supported_languages=supported_languages,
+            smtp_available=smtp_available, telegram_available=telegram_available, telegram_chat_id=telegram_chat_id)
     except Exception as e:
         log('error', f'Error while rendering the settings.html-Template: {e}')
         return "An error occurred while rendering the page. Please check the server logs for details.", 500
@@ -349,6 +357,83 @@ def migration_complete():
     return render_template('pages/migration-complete.html',
         status=status, users=user_data, has_placeholder=has_placeholder, summary=summary,
         languages=languages, roles=role_names)
+
+
+def _translate_reminder_title(reminder):
+    """Translate auto-reminder titles using the current locale."""
+    if not reminder.is_auto:
+        return reminder.title
+
+    if reminder.title in ('Anniversary', 'Wedding Day', 'Engagement Day'):
+        return _(reminder.title)
+
+    if reminder.auto_source and reminder.auto_source.startswith('user_birthday_'):
+        try:
+            uid = int(reminder.auto_source.replace('user_birthday_', ''))
+            user = get_user_by_id(uid)
+            if user:
+                return _('Birthday of {name}').format(name=user.firstName)
+        except (ValueError, TypeError):
+            pass
+        return reminder.title
+
+    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+        days = reminder.milestone_days
+        if days:
+            if days % 365 == 0:
+                return _('{n}-Year Milestone').format(n=days // 365)
+            else:
+                return _('{n}-Day Milestone').format(n=days)
+        return reminder.title
+
+    if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
+        item_title = reminder.title
+        if item_title.startswith('Countdown: '):
+            item_title = item_title[len('Countdown: '):]
+        return _('Countdown: {title}').format(title=item_title)
+
+    return _(reminder.title)
+
+
+def _translate_reminder_description(reminder):
+    """Translate auto-reminder descriptions using the current locale."""
+    if not reminder.is_auto or not reminder.description:
+        return reminder.description
+
+    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+        days = reminder.milestone_days
+        if days:
+            return _('{n} days together!').format(n=days)
+
+    if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
+        item_title = reminder.title
+        if item_title.startswith('Countdown: '):
+            item_title = item_title[len('Countdown: '):]
+        return _('Countdown "{title}" reached!').format(title=item_title)
+
+    return reminder.description
+
+
+@pages_bp.route('/reminders')
+@jwt_required
+@require_permission('View Reminders')
+def reminders():
+    try:
+        list_types = get_all_list_types()
+        title = get_setting_by_name('title')
+        darkmode = get_user_setting(g.user_id, 'darkmode')
+        user_data = get_user_by_id(g.user_id)
+        reminder_list = get_all_reminders()
+        muted_ids = get_user_muted_reminder_ids(g.user_id)
+
+        return render_template('pages/reminders.html',
+            list_types=list_types, title=title, darkmode=darkmode, user_data=user_data,
+            reminders=reminder_list, muted_ids=muted_ids,
+            translate_title=_translate_reminder_title,
+            translate_desc=_translate_reminder_description)
+    except Exception as e:
+        log('error', f'Error while rendering reminders page: {e}')
+        return "An error occurred while rendering the page. Please check the server logs for details.", 500
 
 
 @pages_bp.route('/<path:content_url>')

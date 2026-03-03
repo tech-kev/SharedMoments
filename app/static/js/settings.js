@@ -704,11 +704,240 @@ function deleteBannerSong() {
     });
 }
 
+// --- Notification Channels ---
+
+function togglePush(enabled) {
+    const toggle = document.getElementById('toggle-push');
+    if (toggle) toggle.checked = enabled;
+    saveNotificationSetting('notification_push_enabled', enabled ? 'True' : 'False');
+    if (enabled && Notification.permission === 'default') {
+        requestPushPermission();
+    } else if (enabled && Notification.permission === 'granted') {
+        subscribeToPush();
+    } else if (!enabled) {
+        unsubscribeFromPush();
+    }
+}
+
+function toggleEmail(enabled) {
+    const toggle = document.getElementById('toggle-email');
+    if (toggle) toggle.checked = enabled;
+    saveNotificationSetting('notification_email_enabled', enabled ? 'True' : 'False');
+    const testSection = document.getElementById('email-test-section');
+    if (testSection) testSection.style.display = enabled ? '' : 'none';
+}
+
+function toggleTelegram(enabled) {
+    const toggle = document.getElementById('toggle-telegram');
+    if (toggle) toggle.checked = enabled;
+    saveNotificationSetting('notification_telegram_enabled', enabled ? 'True' : 'False');
+    const configSection = document.getElementById('telegram-config-section');
+    if (configSection) configSection.style.display = enabled ? '' : 'none';
+}
+
+function saveTelegramConfig() {
+    const chatId = document.getElementById('input-telegram-chat-id')?.value || '';
+    saveNotificationSetting('notification_telegram_chat_id', chatId);
+    const statusEl = document.getElementById('telegram-status-text');
+    if (statusEl) statusEl.textContent = chatId || _('Not configured');
+    showSnackbar('settings', true, 'success', _('Telegram Chat-ID saved'), null, false);
+}
+
+async function requestPushPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+        await subscribeToPush();
+    }
+    updatePushStatus();
+}
+
+async function subscribeToPush() {
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const keyResp = await fetch('/api/v2/push/vapid-key');
+        const keyData = await keyResp.json();
+        if (keyData.status !== 'success') {
+            console.error('VAPID key fetch failed:', keyData);
+            showSnackbar('settings', true, 'error', _('Failed to get push key from server'), null, false);
+            return;
+        }
+
+        // Unsubscribe existing subscription if key changed
+        const existingSub = await reg.pushManager.getSubscription();
+        if (existingSub) {
+            await existingSub.unsubscribe();
+        }
+
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(keyData.data.publicKey)
+        });
+
+        const subJson = sub.toJSON();
+        const saveResp = await fetch('/api/v2/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                endpoint: subJson.endpoint,
+                keys: subJson.keys
+            })
+        });
+        const saveResult = await saveResp.json();
+        if (saveResult.status === 'success') {
+            showSnackbar('settings', true, 'success', _('Push notifications enabled'), null, false);
+        } else {
+            console.error('Push subscribe save failed:', saveResult);
+            showSnackbar('settings', true, 'error', saveResult.message || _('An error occurred'), null, false);
+        }
+    } catch (e) {
+        console.error('Push subscription failed:', e);
+        showSnackbar('settings', true, 'error', _('Push subscription failed'), null, false);
+    }
+}
+
+async function subscribeToPushSilent() {
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const keyResp = await fetch('/api/v2/push/vapid-key');
+        const keyData = await keyResp.json();
+        if (keyData.status !== 'success') return;
+
+        const existingSub = await reg.pushManager.getSubscription();
+        if (existingSub) {
+            // Already subscribed, just ensure server knows
+            const subJson = existingSub.toJSON();
+            await fetch('/api/v2/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ endpoint: subJson.endpoint, keys: subJson.keys })
+            });
+            return;
+        }
+
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(keyData.data.publicKey)
+        });
+        const subJson = sub.toJSON();
+        await fetch('/api/v2/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endpoint: subJson.endpoint, keys: subJson.keys })
+        });
+    } catch (e) {
+        console.error('Silent push subscription failed:', e);
+    }
+}
+
+async function unsubscribeFromPush() {
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+            const subJson = sub.toJSON();
+            await sub.unsubscribe();
+            await fetch('/api/v2/push/subscribe', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ endpoint: subJson.endpoint })
+            });
+        }
+    } catch (e) {
+        console.error('Push unsubscribe failed:', e);
+    }
+}
+
+async function updatePushStatus() {
+    const statusEl = document.getElementById('push-status-text');
+    const permSection = document.getElementById('push-permission-section');
+    const testSection = document.getElementById('push-test-section');
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        if (statusEl) statusEl.textContent = _('Not supported by browser');
+        return;
+    }
+
+    const permission = Notification.permission;
+    if (permission === 'granted') {
+        if (statusEl) statusEl.textContent = _('Active');
+        if (permSection) permSection.style.display = 'none';
+        if (testSection) testSection.style.display = '';
+    } else if (permission === 'denied') {
+        if (statusEl) statusEl.textContent = _('Blocked by browser');
+        if (permSection) permSection.style.display = 'none';
+        if (testSection) testSection.style.display = 'none';
+    } else {
+        if (statusEl) statusEl.textContent = _('Permission required');
+        if (permSection) permSection.style.display = '';
+        if (testSection) testSection.style.display = 'none';
+    }
+}
+
+async function testNotification(channel) {
+    try {
+        const resp = await fetch('/api/v2/notifications/test', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ channel: channel })
+        });
+        const result = await resp.json();
+        if (result.status === 'success') {
+            showSnackbar('settings', true, 'success', result.message, null, false);
+        } else {
+            showSnackbar('settings', true, 'error', result.message || _('An error occurred'), null, false);
+        }
+    } catch (e) {
+        showSnackbar('settings', true, 'error', _('An error occurred'), null, false);
+    }
+}
+
+function saveNotificationSetting(name, value) {
+    const formData = new FormData();
+    formData.append('setting', name);
+    formData.append('value', value);
+    fetch('/api/v2/user-settings', { method: 'PUT', body: formData });
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+function initNotificationSettings() {
+    const pushToggle = document.getElementById('toggle-push');
+    if (pushToggle) pushToggle.checked = window.pushEnabled || false;
+
+    const emailToggle = document.getElementById('toggle-email');
+    if (emailToggle && emailToggle.checked) {
+        const testSection = document.getElementById('email-test-section');
+        if (testSection) testSection.style.display = '';
+    }
+
+    const telegramToggle = document.getElementById('toggle-telegram');
+    if (telegramToggle && telegramToggle.checked) {
+        const configSection = document.getElementById('telegram-config-section');
+        if (configSection) configSection.style.display = '';
+    }
+
+    updatePushStatus();
+
+    // Auto-subscribe silently if push enabled and permission granted
+    if (window.pushEnabled && Notification.permission === 'granted') {
+        subscribeToPushSilent();
+    }
+}
+
 // Init storage display on page load
 if (settingsType === 'user-settings') {
     document.addEventListener('DOMContentLoaded', () => {
         syncPwaTogglesFromLocalStorage();
         updateStorageDisplay();
         syncAllPwaSettings();
+        initNotificationSettings();
     });
 }

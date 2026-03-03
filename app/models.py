@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint, DateTime
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from config import Config
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -195,6 +195,60 @@ class Translation(Base):
         Index('idx_translation_entity', 'entityType', 'entityID', 'languageCode', 'fieldName'),
         UniqueConstraint('entityType', 'entityID', 'languageCode', 'fieldName', name='uq_translation_entity')
     )
+
+
+class Reminder(Base):
+    __tablename__ = 'reminders'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, default='')
+    reminder_type = Column(String(20), nullable=False)  # 'annual' | 'one_time' | 'milestone' | 'countdown'
+    month = Column(Integer, nullable=True)              # für annual (1-12)
+    day = Column(Integer, nullable=True)                # für annual (1-31)
+    target_date = Column(Date, nullable=True)           # für one_time
+    milestone_days = Column(Integer, nullable=True)     # für milestone (z.B. 1000)
+    countdown_id = Column(Integer, nullable=True)       # FK → items.id für countdown
+    notify_days_before = Column(String(50), default='0')  # kommasepariert: "0,1,3,7"
+    is_global = Column(Boolean, default=True)
+    is_auto = Column(Boolean, default=False)
+    auto_source = Column(String(50), nullable=True)     # 'anniversary_date', 'wedding_date', 'user_birthday_2' etc.
+    created_by = Column(Integer, ForeignKey('users.id'))
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=func.now())
+
+    mutes = relationship('ReminderMute', back_populates='reminder', cascade='all, delete-orphan')
+
+
+class ReminderMute(Base):
+    __tablename__ = 'reminder_mutes'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    reminder_id = Column(Integer, ForeignKey('reminders.id'), nullable=False)
+
+    reminder = relationship('Reminder', back_populates='mutes')
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'reminder_id', name='uq_reminder_mute'),
+    )
+
+
+class PushSubscription(Base):
+    __tablename__ = 'push_subscriptions'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    endpoint = Column(Text, nullable=False)
+    p256dh = Column(Text, nullable=False)
+    auth = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=func.now())
+
+
+class NotificationLog(Base):
+    __tablename__ = 'notification_log'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    notification_key = Column(String(200), unique=True, nullable=False)
+    reminder_id = Column(Integer, nullable=True)
+    sent_at = Column(DateTime, default=func.now())
+
 
 # Database connection
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
