@@ -180,9 +180,13 @@ def find_unmatched_translations():
 
     # Erstelle ein Set für die Kombination aus entityType und fieldName für all_translations
     translations_set = set((item.entityType, item.fieldName) for item in all_translations)
+    # Also track all fieldNames regardless of entityType to avoid UNIQUE conflicts
+    all_field_names = set(item.fieldName for item in all_translations)
 
     # Finde die Einträge, die in texts_for_translations sind, aber nicht in translations_set
-    unmatched_texts = [item for item in texts_for_translations if (item['entityType'], item['fieldName']) not in translations_set]
+    unmatched_texts = [item for item in texts_for_translations
+                       if (item['entityType'], item['fieldName']) not in translations_set
+                       and item['fieldName'] not in all_field_names]
 
     return unmatched_texts
 
