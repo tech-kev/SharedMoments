@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from app.db_queries import get_all_settings, get_all_translations, get_all_user_settings, get_setting_by_name, get_field_name, get_translations_by_language
 from app.translation import _
 from app.logger import log
@@ -10,6 +11,29 @@ import json
 import base64
 from io import BytesIO
 from PIL import Image
+
+
+def sanitize_identifier(text):
+    """Sanitize text for use in filenames: no special chars, spaces to underscores."""
+    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii')
+    text = re.sub(r'[^\w\s-]', '', text).strip()
+    text = re.sub(r'[\s-]+', '_', text)
+    return text or 'Unknown'
+
+
+def generate_admin_filename(image_type, identifier, extension):
+    """Generate descriptive filename: {Prefix}_{Identifier}.{ext} or {Prefix}.{ext} if no identifier."""
+    PREFIXES = {
+        'profile': 'Profilbild',
+        'banner_image': 'Banner',
+        'banner_song': 'Bannersong',
+    }
+    prefix = PREFIXES.get(image_type, image_type)
+    ext = extension.lower().lstrip('.')
+    if identifier and identifier.strip():
+        safe_id = sanitize_identifier(identifier)
+        return f"{prefix}_{safe_id}.{ext}"
+    return f"{prefix}.{ext}"
 
 def generate_lqip(image_path):
     """Generate a low-quality image placeholder (base64 data-URI) and return dimensions."""

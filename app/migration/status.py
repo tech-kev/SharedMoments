@@ -16,6 +16,7 @@ STEPS = [
     'migrate_moments',
     'migrate_countdown',
     'migrate_files',
+    'rename_admin_images',
     'post_migration',
 ]
 

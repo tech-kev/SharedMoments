@@ -12,6 +12,7 @@ from app.db_queries import (
 )
 from app.models import User, Role, Permission, Passkey, RolePermission, UserRole, UserSetting, SessionLocal
 from app.logger import log
+from app.utils import generate_admin_filename
 from datetime import datetime
 import os
 
@@ -247,7 +248,9 @@ def create_user_route():
                 profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
                 if not os.path.exists(profiles_folder):
                     os.makedirs(profiles_folder)
-                filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
+                identifier = f"{firstName}_{lastName}" if lastName else firstName or 'Unknown'
+                ext = file.filename.rsplit('.', 1)[-1] if '.' in file.filename else 'jpg'
+                filename = generate_admin_filename('profile', identifier, ext)
                 file.save(os.path.join(profiles_folder, filename))
                 profilePicture = filename
 
@@ -335,7 +338,11 @@ def update_user_route(id):
                 profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
                 if not os.path.exists(profiles_folder):
                     os.makedirs(profiles_folder)
-                filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
+                fn = firstName or user.firstName or ''
+                ln = lastName or user.lastName or ''
+                identifier = f"{fn}_{ln}" if ln else fn or f"User_{id}"
+                ext = file.filename.rsplit('.', 1)[-1] if '.' in file.filename else 'jpg'
+                filename = generate_admin_filename('profile', identifier, ext)
                 file.save(os.path.join(profiles_folder, filename))
                 user.profilePicture = filename
 

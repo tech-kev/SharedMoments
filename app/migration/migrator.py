@@ -10,6 +10,7 @@ from app.migration.status import (
     STEPS, load_status, create_status, update_step,
     is_step_completed, mark_migration_complete, is_migration_complete,
 )
+from app.utils import generate_admin_filename
 from app.migration.v1_reader import (
     v1_configured, test_connection, discover_schema, read_settings,
     read_settings_full, read_feed_items, read_bucketlist, read_filmlist,
@@ -197,6 +198,7 @@ def _run_migration(lock_fd):
         'migrate_moments': _step_migrate_moments,
         'migrate_countdown': _step_migrate_countdown,
         'migrate_files': _step_migrate_files,
+        'rename_admin_images': _step_rename_admin_images,
         'post_migration': _step_post_migration,
     }
 
@@ -787,6 +789,106 @@ def _step_migrate_countdown(status, dry_run, prefix):
 
         _summary['countdowns'] = 1
         log('info', f'{prefix} Countdown migrated')
+    finally:
+        session.close()
+
+
+def _step_rename_admin_images(status, dry_run, prefix):
+    """Rename migrated admin images (profile pictures, banner, banner song) to descriptive filenames."""
+    from app.models import User, Setting, SessionLocal
+
+    profiles_folder = os.path.join(BASEDIR, 'uploads', 'profiles')
+    static_images_folder = os.path.join(BASEDIR, 'static', 'images')
+    music_folder = os.path.join(BASEDIR, 'uploads', 'music')
+    uploads_images_folder = os.path.join(BASEDIR, 'uploads', 'images')
+
+    def _find_file(filename, *folders):
+        for folder in folders:
+            path = os.path.join(folder, filename)
+            if os.path.exists(path):
+                return path
+        return None
+
+    def _unique_name(folder, filename):
+        if not os.path.exists(os.path.join(folder, filename)):
+            return filename
+        base, ext = os.path.splitext(filename)
+        counter = 2
+        while os.path.exists(os.path.join(folder, f"{base}_{counter}{ext}")):
+            counter += 1
+        return f"{base}_{counter}{ext}"
+
+    session = SessionLocal()
+    renamed = 0
+    try:
+        # 1. Profile pictures
+        users = session.query(User).filter(
+            User.profilePicture != '', User.profilePicture != None
+        ).all()
+        for user in users:
+            old_name = user.profilePicture
+            if not old_name or old_name == 'default-profile.png' or old_name.startswith('Profilbild_'):
+                continue
+
+            old_path = _find_file(old_name, profiles_folder, static_images_folder)
+            if not old_path:
+                _warn(prefix, f'Profile picture "{old_name}" not found for user {user.id}')
+                continue
+
+            identifier = f"{user.firstName}_{user.lastName}" if user.lastName else (user.firstName or f"User_{user.id}")
+            ext = old_name.rsplit('.', 1)[-1] if '.' in old_name else 'jpg'
+            new_name = generate_admin_filename('profile', identifier, ext)
+            os.makedirs(profiles_folder, exist_ok=True)
+            new_name = _unique_name(profiles_folder, new_name)
+            new_path = os.path.join(profiles_folder, new_name)
+
+            log('info', f'{prefix} Profile: "{old_name}" -> "{new_name}" (user {user.id})')
+            if not dry_run:
+                os.rename(old_path, new_path)
+                user.profilePicture = new_name
+            renamed += 1
+
+        # 2. Banner image
+        banner_setting = session.query(Setting).filter(Setting.name == 'banner_image').first()
+        if banner_setting and banner_setting.value and not banner_setting.value.startswith('Banner.'):
+            old_name = banner_setting.value
+            old_path = _find_file(old_name, static_images_folder, uploads_images_folder)
+            if old_path:
+                ext = old_name.rsplit('.', 1)[-1] if '.' in old_name else 'jpg'
+                new_name = generate_admin_filename('banner_image', '', ext)
+                target_folder = os.path.dirname(old_path)
+                new_name = _unique_name(target_folder, new_name)
+                new_path = os.path.join(target_folder, new_name)
+                log('info', f'{prefix} Banner: "{old_name}" -> "{new_name}"')
+                if not dry_run:
+                    os.rename(old_path, new_path)
+                    banner_setting.value = new_name
+                renamed += 1
+            else:
+                _warn(prefix, f'Banner image "{old_name}" not found')
+
+        # 3. Banner song
+        song_setting = session.query(Setting).filter(Setting.name == 'banner_song').first()
+        if song_setting and song_setting.value and not song_setting.value.startswith('Bannersong.'):
+            old_name = song_setting.value
+            old_path = _find_file(old_name, music_folder)
+            if old_path:
+                ext = old_name.rsplit('.', 1)[-1] if '.' in old_name else 'mp3'
+                new_name = generate_admin_filename('banner_song', '', ext)
+                new_name = _unique_name(music_folder, new_name)
+                new_path = os.path.join(music_folder, new_name)
+                log('info', f'{prefix} Banner song: "{old_name}" -> "{new_name}"')
+                if not dry_run:
+                    os.rename(old_path, new_path)
+                    song_setting.value = new_name
+                renamed += 1
+            else:
+                _warn(prefix, f'Banner song "{old_name}" not found')
+
+        if not dry_run:
+            session.commit()
+
+        log('info', f'{prefix} Admin images renamed: {renamed}')
     finally:
         session.close()
 

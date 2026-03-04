@@ -18,7 +18,7 @@ from datetime import datetime
 from app.logger import log
 import os, json, subprocess, shutil
 from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role
-from app.utils import export_data, find_unmatched_translations, generate_lqip
+from app.utils import export_data, find_unmatched_translations, generate_lqip, generate_admin_filename
 from app.translation import _, load_translation_in_cache, set_locale, migrateTranslations
 from app.routes.auth import jwt_required, login_jwt
 from app.permissions import require_permission, require_list_permission
@@ -118,6 +118,21 @@ def setup_complete():
 
             user_id = new_user.id
 
+            # Rename and move profile picture from static/images/ to uploads/profiles/
+            if profilePicture and profilePicture != 'default-profile.png':
+                basedir = os.path.abspath(os.path.dirname(__file__))
+                static_folder = os.path.join(basedir, '..', 'static', 'images')
+                profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
+                os.makedirs(profiles_folder, exist_ok=True)
+                old_path = os.path.join(static_folder, profilePicture)
+                if os.path.exists(old_path):
+                    ext = profilePicture.rsplit('.', 1)[-1] if '.' in profilePicture else 'jpg'
+                    identifier = f"{firstName}_{lastName}" if lastName else firstName
+                    new_name = generate_admin_filename('profile', identifier, ext)
+                    new_path = os.path.join(profiles_folder, new_name)
+                    os.rename(old_path, new_path)
+                    new_user.profilePicture = new_name
+
             if credential_id:
                 new_passkey = Passkey(
                     userID=new_user.id,
@@ -214,6 +229,21 @@ def update_settings():
                     'data': {'error_code': 400}
                 }), 400
 
+        # Rename banner files to descriptive names
+        if setting in ('banner_image', 'banner_song') and value:
+            basedir = os.path.abspath(os.path.dirname(__file__))
+            if setting == 'banner_image':
+                folder = os.path.join(basedir, '..', 'static', 'images')
+            else:
+                folder = os.path.join(basedir, '..', 'uploads', 'music')
+            old_path = os.path.join(folder, value)
+            if os.path.exists(old_path):
+                ext = value.rsplit('.', 1)[-1] if '.' in value else ''
+                new_name = generate_admin_filename(setting, '', ext)
+                new_path = os.path.join(folder, new_name)
+                os.rename(old_path, new_path)
+                value = new_name
+
         update_setting(setting, value)
 
         log('info', f'Setting updated: {setting}')
@@ -279,7 +309,14 @@ def update_profile_picture():
         if not file:
             return jsonify({'status': 'error', 'message': _('No file provided')}), 400
 
-        filename = secure_filename(f"{datetime.now().strftime('%Y%m%d')}-{file.filename}")
+        user = get_user_by_id(g.user_id)
+        if user and user.firstName:
+            identifier = f"{user.firstName}_{user.lastName}" if user.lastName else user.firstName
+        else:
+            identifier = f"User_{g.user_id}"
+        ext = file.filename.rsplit('.', 1)[-1] if '.' in file.filename else 'jpg'
+        filename = generate_admin_filename('profile', identifier, ext)
+
         upload_dir = os.path.join(os.path.dirname(__file__), '..', 'uploads', 'profiles')
         os.makedirs(upload_dir, exist_ok=True)
         file.save(os.path.join(upload_dir, filename))
