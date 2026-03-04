@@ -688,7 +688,7 @@ def ensure_pwa_settings(userID):
 
 # Table Item
 
-def create_item(title, content, contentType, listType, contentURL, createdByUser, dateCreated, edition='all'):
+def create_item(title, content, contentType, listType, contentURL, createdByUser, dateCreated, edition='all', blurPlaceholder=None, mediaWidth=None, mediaHeight=None):
     session = SessionLocal()
     try:
         new_item = Item(
@@ -699,7 +699,10 @@ def create_item(title, content, contentType, listType, contentURL, createdByUser
             contentURL=contentURL,
             createdByUser=createdByUser,
             dateCreated=dateCreated,
-            edition=edition
+            edition=edition,
+            blurPlaceholder=blurPlaceholder,
+            mediaWidth=mediaWidth,
+            mediaHeight=mediaHeight
         )
         session.add(new_item)
         session.commit()
@@ -749,7 +752,7 @@ def get_items_by_type(list_type_id, sort_by='desc', edition=None, checked_last=F
     finally:
         session.close()
 
-def update_item(item_id, title=None, content=None, contentType=None, contentURL=None, dateCreated=None, edition=None):
+def update_item(item_id, title=None, content=None, contentType=None, contentURL=None, dateCreated=None, edition=None, blurPlaceholder=None, mediaWidth=None, mediaHeight=None):
     session = SessionLocal()
     try:
         item = session.query(Item).filter(Item.id == item_id).first()
@@ -766,6 +769,12 @@ def update_item(item_id, title=None, content=None, contentType=None, contentURL=
                 item.dateCreated = dateCreated
             if edition is not None:
                 item.edition = edition
+            if blurPlaceholder is not None:
+                item.blurPlaceholder = blurPlaceholder
+            if mediaWidth is not None:
+                item.mediaWidth = mediaWidth
+            if mediaHeight is not None:
+                item.mediaHeight = mediaHeight
             session.commit()
     finally:
         session.close()

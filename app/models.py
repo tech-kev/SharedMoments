@@ -135,6 +135,9 @@ class Item(Base):
     createdByUser = Column(Integer, ForeignKey('users.id'))
     dateCreated = Column(TIMESTAMP, server_default=func.current_timestamp())
     dateModified = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+    blurPlaceholder = Column(Text, nullable=True)
+    mediaWidth = Column(Integer, nullable=True)
+    mediaHeight = Column(Integer, nullable=True)
 
     creator = relationship('User', back_populates='items')
     list_type = relationship('ListType', back_populates='items')

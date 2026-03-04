@@ -7,6 +7,25 @@ from dateutil.relativedelta import relativedelta
 import os
 from pathlib import Path
 import json
+import base64
+from io import BytesIO
+from PIL import Image
+
+def generate_lqip(image_path):
+    """Generate a low-quality image placeholder (base64 data-URI) and return dimensions."""
+    try:
+        with Image.open(image_path) as img:
+            width, height = img.size
+            img = img.convert('RGB')
+            img.thumbnail((64, 64))
+            buffer = BytesIO()
+            img.save(buffer, format='JPEG', quality=40, optimize=True)
+            b64 = base64.b64encode(buffer.getvalue()).decode('ascii')
+            return f'data:image/jpeg;base64,{b64}', width, height
+    except Exception as e:
+        log('warning', f'LQIP generation failed for {image_path}: {e}')
+        return None, None, None
+
 
 def generate_banner_text():
     try:

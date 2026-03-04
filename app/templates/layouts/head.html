@@ -49,6 +49,18 @@ if ('serviceWorker' in navigator) {
       position: relative;
       overflow: hidden;
    }
+   .img-skeleton-wrapper[data-lqip]::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      background: var(--lqip) center/cover no-repeat;
+      filter: blur(10px);
+      z-index: 1;
+   }
+   .img-skeleton-wrapper.loaded::before {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
    .img-skeleton-wrapper.loaded .skeleton-overlay {
       display: none;
    }
@@ -75,11 +87,12 @@ if ('serviceWorker' in navigator) {
       overflow: hidden;
    }
    /* Lazy Loading */
-   img.lazy:not([src]) {
-      opacity: 0;
-   }
    img.lazy {
-      transition: opacity 0.3s ease;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
+   img.lazy.lazy-loaded {
+      opacity: 1;
    }
    /* PWA Sync Animation */
    @keyframes pwa-spin {

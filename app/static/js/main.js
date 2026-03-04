@@ -133,7 +133,15 @@ const lazyObserver = new IntersectionObserver((entries) => {
    entries.forEach(entry => {
       if (entry.isIntersecting) {
          const img = entry.target;
-         img.src = img.dataset.src;
+         const realSrc = img.dataset.src;
+         // Bild im Hintergrund vorladen, dann mit Fade einblenden
+         const preload = new Image();
+         preload.onload = () => {
+            img.src = realSrc;
+            img.classList.add('lazy-loaded');
+            img.parentElement.classList.add('loaded');
+         };
+         preload.src = realSrc;
          lazyObserver.unobserve(img);
       }
    });

@@ -18,7 +18,7 @@ from datetime import datetime
 from app.logger import log
 import os, json, subprocess, shutil
 from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role
-from app.utils import export_data, find_unmatched_translations
+from app.utils import export_data, find_unmatched_translations, generate_lqip
 from app.translation import _, load_translation_in_cache, set_locale, migrateTranslations
 from app.routes.auth import jwt_required, login_jwt
 from app.permissions import require_permission, require_list_permission
@@ -327,6 +327,53 @@ def media(filename):
     return _safe_send_file(_find_media_folder(filename), filename)
 
 
+def _ensure_video_thumbnail(filename):
+    """Generate a JPEG thumbnail for a video file and return its path, or None on failure."""
+    safe = _secure_filename_preserve(filename)
+    if not safe:
+        return None
+
+    videos_folder = os.path.abspath(_find_media_folder(filename))
+    video_path = os.path.abspath(os.path.join(videos_folder, safe))
+
+    if not os.path.exists(video_path):
+        return None
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
+    os.makedirs(thumb_folder, exist_ok=True)
+
+    thumb_name = os.path.splitext(safe)[0] + '.jpg'
+    thumb_path = os.path.join(thumb_folder, thumb_name)
+
+    if not os.path.exists(thumb_path):
+        try:
+            ffmpeg_bin = shutil.which('ffmpeg')
+            if not ffmpeg_bin:
+                try:
+                    import imageio_ffmpeg
+                    ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
+                except ImportError:
+                    pass
+            if not ffmpeg_bin:
+                log('error', 'ffmpeg not found')
+                return None
+            subprocess.run([
+                ffmpeg_bin, '-i', video_path,
+                '-ss', '00:00:00.5',
+                '-frames:v', '1',
+                '-vf', 'scale=800:-1',
+                '-q:v', '5',
+                '-update', '1',
+                '-y', thumb_path
+            ], capture_output=True, timeout=10)
+        except Exception as e:
+            log('error', f'Thumbnail generation failed for {filename}: {e}')
+            return None
+
+    return thumb_path if os.path.exists(thumb_path) else None
+
+
 @api_bp.route('/api/v2/media/thumb/<filename>')
 @jwt_required
 def media_thumb(filename):
@@ -341,41 +388,8 @@ def media_thumb(filename):
     if not video_path.startswith(videos_folder) or not os.path.exists(video_path):
         abort(404)
 
-    # Thumbnail-Cache-Ordner
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    thumb_folder = os.path.join(basedir, '..', 'uploads', 'thumbs')
-    os.makedirs(thumb_folder, exist_ok=True)
-
-    thumb_name = os.path.splitext(safe)[0] + '.jpg'
-    thumb_path = os.path.join(thumb_folder, thumb_name)
-
-    # Thumbnail nur generieren wenn es noch nicht existiert
-    if not os.path.exists(thumb_path):
-        try:
-            ffmpeg_bin = shutil.which('ffmpeg')
-            if not ffmpeg_bin:
-                try:
-                    import imageio_ffmpeg
-                    ffmpeg_bin = imageio_ffmpeg.get_ffmpeg_exe()
-                except ImportError:
-                    pass
-            if not ffmpeg_bin:
-                log('error', 'ffmpeg not found')
-                abort(500)
-            subprocess.run([
-                ffmpeg_bin, '-i', video_path,
-                '-ss', '00:00:00.5',
-                '-frames:v', '1',
-                '-vf', 'scale=800:-1',
-                '-q:v', '5',
-                '-update', '1',
-                '-y', thumb_path
-            ], capture_output=True, timeout=10)
-        except Exception as e:
-            log('error', f'Thumbnail generation failed for {filename}: {e}')
-            abort(500)
-
-    if not os.path.exists(thumb_path):
+    thumb_path = _ensure_video_thumbnail(filename)
+    if not thumb_path:
         abort(500)
 
     return send_file(thumb_path, mimetype='image/jpeg')
@@ -607,7 +621,20 @@ def item():
                 dateCreated = datetime.utcnow()
 
             edition = request.form.get('edition', 'all')
-            new_item_id = create_item(title, content, content_type, list_type, content_url, created_by_user, dateCreated, edition=edition)
+
+            # LQIP + Dimensionen generieren
+            lqip, media_w, media_h = None, None, None
+            first_url = content_url.split(';')[0].strip() if content_url else ''
+            if first_url and content_type in ('image', 'galleryStartWithImage'):
+                ext = first_url.rsplit('.', 1)[-1].lower() if '.' in first_url else ''
+                img_path = os.path.join(os.path.abspath(_get_upload_folder(ext)), first_url)
+                lqip, media_w, media_h = generate_lqip(img_path)
+            elif first_url and content_type in ('video', 'video-mov', 'galleryStartWithVideo'):
+                thumb_path = _ensure_video_thumbnail(first_url)
+                if thumb_path:
+                    lqip, media_w, media_h = generate_lqip(thumb_path)
+
+            new_item_id = create_item(title, content, content_type, list_type, content_url, created_by_user, dateCreated, edition=edition, blurPlaceholder=lqip, mediaWidth=media_w, mediaHeight=media_h)
 
             log('info', f'Item created: ID={new_item_id}, ContentType={content_type}, ListType={list_type}, User={created_by_user}')
 
@@ -770,7 +797,20 @@ def item_by_id(id):
                     dateCreated = item.dateCreated
 
             edition = request.form.get('edition')
-            update_item(id, title, content, content_type, content_url, dateCreated, edition=edition)
+
+            # LQIP + Dimensionen neu generieren wenn sich das Bild geändert hat
+            lqip, media_w, media_h = None, None, None
+            first_url = content_url.split(';')[0].strip() if content_url else ''
+            if first_url and content_type in ('image', 'galleryStartWithImage'):
+                ext = first_url.rsplit('.', 1)[-1].lower() if '.' in first_url else ''
+                img_path = os.path.join(os.path.abspath(_get_upload_folder(ext)), first_url)
+                lqip, media_w, media_h = generate_lqip(img_path)
+            elif first_url and content_type in ('video', 'video-mov', 'galleryStartWithVideo'):
+                thumb_path = _ensure_video_thumbnail(first_url)
+                if thumb_path:
+                    lqip, media_w, media_h = generate_lqip(thumb_path)
+
+            update_item(id, title, content, content_type, content_url, dateCreated, edition=edition, blurPlaceholder=lqip, mediaWidth=media_w, mediaHeight=media_h)
 
             log('info', f'Item updated: ID={id}, ContentType={content_type}')
 
