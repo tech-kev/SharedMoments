@@ -36,7 +36,7 @@
      <h5 id="timeline-detail-title"></h5>
      <div class="max"></div>
      {% if has_list_permission('Delete', moments_title) %}
-     <button class="circle transparent" onclick="deleteTimelineItem()"><i>delete</i></button>
+     <button class="circle transparent" onclick="deleteTimelineItem(this)"><i>delete</i></button>
      {% endif %}
      {% if has_list_permission('Update', moments_title) %}
      <button class="circle transparent" onclick="editTimelineItem()"><i>edit</i></button>
@@ -54,7 +54,7 @@
     <button class="circle transparent" onclick="callUi('#dialog-edit-timeline-item')"><i>close</i></button>
     <h5>{{ _('Edit moment') }}</h5>
     <div class="max"></div>
-    <a onclick="saveEditedTimelineItem()">{{ _('Save') }}</a>
+    <a onclick="saveEditedTimelineItem(this)">{{ _('Save') }}</a>
   </nav>
   <div class="grid">
     <div class="s12">

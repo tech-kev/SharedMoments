@@ -166,7 +166,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-function saveListType() {
+function saveListType(btn) {
     if (!navigator.onLine) {
         showSnackbar('navbar', true, 'error', _('You are offline'), null, false);
         return;
@@ -190,6 +190,8 @@ function saveListType() {
         return;
     }
 
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('mainTitle', mainTitle || title);
@@ -205,6 +207,7 @@ function saveListType() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-manage-list-type');
                     document.getElementById('div-render-nav-drawer').innerHTML = result.data.rendered_list_types;
@@ -218,6 +221,7 @@ function saveListType() {
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == 'TypeError: Failed to fetch') {
                 error = _('Server not reachable');
             }
@@ -237,10 +241,14 @@ function deleteListTypeFromDialog() {
         return;
     }
 
+    const btn = document.getElementById('manage-list-type-delete-btn');
+    btnLoading(btn);
+
     fetch(`/api/v2/list_type/${id}`, { method: 'DELETE' })
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-manage-list-type');
                     document.getElementById('div-render-nav-drawer').innerHTML = result.data.rendered_list_types;
@@ -253,6 +261,7 @@ function deleteListTypeFromDialog() {
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == 'TypeError: Failed to fetch') {
                 error = _('Server not reachable');
             }

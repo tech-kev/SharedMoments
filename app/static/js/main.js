@@ -132,6 +132,23 @@ function showSkeletonCards(containerId, count = 3) {
    container.innerHTML = html;
 }
 
+// Button Loading State
+function btnLoading(btn) {
+   if (!btn || btn.disabled) return;
+   btn.disabled = true;
+   btn._originalHTML = btn.innerHTML;
+   btn.innerHTML = '<progress class="circle small"></progress>';
+}
+
+function btnReset(btn) {
+   if (!btn) return;
+   btn.disabled = false;
+   if (btn._originalHTML !== undefined) {
+      btn.innerHTML = btn._originalHTML;
+      delete btn._originalHTML;
+   }
+}
+
 // Lazy Loading mit IntersectionObserver
 const lazyObserver = new IntersectionObserver((entries) => {
    entries.forEach(entry => {

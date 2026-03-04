@@ -63,11 +63,11 @@
                </div>
                <div class="row" style="gap: 4px;">
                   {% if reminder.id in muted_ids %}
-                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, false)" title="{{ _('Unmute') }}">
+                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, false, this)" title="{{ _('Unmute') }}">
                      <i>notifications_off</i>
                   </button>
                   {% else %}
-                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, true)" title="{{ _('Mute') }}">
+                  <button class="circle transparent small" onclick="toggleMute({{ reminder.id }}, true, this)" title="{{ _('Mute') }}">
                      <i>notifications_active</i>
                   </button>
                   {% endif %}
@@ -79,7 +79,7 @@
                   {% endif %}
 
                   {% if has_permission('Delete Reminder') %}
-                  <button class="circle transparent small" onclick="deleteReminder({{ reminder.id }})" title="{{ _('Delete') }}">
+                  <button class="circle transparent small" onclick="deleteReminder({{ reminder.id }}, this)" title="{{ _('Delete') }}">
                      <i>delete</i>
                   </button>
                   {% endif %}
@@ -180,7 +180,7 @@
       </div>
       <nav class="right-align no-space" style="margin-top: 1rem;">
          <button class="transparent link" onclick="callUi('#dialog-create-reminder')">{{ _('Cancel') }}</button>
-         <button class="transparent link" onclick="saveReminder()">{{ _('Save') }}</button>
+         <button class="transparent link" onclick="saveReminder(this)">{{ _('Save') }}</button>
       </nav>
    </dialog>
 
@@ -257,7 +257,7 @@
       </div>
       <nav class="right-align no-space" style="margin-top: 1rem;">
          <button class="transparent link" onclick="callUi('#dialog-edit-reminder')">{{ _('Cancel') }}</button>
-         <button class="transparent link" onclick="updateReminder()">{{ _('Save') }}</button>
+         <button class="transparent link" onclick="updateReminder(this)">{{ _('Save') }}</button>
       </nav>
    </dialog>
 

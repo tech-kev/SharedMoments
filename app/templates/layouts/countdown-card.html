@@ -61,7 +61,7 @@
       <button class="circle transparent" onclick="callUi('#dialog-create-countdown')"><i>close</i></button>
       <h5>{{ _('Create countdown') }}</h5>
       <div class="max"></div>
-      <a onclick="saveNewCountdown()">{{ _('Save') }}</a>
+      <a onclick="saveNewCountdown(this)">{{ _('Save') }}</a>
    </nav>
    <div class="grid">
       <div class="s12">
@@ -84,7 +84,7 @@
       <button class="circle transparent" onclick="callUi('#dialog-edit-countdown')"><i>close</i></button>
       <h5>{{ _('Edit countdown') }}</h5>
       <div class="max"></div>
-      <a onclick="saveEditedCountdown()">{{ _('Save') }}</a>
+      <a onclick="saveEditedCountdown(this)">{{ _('Save') }}</a>
    </nav>
    <div class="grid">
       <div class="s12">
@@ -102,7 +102,7 @@
    </div>
    <nav class="right-align">
       {% if has_list_permission('Delete', countdown_title) %}
-      <button class="transparent error" onclick="deleteCountdown()">
+      <button class="transparent error" onclick="deleteCountdown(this)">
          <i>delete</i>
          <span>{{ _('Delete') }}</span>
       </button>

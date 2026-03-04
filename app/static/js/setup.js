@@ -76,6 +76,9 @@ async function exitSetup() {
         return;
     }
 
+    const btn = document.getElementById('button-exit-setup');
+    btnLoading(btn);
+
     for (let i = 0; i < users.length; i++) {
         let user = users[i];
         if (user.profilePicture instanceof File) {
@@ -100,15 +103,19 @@ async function exitSetup() {
             try {
                 const result = await response.json();
                 if (result.status === "success") {
+                    btnReset(btn);
                     window.location.href = '/login';
                 } else {
+                    btnReset(btn);
                     showSnackbar('setup', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('setup', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == "TypeError: Failed to fetch") {
                 error = _('Server not reachable');
             }
@@ -424,7 +431,7 @@ function base64urlToUint8Array(base64urlString) {
     return outputArray;
 }
 
-async function registerPasskey() {
+async function registerPasskey(btn) {
     if (!navigator.credentials || !navigator.credentials.create) {
         var error_data = {
             data: {
@@ -435,6 +442,8 @@ async function registerPasskey() {
         showSnackbar('setup', true, 'error', "WebAuthn is not supported in this browser.", error_data, true);
         return;
     }
+
+    btnLoading(btn);
 
     const formData = new FormData();
     formData.append("email", document.getElementById("add-user-email").value);
@@ -472,6 +481,7 @@ async function registerPasskey() {
             });
             const verifyResult = await verifyResponse.json();
 
+            btnReset(btn);
             if (verifyResult.status === "success") {
                 showSnackbar('setup', true, 'green', verifyResult.message, null, false);
                 passkeyRegistered = true;
@@ -479,6 +489,7 @@ async function registerPasskey() {
                 showSnackbar('setup', true, 'error', verifyResult.message, verifyResult, true);
             }
         } catch (error) {
+            btnReset(btn);
             var error_data = {
                 data: {
                     error_code: "credential_creation_failed",
@@ -488,6 +499,7 @@ async function registerPasskey() {
             showSnackbar('setup', true, 'error', "Error during credential creation.", error_data, true);
         }
     } else {
+        btnReset(btn);
         showSnackbar('setup', true, 'error', result.message, result, true);
     }
 }

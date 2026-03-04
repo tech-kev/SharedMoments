@@ -28,11 +28,13 @@ function editTimelineItem() {
     callUi('#dialog-edit-timeline-item');
 }
 
-function saveEditedTimelineItem() {
+function saveEditedTimelineItem(btn) {
     if (!navigator.onLine) {
         showSnackbar('home', true, 'error', _('You are offline'), null, false);
         return;
     }
+    btnLoading(btn);
+
     const id = document.getElementById('edit-timeline-item-id').value;
     const formData = new FormData();
     formData.append('title', document.getElementById('edit-timeline-item-title').value);
@@ -45,6 +47,7 @@ function saveEditedTimelineItem() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-edit-timeline-item');
                     document.getElementById('div-render-timeline-card').innerHTML = result.data.rendered_items;
@@ -53,10 +56,12 @@ function saveEditedTimelineItem() {
                     showSnackbar('home', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('home', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == "TypeError: Failed to fetch") {
                 error = _('Server not reachable');
             }
@@ -64,11 +69,13 @@ function saveEditedTimelineItem() {
         });
 }
 
-function deleteTimelineItem() {
+function deleteTimelineItem(btn) {
     if (!navigator.onLine) {
         showSnackbar('home', true, 'error', _('You are offline'), null, false);
         return;
     }
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('ids', currentTimelineItemId);
     formData.append('listType', 2);
@@ -77,6 +84,7 @@ function deleteTimelineItem() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-details-timeline-item');
                     document.getElementById('div-render-timeline-card').innerHTML = result.data.rendered_items;
@@ -85,10 +93,12 @@ function deleteTimelineItem() {
                     showSnackbar('home', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('home', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == "TypeError: Failed to fetch") {
                 error = _('Server not reachable');
             }

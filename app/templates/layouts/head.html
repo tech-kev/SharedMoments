@@ -107,6 +107,12 @@ if ('serviceWorker' in navigator) {
    .pwa-syncing #pwa-outbox-badge {
       animation: pwa-spin 1.5s linear infinite;
    }
+   /* Button loading spinner */
+   button progress.circle.small,
+   a progress.circle.small {
+      width: 1.2rem;
+      height: 1.2rem;
+   }
    /* Ghostcard visual distinction */
    .outbox-ghost-card, .outbox-ghost-item {
       border-left: 3px solid var(--tertiary);

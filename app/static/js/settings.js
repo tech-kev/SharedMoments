@@ -6,12 +6,35 @@ let requiredDateMode = false;
 let pendingRequiredDates = [];
 
 // --- Profile Picture ---
+function _rowSpinnerOn(row) {
+    if (!row) return null;
+    const icon = row.querySelector('i:last-of-type');
+    if (icon) {
+        icon._origText = icon.textContent;
+        const spinner = Object.assign(document.createElement('progress'), {className:'circle small'});
+        icon.replaceWith(spinner);
+        return { spinner, origText: icon._origText };
+    }
+    return null;
+}
+
+function _rowSpinnerOff(ref) {
+    if (!ref) return;
+    const i = document.createElement('i');
+    i.textContent = ref.origText;
+    ref.spinner.replaceWith(i);
+}
+
 function updateProfilePicture(input) {
     if (!input.files || !input.files[0]) return;
     if (!navigator.onLine) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    const row = document.getElementById('profile-picture-preview')?.closest('a');
+    const ref = _rowSpinnerOn(row);
+
     const formData = new FormData();
     formData.append('file', input.files[0]);
 
@@ -21,6 +44,7 @@ function updateProfilePicture(input) {
     })
     .then(res => res.json())
     .then(result => {
+        _rowSpinnerOff(ref);
         if (result.status === 'success') {
             const newSrc = '/api/v2/media/static/' + result.data.filename;
             document.getElementById('profile-picture-preview').src = newSrc;
@@ -32,6 +56,7 @@ function updateProfilePicture(input) {
         }
     })
     .catch(error => {
+        _rowSpinnerOff(ref);
         if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
         showSnackbar('settings', true, 'error', error, null, false);
     });
@@ -157,6 +182,9 @@ function sendSettingUpdate(setting, value) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+    const btn = document.getElementById('save-setting');
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append("setting", setting);
     formData.append("value", value);
@@ -168,6 +196,7 @@ function sendSettingUpdate(setting, value) {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === "success") {
                     closeEditDialog();
 
@@ -199,6 +228,7 @@ function sendSettingUpdate(setting, value) {
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (error == "TypeError: Failed to fetch") {
                 error = _('Server not reachable');
             }
@@ -211,6 +241,9 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+    const btn = document.getElementById('save-setting');
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append("setting", setting);
     formData.append("value", value);
@@ -222,6 +255,7 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === "success") {
                     callUi('#dialog-edit-settings');
                     document.getElementById('save-setting').removeAttribute('onclick');
@@ -236,6 +270,7 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
         });
@@ -340,6 +375,9 @@ function saveEdition() {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+    const btn = document.getElementById('save-edition-btn');
+    btnLoading(btn);
+
     const value = document.getElementById('input-edition-select').value;
     const formData = new FormData();
     formData.append("setting", "sm_edition");
@@ -352,13 +390,16 @@ function saveEdition() {
         .then(async (response) => {
             const result = await response.json();
             if (result.status === "success") {
+                btnReset(btn);
                 closeEditionDialog();
                 location.reload();
             } else {
+                btnReset(btn);
                 showSnackbar('settings', true, 'error', result.message, result, true);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
         });
@@ -457,11 +498,12 @@ function togglePwaSetting(settingName) {
         });
 }
 
-async function forceUpdatePWA() {
+async function forceUpdatePWA(btn) {
     if (!('serviceWorker' in navigator)) {
         showSnackbar('settings', true, 'error', _('Service Worker not supported'), null, false);
         return;
     }
+    btnLoading(btn);
     try {
         const registration = await navigator.serviceWorker.ready;
         showSnackbar('settings', true, 'green', _('Checking for updates...'), null, false);
@@ -480,12 +522,15 @@ async function forceUpdatePWA() {
         } else {
             showSnackbar('settings', true, 'green', _('App is up to date'), null, false);
         }
+        btnReset(btn);
     } catch (err) {
+        btnReset(btn);
         showSnackbar('settings', true, 'error', String(err), null, false);
     }
 }
 
-function clearPwaCache() {
+function clearPwaCache(btn) {
+    btnLoading(btn);
     if (typeof clearOfflineCache === 'function') {
         clearOfflineCache().then(() => {
             localStorage.removeItem('pwa_offline_all');
@@ -502,9 +547,12 @@ function clearPwaCache() {
             if (typeof initPinButtons === 'function') initPinButtons();
             // Seiten erneut cachen
             if (typeof cacheAllPages === 'function') cacheAllPages();
+            btnReset(btn);
             showSnackbar('settings', true, 'green', _('Cache cleared'), null, false);
             updateStorageDisplay();
         });
+    } else {
+        btnReset(btn);
     }
 }
 
@@ -554,6 +602,9 @@ function uploadBannerImage(input) {
         return;
     }
 
+    const row = document.getElementById('banner_image-value')?.closest('a');
+    const ref = _rowSpinnerOn(row);
+
     const formData = new FormData();
     formData.append('file', input.files[0]);
 
@@ -578,6 +629,7 @@ function uploadBannerImage(input) {
         }
     })
     .then(result => {
+        _rowSpinnerOff(ref);
         if (result && result.status === 'success') {
             document.getElementById('banner_image-value').textContent = result.data.value;
             showSnackbar('settings', true, 'green', result.message, null, false);
@@ -587,6 +639,7 @@ function uploadBannerImage(input) {
         }
     })
     .catch(error => {
+        _rowSpinnerOff(ref);
         if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
         showSnackbar('settings', true, 'error', String(error), null, false);
     })
@@ -595,11 +648,13 @@ function uploadBannerImage(input) {
     });
 }
 
-function deleteBannerImage() {
+function deleteBannerImage(btn) {
     if (!navigator.onLine) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    btnLoading(btn);
 
     const formData = new FormData();
     formData.append('setting', 'banner_image');
@@ -614,12 +669,15 @@ function deleteBannerImage() {
         if (result.status === 'success') {
             document.getElementById('banner_image-value').textContent = _('No image');
             showSnackbar('settings', true, 'green', result.message, null, false);
+            btnReset(btn);
             location.reload();
         } else {
+            btnReset(btn);
             showSnackbar('settings', true, 'error', result.message, result, true);
         }
     })
     .catch(error => {
+        btnReset(btn);
         if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
         showSnackbar('settings', true, 'error', String(error), null, false);
     });
@@ -632,6 +690,9 @@ function uploadBannerSong(input) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    const row = document.getElementById('banner_song-value')?.closest('a');
+    const ref = _rowSpinnerOn(row);
 
     const formData = new FormData();
     formData.append('file', input.files[0]);
@@ -657,6 +718,7 @@ function uploadBannerSong(input) {
         }
     })
     .then(result => {
+        _rowSpinnerOff(ref);
         if (result && result.status === 'success') {
             document.getElementById('banner_song-value').textContent = result.data.value;
             showSnackbar('settings', true, 'green', result.message, null, false);
@@ -666,6 +728,7 @@ function uploadBannerSong(input) {
         }
     })
     .catch(error => {
+        _rowSpinnerOff(ref);
         if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
         showSnackbar('settings', true, 'error', String(error), null, false);
     })
@@ -674,11 +737,13 @@ function uploadBannerSong(input) {
     });
 }
 
-function deleteBannerSong() {
+function deleteBannerSong(btn) {
     if (!navigator.onLine) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    btnLoading(btn);
 
     const formData = new FormData();
     formData.append('setting', 'banner_song');
@@ -693,12 +758,15 @@ function deleteBannerSong() {
         if (result.status === 'success') {
             document.getElementById('banner_song-value').textContent = _('No song');
             showSnackbar('settings', true, 'green', result.message, null, false);
+            btnReset(btn);
             location.reload();
         } else {
+            btnReset(btn);
             showSnackbar('settings', true, 'error', result.message, result, true);
         }
     })
     .catch(error => {
+        btnReset(btn);
         if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
         showSnackbar('settings', true, 'error', String(error), null, false);
     });
@@ -872,7 +940,8 @@ async function updatePushStatus() {
     }
 }
 
-async function testNotification(channel) {
+async function testNotification(channel, btn) {
+    btnLoading(btn);
     try {
         const resp = await fetch('/api/v2/notifications/test', {
             method: 'POST',
@@ -880,12 +949,14 @@ async function testNotification(channel) {
             body: JSON.stringify({ channel: channel })
         });
         const result = await resp.json();
+        btnReset(btn);
         if (result.status === 'success') {
             showSnackbar('settings', true, 'success', result.message, null, false);
         } else {
             showSnackbar('settings', true, 'error', result.message || _('An error occurred'), null, false);
         }
     } catch (e) {
+        btnReset(btn);
         showSnackbar('settings', true, 'error', _('An error occurred'), null, false);
     }
 }

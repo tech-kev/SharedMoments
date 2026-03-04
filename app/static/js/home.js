@@ -296,12 +296,14 @@ async function saveHomeItemToOutbox(uploadedContentURL) {
 }
 
 // Speichern eines neuen Homeitems
-async function saveNewHomeItem() {
+async function saveNewHomeItem(btn) {
    // === Offline-Erstellung: Wenn offline, in IndexedDB Outbox speichern ===
    if (!navigator.onLine && typeof addToOutbox === 'function') {
       await saveHomeItemToOutbox();
       return;
    }
+
+   btnLoading(btn);
 
    // === Online-Erstellung (Original-Logik) ===
    errorOnUpload = false; // Reset error state
@@ -323,6 +325,7 @@ async function saveNewHomeItem() {
          // Wenn trotz Fehler schon URLs vorhanden sind, trotzdem Item erstellen versuchen
          if (!uploadedURLs) {
             document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+            btnReset(btn);
             await saveHomeItemToOutbox();
             return;
          }
@@ -388,10 +391,12 @@ async function saveNewHomeItem() {
                selectedImages = [];
                selectedFileBuffers = [];
                showSnackbar('home', true, 'green', result.message, null, false);
+               btnReset(btn);
                createSuccess = true;
                break;
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
+               btnReset(btn);
                break; // Kein Retry bei Business-Logik-Fehler
             }
          } else if (response.status >= 500 && attempt < maxRetries) {
@@ -437,15 +442,17 @@ async function saveNewHomeItem() {
          showSnackbar('home', true, 'error', _('Server not reachable'), null, false);
       }
       document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
+      btnReset(btn);
    }
 }
 
 // Speichern eines bearbeiteten Homeitems
-async function saveEditedHomeItem() {
+async function saveEditedHomeItem(btn) {
    if (!navigator.onLine) {
       showSnackbar('home', true, 'error', _('You are offline'), null, false);
       return;
    }
+   btnLoading(btn);
    errorOnUpload = false; // Reset error state
    document.getElementById('dialog-edit-home-item').style.overflow = "hidden"; // Verhindere das Scrollen im Modal
    document.getElementById('div-overlay-edit-home-item').classList.add('active');
@@ -459,6 +466,7 @@ async function saveEditedHomeItem() {
 
    if (errorOnUpload) {
       document.getElementById('dialog-edit-home-item').style.overflow = "auto";
+      btnReset(btn);
       return;
    }
 
@@ -516,11 +524,14 @@ async function saveEditedHomeItem() {
                selectedImages = []; // Leere die ausgewählten Bilder
                selectedFileBuffers = [];
                showSnackbar('home', true, 'green', result.message, null, false);
+               btnReset(btn);
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
+               btnReset(btn);
             }
          } catch (error) { // Kein gültiges JSON
             showSnackbar('home', true, 'error', error, null, false);
+            btnReset(btn);
          }
       })
       .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
@@ -532,11 +543,12 @@ async function saveEditedHomeItem() {
          document.getElementById('div-overlay-edit-home-item').classList.remove('active');
          document.getElementById('dialog-edit-home-item').style.overflow = "auto";
          showSnackbar('home', true, 'error', error, null, false);
+         btnReset(btn);
       });
 }
 
 // Löschen eines oder mehrerer Homeitems
-async function deleteHomeItems() {
+async function deleteHomeItems(btn) {
    if (!navigator.onLine) {
       showSnackbar('home', true, 'error', _('You are offline'), null, false);
       return;
@@ -545,6 +557,8 @@ async function deleteHomeItems() {
    if (!confirm(_('Delete selected items?'))) {
       return;
    }
+
+   btnLoading(btn);
 
    var formData = new FormData();
    formData.append("ids", selectedArticles.map((id) => id.replace("article_", "")));
@@ -567,11 +581,14 @@ async function deleteHomeItems() {
                addEventListeners(); // Event-Listener neu hinzufügen
                selectedArticles = []; // Leere die ausgewählten Artikel
                showSnackbar('home', true, 'green', result.message, null, false);
+               btnReset(btn);
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
+               btnReset(btn);
             }
          } catch (error) { // Kein gültiges JSON
             showSnackbar('home', true, 'error', error, null, false);
+            btnReset(btn);
          }
       })
       .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
@@ -581,6 +598,7 @@ async function deleteHomeItems() {
             error = _('Server not reachable');
          }
          showSnackbar('home', true, 'error', error, null, false);
+         btnReset(btn);
       });
 }
 
@@ -591,6 +609,9 @@ function getHomeItem(selectedArticles) {
       return;
    }
 
+   const btn = document.getElementById('fab-edit-home-item');
+   btnLoading(btn);
+
    selectedArticles = selectedArticles.map((id) => id.replace("article_", "")); // Entferne "article_" aus der ID, um diese im nächsten Schritt zu verwenden
 
    fetch("/api/v2/item/" + selectedArticles, {
@@ -599,6 +620,7 @@ function getHomeItem(selectedArticles) {
       .then(async (response) => {
          try {
             const result = await response.json();
+            btnReset(btn);
             if (result.status === "success") {
                document.getElementById("div-render-edit-home-items").innerHTML = result.data.renderd_item; // Edit-dialog mit dem Item füllen
                generatePreviewForFileInput(null, "edit"); // Vorschau für die Bilder generieren
@@ -607,10 +629,12 @@ function getHomeItem(selectedArticles) {
                showSnackbar('home', true, 'error', result.message, result, true);
             }
          } catch (error) { // Kein gültiges JSON
+            btnReset(btn);
             showSnackbar('home', true, 'error', error, null, false);
          }
       })
       .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         btnReset(btn);
          if (error == "TypeError: Failed to fetch") {
             error = _('Server not reachable');
          }
@@ -1329,6 +1353,9 @@ async function createShareLink() {
       }
    }
 
+   const btn = document.getElementById('btn-create-share');
+   btnLoading(btn);
+
    const formData = new FormData();
    if (expiresAt) formData.append('expiresAt', expiresAt);
    if (password) formData.append('password', password);
@@ -1341,6 +1368,7 @@ async function createShareLink() {
       const result = await response.json();
 
       if (result.status === 'success') {
+         btnReset(btn);
          const fullUrl = window.location.origin + result.data.url;
          document.getElementById('input-share-url').value = fullUrl;
          document.getElementById('div-share-result').style.display = '';
@@ -1349,9 +1377,11 @@ async function createShareLink() {
          // Auto-copy to clipboard
          copyShareLink();
       } else {
+         btnReset(btn);
          showSnackbar('home', true, 'error', result.message, result, true);
       }
    } catch (error) {
+      btnReset(btn);
       showSnackbar('home', true, 'error', String(error), null, false);
    }
 }

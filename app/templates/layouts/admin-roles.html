@@ -12,7 +12,7 @@
         </p>
     </div>
     {% if role.id > 4 %}
-    <button class="circle transparent" onclick="event.stopPropagation(); deleteRole({{ role.id }}, '{{ role.roleName }}')">
+    <button class="circle transparent" onclick="event.stopPropagation(); deleteRole({{ role.id }}, '{{ role.roleName }}', this)">
         <i>delete</i>
     </button>
     {% endif %}

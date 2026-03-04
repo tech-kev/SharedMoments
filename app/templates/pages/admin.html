@@ -66,7 +66,7 @@
             <h5 id="edit-user-title">{{ _('Edit user') }}</h5>
             <div class="max"></div>
             <button class="transparent link" id="btn-delete-user" onclick="deleteUser()" style="display:none;"><i>delete</i></button>
-            <button class="transparent link" onclick="saveUser()">{{ _('Save') }}</button>
+            <button class="transparent link" onclick="saveUser(this)">{{ _('Save') }}</button>
         </nav>
         <div class="padding">
             <input type="hidden" id="edit-user-id">
@@ -134,7 +134,7 @@
         <div id="edit-user-roles-only-checkboxes"></div>
         <nav class="right-align no-space">
             <button class="transparent link" onclick="callUi('#dialog-edit-user-roles')">{{ _('Cancel') }}</button>
-            <button class="transparent link" onclick="saveUserRoles()">{{ _('Save') }}</button>
+            <button class="transparent link" onclick="saveUserRoles(this)">{{ _('Save') }}</button>
         </nav>
     </dialog>
 
@@ -159,7 +159,7 @@
         </div>
         <nav class="right-align no-space">
             <button class="transparent link" onclick="callUi('#dialog-create-role')">{{ _('Cancel') }}</button>
-            <button class="transparent link" onclick="createRole()">{{ _('Save') }}</button>
+            <button class="transparent link" onclick="createRole(this)">{{ _('Save') }}</button>
         </nav>
     </dialog>
 

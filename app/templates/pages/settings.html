@@ -131,7 +131,7 @@
                   </div>
                 </a>
                 {% if setting.value and has_permission('Update Setting') %}
-                <button class="transparent circle" onclick="deleteBannerImage()">
+                <button class="transparent circle" onclick="deleteBannerImage(this)">
                   <i>delete</i>
                 </button>
                 {% endif %}
@@ -152,7 +152,7 @@
                   </div>
                 </a>
                 {% if setting.value and has_permission('Update Setting') %}
-                <button class="transparent circle" onclick="deleteBannerSong()">
+                <button class="transparent circle" onclick="deleteBannerSong(this)">
                   <i>delete</i>
                 </button>
                 {% endif %}
@@ -247,7 +247,7 @@
                 </a>
               </div>
               <div id="push-test-section" style="display:none;">
-                <a class="row padding primary-container wave" onclick="testNotification('push')">
+                <a class="row padding primary-container wave" onclick="testNotification('push', this)">
                   <i>send</i>
                   <div class="max">
                     <h6 class="small">{{ _('Send test notification') }}</h6>
@@ -269,7 +269,7 @@
                 </label>
               </a>
               <div id="email-test-section" style="display:none;">
-                <a class="row padding primary-container wave" onclick="testNotification('email')">
+                <a class="row padding primary-container wave" onclick="testNotification('email', this)">
                   <i>send</i>
                   <div class="max">
                     <h6 class="small">{{ _('Send test email') }}</h6>
@@ -301,7 +301,7 @@
                     <button class="small" onclick="saveTelegramConfig()">
                       <i>save</i><span>{{ _('Save') }}</span>
                     </button>
-                    <button class="small border" onclick="testNotification('telegram')">
+                    <button class="small border" onclick="testNotification('telegram', this)">
                       <i>send</i><span>{{ _('Test') }}</span>
                     </button>
                   </div>
@@ -377,7 +377,7 @@
               {% endfor %}
 
               <!-- Force update button -->
-              <a class="row padding primary-container wave" onclick="forceUpdatePWA()">
+              <a class="row padding primary-container wave" onclick="forceUpdatePWA(this)">
                 <i>system_update</i>
                 <div class="max">
                   <h6 class="small">{{ _('Check for updates') }}</h6>
@@ -386,7 +386,7 @@
               </a>
 
               <!-- Clear cache button -->
-              <a class="row padding primary-container wave" onclick="clearPwaCache()">
+              <a class="row padding primary-container wave" onclick="clearPwaCache(this)">
                 <i>delete_sweep</i>
                 <div class="max">
                   <h6 class="small">{{ _('Clear offline cache') }}</h6>

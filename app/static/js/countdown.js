@@ -45,7 +45,7 @@ function startCountdown(el) {
     countdownIntervals.push(intervalId);
 }
 
-function saveNewCountdown() {
+function saveNewCountdown(btn) {
     if (!navigator.onLine) {
         showSnackbar('home', true, 'error', _('You are offline'), null, false);
         return;
@@ -59,6 +59,8 @@ function saveNewCountdown() {
         return;
     }
 
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('contentType', 'countdown');
@@ -69,6 +71,7 @@ function saveNewCountdown() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-create-countdown');
                     document.getElementById('div-render-countdown-card').innerHTML = result.data.rendered_items;
@@ -80,10 +83,12 @@ function saveNewCountdown() {
                     showSnackbar('home', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('home', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (String(error) === 'TypeError: Failed to fetch') {
                 error = _('Server not reachable');
             }
@@ -98,11 +103,13 @@ function editCountdown(btn) {
     callUi('#dialog-edit-countdown');
 }
 
-function saveEditedCountdown() {
+function saveEditedCountdown(btn) {
     if (!navigator.onLine) {
         showSnackbar('home', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    btnLoading(btn);
 
     const id = document.getElementById('input-edit-countdown-id').value;
     const formData = new FormData();
@@ -115,6 +122,7 @@ function saveEditedCountdown() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-edit-countdown');
                     document.getElementById('div-render-countdown-card').innerHTML = result.data.rendered_items;
@@ -124,10 +132,12 @@ function saveEditedCountdown() {
                     showSnackbar('home', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('home', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (String(error) === 'TypeError: Failed to fetch') {
                 error = _('Server not reachable');
             }
@@ -135,11 +145,13 @@ function saveEditedCountdown() {
         });
 }
 
-function deleteCountdown() {
+function deleteCountdown(btn) {
     if (!navigator.onLine) {
         showSnackbar('home', true, 'error', _('You are offline'), null, false);
         return;
     }
+
+    btnLoading(btn);
 
     const id = document.getElementById('input-edit-countdown-id').value;
     const formData = new FormData();
@@ -150,6 +162,7 @@ function deleteCountdown() {
         .then(async (response) => {
             try {
                 const result = await response.json();
+                btnReset(btn);
                 if (result.status === 'success') {
                     callUi('#dialog-edit-countdown');
                     document.getElementById('div-render-countdown-card').innerHTML = result.data.rendered_items;
@@ -159,10 +172,12 @@ function deleteCountdown() {
                     showSnackbar('home', true, 'error', result.message, result, true);
                 }
             } catch (error) {
+                btnReset(btn);
                 showSnackbar('home', true, 'error', error, null, false);
             }
         })
         .catch((error) => {
+            btnReset(btn);
             if (String(error) === 'TypeError: Failed to fetch') {
                 error = _('Server not reachable');
             }

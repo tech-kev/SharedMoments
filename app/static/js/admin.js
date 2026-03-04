@@ -80,7 +80,7 @@ function previewUserImage(input) {
     }
 }
 
-function saveUser() {
+function saveUser(btn) {
     if (!navigator.onLine) {
         showAdminSnackbar(_('You are offline'), true);
         return;
@@ -117,6 +117,8 @@ function saveUser() {
         return;
     }
 
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
@@ -142,15 +144,18 @@ function saveUser() {
                     method: 'PUT',
                     body: rolesFormData
                 }).then(r => r.json()).then(rolesResult => {
+                    btnReset(btn);
                     callUi('#dialog-edit-user');
                     showAdminSnackbar(result.message, false);
                     location.reload();
                 });
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error saving user:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });
@@ -168,18 +173,24 @@ function deleteUser() {
         return;
     }
 
+    const btn = document.getElementById('btn-delete-user');
+    btnLoading(btn);
+
     fetch(`/api/v2/admin/users/${userId}`, { method: 'DELETE' })
         .then(response => response.json())
         .then(result => {
             if (result.status === 'success') {
+                btnReset(btn);
                 callUi('#dialog-edit-user');
                 showAdminSnackbar(result.message, false);
                 location.reload();
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error deleting user:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });
@@ -196,7 +207,7 @@ function editUserRoles(userId, userName) {
     callUi('#dialog-edit-user-roles');
 }
 
-function saveUserRoles() {
+function saveUserRoles(btn) {
     if (!navigator.onLine) {
         showAdminSnackbar(_('You are offline'), true);
         return;
@@ -210,6 +221,8 @@ function saveUserRoles() {
         return;
     }
 
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('roleIds', JSON.stringify(roleIds));
 
@@ -218,14 +231,17 @@ function saveUserRoles() {
         .then(result => {
             if (result.status === 'success') {
                 userRolesMap[userId] = roleIds;
+                btnReset(btn);
                 callUi('#dialog-edit-user-roles');
                 showAdminSnackbar(result.message, false);
                 location.reload();
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error saving user roles:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });
@@ -416,7 +432,7 @@ function togglePermission(roleId, permId, checked) {
 }
 
 // --- Create / Delete Roles ---
-function createRole() {
+function createRole(btn) {
     if (!navigator.onLine) {
         showAdminSnackbar(_('You are offline'), true);
         return;
@@ -427,6 +443,8 @@ function createRole() {
         return;
     }
 
+    btnLoading(btn);
+
     const formData = new FormData();
     formData.append('roleName', roleName);
 
@@ -434,21 +452,24 @@ function createRole() {
         .then(response => response.json())
         .then(result => {
             if (result.status === 'success') {
+                btnReset(btn);
                 callUi('#dialog-create-role');
                 document.getElementById('create-role-name').value = '';
                 showAdminSnackbar(result.message, false);
                 location.reload();
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error creating role:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });
 }
 
-function deleteRole(roleId, roleName) {
+function deleteRole(roleId, roleName, btn) {
     if (!navigator.onLine) {
         showAdminSnackbar(_('You are offline'), true);
         return;
@@ -457,34 +478,42 @@ function deleteRole(roleId, roleName) {
         return;
     }
 
+    btnLoading(btn);
+
     fetch(`/api/v2/admin/roles/${roleId}`, { method: 'DELETE' })
         .then(response => response.json())
         .then(result => {
             if (result.status === 'success') {
+                btnReset(btn);
                 showAdminSnackbar(result.message, false);
                 location.reload();
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error deleting role:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });
 }
 
 // --- Share Management ---
-function revokeShareAdmin(shareId) {
+function revokeShareAdmin(shareId, btn) {
     if (!navigator.onLine) {
         showAdminSnackbar(_('You are offline'), true);
         return;
     }
     if (!confirm(_('Revoke this share link?'))) return;
 
+    btnLoading(btn);
+
     fetch(`/api/v2/admin/shares/${shareId}`, { method: 'DELETE' })
         .then(response => response.json())
         .then(result => {
             if (result.status === 'success') {
+                btnReset(btn);
                 const row = document.getElementById('share-row-' + shareId);
                 if (row) row.remove();
                 const sharesTab = document.getElementById('tab-shares');
@@ -497,10 +526,12 @@ function revokeShareAdmin(shareId) {
                 }
                 showAdminSnackbar(result.message, false);
             } else {
+                btnReset(btn);
                 showAdminSnackbar(result.message, true);
             }
         })
         .catch(error => {
+            btnReset(btn);
             console.error('Error revoking share:', error);
             showAdminSnackbar(_('Server not reachable'), true);
         });

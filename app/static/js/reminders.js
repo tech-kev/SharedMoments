@@ -46,7 +46,7 @@ function setNotifyCheckboxes(prefix, notifyStr) {
    document.getElementById(prefix + '-notify-7').checked = days.includes('7');
 }
 
-async function saveReminder() {
+async function saveReminder(btn) {
    const type = document.getElementById('create-reminder-type').value;
    const payload = {
       title: document.getElementById('create-reminder-title').value,
@@ -64,6 +64,8 @@ async function saveReminder() {
       payload.milestone_days = parseInt(document.getElementById('create-reminder-milestone-days').value);
    }
 
+   btnLoading(btn);
+
    try {
       const resp = await fetch('/api/v2/reminders', {
          method: 'POST',
@@ -72,12 +74,15 @@ async function saveReminder() {
       });
       const result = await resp.json();
       if (result.status === 'success') {
+         btnReset(btn);
          callUi('#dialog-create-reminder');
          location.reload();
       } else {
+         btnReset(btn);
          showSnackbar('reminders', true, 'error', result.message || _('An error occurred'), null, false);
       }
    } catch (e) {
+      btnReset(btn);
       showSnackbar('reminders', true, 'error', _('An error occurred'), null, false);
    }
 }
@@ -105,7 +110,7 @@ function openEditReminder(id) {
    callUi('#dialog-edit-reminder');
 }
 
-async function updateReminder() {
+async function updateReminder(btn) {
    const id = document.getElementById('edit-reminder-id').value;
    const type = document.getElementById('edit-reminder-type').value;
    const payload = {
@@ -124,6 +129,8 @@ async function updateReminder() {
       payload.milestone_days = parseInt(document.getElementById('edit-reminder-milestone-days').value);
    }
 
+   btnLoading(btn);
+
    try {
       const resp = await fetch(`/api/v2/reminders/${id}`, {
          method: 'PUT',
@@ -132,41 +139,53 @@ async function updateReminder() {
       });
       const result = await resp.json();
       if (result.status === 'success') {
+         btnReset(btn);
          callUi('#dialog-edit-reminder');
          location.reload();
       } else {
+         btnReset(btn);
          showSnackbar('reminders', true, 'error', result.message || _('An error occurred'), null, false);
       }
    } catch (e) {
+      btnReset(btn);
       showSnackbar('reminders', true, 'error', _('An error occurred'), null, false);
    }
 }
 
-async function deleteReminder(id) {
+async function deleteReminder(id, btn) {
    if (!confirm(_('Delete this reminder?'))) return;
+   btnLoading(btn);
    try {
       const resp = await fetch(`/api/v2/reminders/${id}`, { method: 'DELETE' });
       const result = await resp.json();
       if (result.status === 'success') {
+         btnReset(btn);
          location.reload();
       } else {
+         btnReset(btn);
          showSnackbar('reminders', true, 'error', result.message || _('An error occurred'), null, false);
       }
    } catch (e) {
+      btnReset(btn);
       showSnackbar('reminders', true, 'error', _('An error occurred'), null, false);
    }
 }
 
-async function toggleMute(id, mute) {
+async function toggleMute(id, mute, btn) {
+   btnLoading(btn);
    try {
       const resp = await fetch(`/api/v2/reminders/${id}/mute`, {
          method: mute ? 'POST' : 'DELETE'
       });
       const result = await resp.json();
       if (result.status === 'success') {
+         btnReset(btn);
          location.reload();
+      } else {
+         btnReset(btn);
       }
    } catch (e) {
+      btnReset(btn);
       showSnackbar('reminders', true, 'error', _('An error occurred'), null, false);
    }
 }
