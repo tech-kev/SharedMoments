@@ -105,4 +105,20 @@ if ('serviceWorker' in navigator) {
    .pwa-syncing #pwa-outbox-badge {
       animation: pwa-spin 1.5s linear infinite;
    }
+   /* Ghostcard visual distinction */
+   .outbox-ghost-card, .outbox-ghost-item {
+      border-left: 3px solid var(--tertiary);
+   }
 </style>
+
+<!-- Ghostcard Delete Dialog -->
+<div class="overlay" id="div-overlay-delete-ghostcard" onclick="callUi('#dialog-delete-ghostcard')"></div>
+<dialog id="dialog-delete-ghostcard">
+  <h5>{{ _('Delete post') }}</h5>
+  <p>{{ _('This post has not been synced yet. Delete? The data will be lost.') }}</p>
+  <input type="hidden" id="input-delete-ghostcard-id" value="">
+  <nav class="right-align no-space">
+    <button class="transparent link" onclick="callUi('#dialog-delete-ghostcard')">{{ _('Cancel') }}</button>
+    <button class="transparent link" onclick="confirmDeleteGhostCard()">{{ _('Delete') }}</button>
+  </nav>
+</dialog>

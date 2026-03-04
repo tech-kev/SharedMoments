@@ -129,6 +129,16 @@ async function removeFromOutbox(id) {
   });
 }
 
+async function clearOutbox() {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('outbox', 'readwrite');
+    tx.objectStore('outbox').clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 async function getOutboxCount() {
   const items = await getOutboxItems();
   return items.filter((i) => i.status === 'pending').length;

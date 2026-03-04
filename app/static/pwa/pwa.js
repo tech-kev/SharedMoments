@@ -357,6 +357,7 @@ async function renderOutboxGhostCards() {
     for (const item of homeItems) {
       const card = document.createElement('article');
       card.className = 'no-padding primary-container outbox-ghost-card';
+      card.dataset.outboxId = item.id;
       card.style.cssText = 'opacity: 0.6; position: relative;';
 
       // Erstes Bild als Vorschau anzeigen
@@ -376,10 +377,17 @@ async function renderOutboxGhostCards() {
         imageHtml +
         '<div class="padding">' +
           '<nav style="margin-bottom:0.5rem;">' +
-            '<a class="chip no-border tertiary small round" href="javascript:void(0)" onclick="forceSync()" style="cursor:pointer;">' +
-              '<i class="small">cloud_upload</i>&nbsp;' +
-              '<span>' + _('Pending sync') + '</span>' +
+            '<a class="chip no-border tertiary small round" href="javascript:void(0)" style="cursor:pointer;">' +
+              '<i class="small">cloud_off</i>&nbsp;' +
+              '<span>' + _('Not synced') + '</span>' +
             '</a>' +
+            '<div class="max"></div>' +
+            '<button class="chip no-border small round" onclick="event.stopPropagation();deleteGhostCard(' + item.id + ')" title="' + _('Delete') + '">' +
+              '<i class="small">delete</i>' +
+            '</button>' +
+            '<button class="chip no-border tertiary small round" onclick="event.stopPropagation();forceSync()" title="' + _('Sync now') + '">' +
+              '<i class="small">cloud_upload</i>' +
+            '</button>' +
           '</nav>' +
           '<h5>' + escapeHtml(item.title || '') + '</h5>' +
           '<p>' + escapeHtml(item.content || '') + '</p>' +
@@ -411,11 +419,12 @@ async function renderOutboxGhostCards() {
         for (const item of timelineItems) {
           const ghostDiv = document.createElement('div');
           ghostDiv.className = 'center-align outbox-ghost-card';
+          ghostDiv.dataset.outboxId = item.id;
           ghostDiv.style.opacity = '0.5';
           ghostDiv.innerHTML =
             '<div class="small-margin">' + escapeHtml(item.title || '') + '</div>' +
-            '<button class="circle small" disabled>' +
-              '<i>cloud_upload</i>' +
+            '<button class="circle small" onclick="deleteGhostCard(' + item.id + ')" title="' + _('Delete') + '">' +
+              '<i>delete</i>' +
             '</button>' +
             '<div class="small-margin">' + escapeHtml(item.dateCreated || '') + '</div>';
 
@@ -434,6 +443,42 @@ async function renderOutboxGhostCards() {
       }
     }
   }
+}
+
+// ===== Ghostcard Delete =====
+
+function deleteGhostCard(outboxId) {
+  document.getElementById('input-delete-ghostcard-id').value = outboxId;
+  callUi('#dialog-delete-ghostcard');
+}
+
+async function confirmDeleteGhostCard() {
+  const val = document.getElementById('input-delete-ghostcard-id').value;
+  callUi('#dialog-delete-ghostcard');
+  if (val === 'all') {
+    await clearOutbox();
+    showPWASnackbar(_('All pending posts deleted'));
+  } else {
+    const id = parseInt(val, 10);
+    if (!id) return;
+    await removeFromOutbox(id);
+    showPWASnackbar(_('Post deleted'));
+  }
+  await updateOutboxBadge();
+  await renderOutboxGhostCards();
+  if (typeof renderListOutboxGhostItems === 'function') {
+    await renderListOutboxGhostItems();
+  }
+}
+
+async function deleteAllGhostCards() {
+  const count = await getOutboxCount();
+  if (count === 0) {
+    showPWASnackbar(_('No pending posts'));
+    return;
+  }
+  document.getElementById('input-delete-ghostcard-id').value = 'all';
+  callUi('#dialog-delete-ghostcard');
 }
 
 function escapeHtml(text) {

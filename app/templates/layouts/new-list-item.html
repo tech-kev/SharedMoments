@@ -98,12 +98,16 @@
       const items = await getOutboxItems();
       const listItems = items.filter(i => i.contentType === 'list' && String(i.listType) === String(listType));
       for (const item of listItems) {
-         const el = document.createElement('a');
-         el.className = 'row padding surface-container wave outbox-ghost-item';
+         const el = document.createElement('div');
+         el.className = 'row padding surface-container outbox-ghost-item';
+         el.dataset.outboxId = item.id;
          el.style.opacity = '0.5';
-         el.innerHTML = '<i class="small">cloud_upload</i><div class="max"><h6 class="small">' +
+         el.innerHTML = '<i class="small">cloud_off</i><div class="max"><h6 class="small">' +
             (item.title || '') + '</h6><span class="small-text">' +
-            (typeof _ === 'function' ? _('Pending sync') : 'Pending sync') + '</span></div>';
+            (typeof _ === 'function' ? _('Not synced') : 'Not synced') + '</span></div>' +
+            '<button class="transparent circle small" onclick="deleteGhostCard(' + item.id + ')">' +
+              '<i>delete</i>' +
+            '</button>';
          container.appendChild(el);
       }
    }

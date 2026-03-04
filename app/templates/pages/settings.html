@@ -394,6 +394,15 @@
                 </div>
               </a>
 
+              <!-- Delete all pending posts -->
+              <a class="row padding primary-container wave" onclick="deleteAllGhostCards()">
+                <i>delete_forever</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Delete all pending posts') }}</h6>
+                  <div>{{ _('Remove all offline posts that have not been synced yet') }}</div>
+                </div>
+              </a>
+
               {% endif %}
 
     </article>
