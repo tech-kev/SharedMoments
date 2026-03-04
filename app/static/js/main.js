@@ -128,6 +128,24 @@ function showSkeletonCards(containerId, count = 3) {
    container.innerHTML = html;
 }
 
+// Lazy Loading mit IntersectionObserver
+const lazyObserver = new IntersectionObserver((entries) => {
+   entries.forEach(entry => {
+      if (entry.isIntersecting) {
+         const img = entry.target;
+         img.src = img.dataset.src;
+         lazyObserver.unobserve(img);
+      }
+   });
+}, { rootMargin: '200px' });
+
+function observeLazyImages(container) {
+   const images = (container || document).querySelectorAll('img.lazy[data-src]');
+   images.forEach(img => lazyObserver.observe(img));
+}
+
+document.addEventListener('DOMContentLoaded', () => observeLazyImages());
+
 function showMoreInfo(element, result, mode) {
    if (mode === 'open') {
       document.body.style.overflow = "hidden";

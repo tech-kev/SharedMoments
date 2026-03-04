@@ -375,6 +375,7 @@ async function saveNewHomeItem() {
             var result = await response.json();
             if (result.status === "success") {
                document.getElementById("div-render-home-items").innerHTML = result.data.rendered_items;
+               observeLazyImages(document.getElementById('div-render-home-items'));
                callUi("#dialog-create-new-home-item");
                document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
                addEventListeners();
@@ -508,6 +509,7 @@ async function saveEditedHomeItem() {
                callUi("#dialog-edit-home-item"); // Modal schließen
                document.getElementById('div-overlay-edit-home-item').classList.remove('active');
                document.getElementById("div-render-home-items").innerHTML = result.data.rendered_items; // Neue Items in die Seite einfügen
+               observeLazyImages(document.getElementById('div-render-home-items'));
                document.getElementById('dialog-edit-home-item').style.overflow = "auto"; // Erlaube das Scrollen im Modal
                addEventListeners(); // Event-Listener neu hinzufügen
                selectedArticles = []; // Leere die ausgewählten Artikel
@@ -560,6 +562,7 @@ async function deleteHomeItems() {
             const result = await response.json();
             if (result.status === "success") {
                document.getElementById("div-render-home-items").innerHTML = result.data.rendered_items; // Neue Items in die Seite einfügen
+               observeLazyImages(document.getElementById('div-render-home-items'));
                selectItemsStopped(); //footer-bottom-bar-home-items ausblenden
                addEventListeners(); // Event-Listener neu hinzufügen
                selectedArticles = []; // Leere die ausgewählten Artikel

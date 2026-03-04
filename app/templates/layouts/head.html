@@ -74,6 +74,13 @@ if ('serviceWorker' in navigator) {
       padding: 0;
       overflow: hidden;
    }
+   /* Lazy Loading */
+   img.lazy:not([src]) {
+      opacity: 0;
+   }
+   img.lazy {
+      transition: opacity 0.3s ease;
+   }
    /* PWA Sync Animation */
    @keyframes pwa-spin {
       0% { transform: rotate(0deg); }

@@ -13,7 +13,7 @@
    </div>
 </article>
 {% endif %}
-{% for item, user in items %} <!-- TODO: Lazy load + videos etc. -->
+{% for item, user in items %}
 <article class="no-padding primary-container home-item" id="article_{{ item.id }}">
    {% if item.contentType == 'galleryStartWithImage' or item.contentType == 'galleryStartWithVideo' or item.contentType == 'video' or item.contentType == 'video-mov' %}
    <a href="/gallery/{{ item.id }}">
@@ -21,13 +21,13 @@
       {% if item.contentType == 'image' or item.contentType == 'galleryStartWithImage' %}
       {% set contentURL = item.contentURL.split(';')[0] %}
       <div class="img-skeleton-wrapper">
-         <img class="responsive" src="/api/v2/media/{{ contentURL }}" onload="this.parentElement.classList.add('loaded')">
+         <img class="responsive lazy" data-src="/api/v2/media/{{ contentURL }}" loading="lazy" onload="this.parentElement.classList.add('loaded')">
          <div class="skeleton skeleton-overlay skeleton-image"></div>
       </div>
       {% elif item.contentType == 'video' or item.contentType == 'video-mov' or item.contentType == 'galleryStartWithVideo' %}
       {% set contentURL = item.contentURL.split(';')[0] %}
       <div class="img-skeleton-wrapper" style="position:relative;">
-         <img class="responsive" src="/api/v2/media/thumb/{{ contentURL }}" onload="this.parentElement.classList.add('loaded')" style="width:100%;object-fit:cover;">
+         <img class="responsive lazy" data-src="/api/v2/media/thumb/{{ contentURL }}" loading="lazy" onload="this.parentElement.classList.add('loaded')" style="width:100%;object-fit:cover;">
          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
             <i style="font-size:3rem;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);">play_circle</i>
          </div>
