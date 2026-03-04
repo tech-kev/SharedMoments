@@ -194,6 +194,7 @@ function clearOfflineCache() {
 // ===== Pin/Unpin Items =====
 
 async function togglePinItem(button) {
+  if (!isPwaInstalled()) return;
   const itemId = parseInt(button.dataset.itemId, 10);
   const mediaUrlsStr = button.dataset.mediaUrls || '';
   const mediaUrls = mediaUrlsStr.split(';').filter(Boolean).map((url) => '/api/v2/media/' + url);
@@ -258,11 +259,32 @@ async function togglePinItem(button) {
   }
 }
 
+// Check if running as installed PWA
+function isPwaInstalled() {
+  // Standard standalone checks
+  if (window.matchMedia('(display-mode: standalone)').matches) return true;
+  if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return true;
+  if (window.matchMedia('(display-mode: minimal-ui)').matches) return true;
+  if (navigator.standalone === true) return true; // iOS
+  // If explicitly in regular browser tab, not a PWA
+  if (window.matchMedia('(display-mode: browser)').matches) return false;
+  // Fallback for browsers without display-mode support: check SW
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) return true;
+  return false;
+}
+
 // Check and set pin state on page load
 function initPinButtons() {
+  const buttons = document.querySelectorAll('.pwa-pin-btn');
+
+  // Hide pin buttons if not running as PWA
+  if (!isPwaInstalled()) {
+    for (const btn of buttons) btn.style.display = 'none';
+    return;
+  }
+
   const allOffline = localStorage.getItem('pwa_offline_all') === 'true';
   const pinState = JSON.parse(localStorage.getItem('pwa_pinned_items') || '{}');
-  const buttons = document.querySelectorAll('.pwa-pin-btn');
   for (const btn of buttons) {
     const itemId = parseInt(btn.dataset.itemId, 10);
     const icon = btn.querySelector('i');
