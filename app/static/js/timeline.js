@@ -1,5 +1,13 @@
 let currentTimelineItemId = null;
 
+// Auto-scroll timeline to newest entry (rightmost) on initial load
+window.addEventListener('load', () => {
+    const timelineNav = document.querySelector('#div-render-timeline-card article nav');
+    if (timelineNav) {
+        timelineNav.scrollLeft = timelineNav.scrollWidth;
+    }
+});
+
 function showTimelineItemDetails(btn) {
     currentTimelineItemId = btn.dataset.id;
     document.getElementById('timeline-detail-title').textContent = btn.dataset.title || '';
