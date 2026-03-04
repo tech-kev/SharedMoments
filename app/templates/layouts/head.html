@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#6750a4">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="/static/pwa/sm-icon-192.png">
+<link rel="apple-touch-icon" href="{{ static_versioned('pwa/sm-icon-192.png') }}">
 <!-- BeerCSS -->
 <link href="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.css" rel="stylesheet">
 <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.js"></script>
@@ -14,8 +14,8 @@
 <!-- BeerCSS -->
 <!-- PWA Scripts -->
 <script>var translationsArray = {{ translations_json|safe }};</script>
-<script src="/static/pwa/idb-manager.js"></script>
-<script src="/static/pwa/pwa.js"></script>
+<script src="{{ static_versioned('pwa/idb-manager.js') }}"></script>
+<script src="{{ static_versioned('pwa/pwa.js') }}"></script>
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js', { scope: '/' });

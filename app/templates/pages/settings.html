@@ -438,8 +438,8 @@
    </dialog>
 
 
-   <script src="/static/js/main.js"></script>
-   <script src="/static/js/home.js"></script>
+   <script src="{{ static_versioned('js/main.js') }}"></script>
+   <script src="{{ static_versioned('js/home.js') }}"></script>
 
    <script>
     // Data from backend (must stay inline for Jinja)
@@ -458,7 +458,7 @@
     window.pushEnabled = {{ (push_val == 'True')|tojson }};
     {% endif %}
    </script>
-   <script src="/static/js/settings.js"></script>
+   <script src="{{ static_versioned('js/settings.js') }}"></script>
 
    </body>
 </html>

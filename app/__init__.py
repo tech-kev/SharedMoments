@@ -33,6 +33,8 @@ def set_security_headers(response):
 
 # Jinja2 Template-Filter registrieren
 from app.filters import *
+from app.filters import static_versioned
+app.jinja_env.globals['static_versioned'] = static_versioned
 
 # Context Processor for permission checks in templates
 from app.permissions import has_permission, has_list_permission

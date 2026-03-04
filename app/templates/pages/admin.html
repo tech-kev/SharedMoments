@@ -191,7 +191,7 @@
         const rolePermissionsMap = {{ role_permissions_map | tojson }};
         const userRolesMap = {{ user_roles_map | tojson }};
     </script>
-    <script src="/static/js/main.js"></script>
-    <script src="/static/js/admin.js"></script>
+    <script src="{{ static_versioned('js/main.js') }}"></script>
+    <script src="{{ static_versioned('js/admin.js') }}"></script>
 </body>
 </html>

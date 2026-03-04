@@ -1,6 +1,23 @@
+import hashlib
+import os
+
 from app import app
 from datetime import datetime
 from markupsafe import Markup, escape
+
+_static_hash_cache = {}
+
+def static_versioned(path):
+    """Return /static/path?v=<content-hash> for cache busting."""
+    if path not in _static_hash_cache:
+        file_path = os.path.join(app.static_folder, path)
+        try:
+            with open(file_path, 'rb') as f:
+                h = hashlib.md5(f.read()).hexdigest()[:8]
+            _static_hash_cache[path] = h
+        except FileNotFoundError:
+            _static_hash_cache[path] = '0'
+    return f'/static/{path}?v={_static_hash_cache[path]}'
 
 @app.template_filter('format_date_dmy')
 def format_date_dmy(value, format="%d.%m.%y"):
