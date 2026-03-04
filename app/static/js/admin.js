@@ -487,6 +487,14 @@ function revokeShareAdmin(shareId) {
             if (result.status === 'success') {
                 const row = document.getElementById('share-row-' + shareId);
                 if (row) row.remove();
+                const sharesTab = document.getElementById('tab-shares');
+                if (sharesTab && !sharesTab.querySelector('[id^="share-row-"]')) {
+                    sharesTab.innerHTML = '<article class="medium middle-align center-align primary-container"><div>' +
+                        '<i class="extra">link_off</i>' +
+                        '<h5>' + _('No active shares') + '</h5>' +
+                        '<p>' + _('Share links will appear here once created.') + '</p>' +
+                        '</div></article>';
+                }
                 showAdminSnackbar(result.message, false);
             } else {
                 showAdminSnackbar(result.message, true);
