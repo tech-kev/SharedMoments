@@ -1218,6 +1218,50 @@ function addEventListeners() {
 addEventListeners(); // Füge die Event Listener zu allen Artikeln hinzu
 
 
+// ===== Banner Export =====
+
+async function exportBannerCard() {
+   const article = document.querySelector('#div-render-banner-card article');
+   if (!article) return;
+
+   const exportBtn = document.getElementById('btn-export-banner');
+   const playBtn = document.getElementById('btn-play-song');
+
+   // Buttons temporär verstecken
+   if (exportBtn) exportBtn.style.display = 'none';
+   if (playBtn) playBtn.style.display = 'none';
+
+   try {
+      const canvas = await html2canvas(article, { scale: 2, useCORS: true });
+
+      // Buttons wieder einblenden
+      if (exportBtn) exportBtn.style.display = '';
+      if (playBtn) playBtn.style.display = '';
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], 'sharedmoments.png', { type: 'image/png' });
+
+      // Mobile: Native Share Sheet, Desktop: Download
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+         await navigator.share({ files: [file] });
+      } else {
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement('a');
+         a.href = url;
+         a.download = 'sharedmoments.png';
+         a.click();
+         URL.revokeObjectURL(url);
+      }
+   } catch (error) {
+      // Buttons wieder einblenden bei Fehler
+      if (exportBtn) exportBtn.style.display = '';
+      if (playBtn) playBtn.style.display = '';
+      if (error.name !== 'AbortError') {
+         showSnackbar('home', true, 'error', String(error.message || error), null, false);
+      }
+   }
+}
+
 // ===== Banner Song =====
 
 let bannerAudio = null;
