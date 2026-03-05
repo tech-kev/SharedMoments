@@ -210,6 +210,19 @@ def update_user_profile_picture(user_id, filename):
     finally:
         session.close()
 
+def update_user_password(user_id, password_hash, password_salt):
+    session = SessionLocal()
+    try:
+        user = session.query(User).filter(User.id == user_id).first()
+        if user:
+            user.passwordHash = password_hash
+            user.passwordSalt = password_salt
+            session.commit()
+            return True
+        return False
+    finally:
+        session.close()
+
 def get_user_by_email(email):
     session = SessionLocal()
     try:

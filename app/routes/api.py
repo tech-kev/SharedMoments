@@ -7,7 +7,7 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     update_item, get_list_type_by_id, update_list_type, delete_list_type, create_list_type,
     get_all_settings, update_setting, create_user, get_role_by_name, create_user_role,
     create_user_setting, update_translation, update_user_setting, update_user_profile_picture,
-    create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions, get_user_by_email,
+    create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions, get_user_by_email, update_user_password,
     create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids,
     get_all_media_urls, get_list_type_by_title,
     get_all_reminders, get_reminder_by_id, create_reminder as db_create_reminder,
@@ -378,6 +378,34 @@ def update_profile_picture():
             'status': 'error',
             'message': str(e) if app.debug else None
         }), 500
+
+
+@api_bp.route('/api/v2/user/password', methods=['PUT'])
+@jwt_required
+def change_password():
+    try:
+        data = request.get_json()
+        current_password = data.get('current_password', '')
+        new_password = data.get('new_password', '')
+
+        if not current_password or not new_password:
+            return jsonify({'status': 'error', 'message': _('Please fill in all fields')}), 400
+
+        if len(new_password) < 6:
+            return jsonify({'status': 'error', 'message': _('Password must be at least 6 characters')}), 400
+
+        user = get_user_by_id(g.user_id)
+        if not user or not user.check_password(current_password):
+            return jsonify({'status': 'error', 'message': _('Incorrect password')}), 403
+
+        password_hash, password_salt = user.hash_password(new_password)
+        update_user_password(g.user_id, password_hash, password_salt)
+
+        log('info', f'Password changed for user {g.user_id}')
+        return jsonify({'status': 'success', 'message': _('Password updated')}), 200
+    except Exception as e:
+        log('error', f'Error changing password: {e}')
+        return jsonify({'status': 'error', 'message': str(e) if app.debug else _('An error occurred')}), 500
 
 
 def _secure_filename_preserve(filename):

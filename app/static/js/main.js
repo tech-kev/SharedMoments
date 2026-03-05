@@ -37,6 +37,8 @@ function callUi(id) {
          document.getElementById("div-overlay-edit-reminder").classList.remove("active");
       } else if (id == "#dialog-delete-ghostcard") {
          document.getElementById("div-overlay-delete-ghostcard").classList.remove("active");
+      } else if (id == "#dialog-change-password") {
+         document.getElementById("div-overlay-change-password").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -75,6 +77,8 @@ function callUi(id) {
          document.getElementById("div-overlay-edit-reminder").classList.add("active");
       } else if (id == "#dialog-delete-ghostcard") {
          document.getElementById("div-overlay-delete-ghostcard").classList.add("active");
+      } else if (id == "#dialog-change-password") {
+         document.getElementById("div-overlay-change-password").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }

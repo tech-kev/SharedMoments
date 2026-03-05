@@ -62,6 +62,57 @@ function updateProfilePicture(input) {
     });
 }
 
+// --- Change Password ---
+function changePassword() {
+    const currentPw = document.getElementById('input-current-password').value;
+    const newPw = document.getElementById('input-new-password').value;
+    const confirmPw = document.getElementById('input-confirm-password').value;
+
+    if (!currentPw || !newPw || !confirmPw) {
+        showSnackbar('settings', true, 'error', _('Please fill in all fields'), null, false);
+        return;
+    }
+    if (newPw !== confirmPw) {
+        showSnackbar('settings', true, 'error', _('Passwords do not match'), null, false);
+        return;
+    }
+    if (newPw.length < 6) {
+        showSnackbar('settings', true, 'error', _('Password must be at least 6 characters'), null, false);
+        return;
+    }
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+
+    const btn = document.getElementById('btn-save-password');
+    btnLoading(btn);
+
+    fetch('/api/v2/user/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ current_password: currentPw, new_password: newPw })
+    })
+    .then(res => res.json())
+    .then(result => {
+        btnReset(btn);
+        if (result.status === 'success') {
+            callUi('#dialog-change-password');
+            document.getElementById('input-current-password').value = '';
+            document.getElementById('input-new-password').value = '';
+            document.getElementById('input-confirm-password').value = '';
+            showSnackbar('settings', true, 'green', result.message, null, false);
+        } else {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+        }
+    })
+    .catch(error => {
+        btnReset(btn);
+        if (String(error) === 'TypeError: Failed to fetch') error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    });
+}
+
 // --- Edit Dialog ---
 function hideAllEditFields() {
     document.getElementById('edit-field-text').style.display = 'none';

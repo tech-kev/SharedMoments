@@ -241,6 +241,17 @@
                 <i>edit</i>
               </a>
               <input type="file" id="profile-picture-input" accept="image/*" style="display:none;" onchange="updateProfilePicture(this)">
+
+              <!-- Change password -->
+              <a class="row padding primary-container wave" onclick="callUi('#dialog-change-password')">
+                <i>lock</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Change password') }}</h6>
+                  <div>{{ _('Update your password') }}</div>
+                </div>
+                <i>chevron_right</i>
+              </a>
+
               {% for user_setting in user_settings %}
               {% if user_setting.name == 'darkmode' %}
               <a class="row padding primary-container wave" onclick="toggleDarkmode()">
@@ -541,6 +552,28 @@
    <nav class="right-align no-space">
       <button class="transparent link" onclick="showMoreInfo('settings', null,'close')">{{ _('OK') }}</button>
    </nav>
+   </dialog>
+
+   <!-- Change Password Dialog -->
+   <div class="overlay" id="div-overlay-change-password" onclick="callUi('#dialog-change-password')"></div>
+   <dialog id="dialog-change-password">
+      <h5>{{ _('Change password') }}</h5>
+      <div class="field label border">
+         <input type="password" id="input-current-password">
+         <label>{{ _('Current password') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="password" id="input-new-password">
+         <label>{{ _('New password') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="password" id="input-confirm-password">
+         <label>{{ _('Confirm password') }}</label>
+      </div>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-change-password')">{{ _('Cancel') }}</button>
+         <button class="transparent link" id="btn-save-password" onclick="changePassword()">{{ _('Save') }}</button>
+      </nav>
    </dialog>
 
    <!-- Edition-Wechsel Bestätigungsdialog -->
