@@ -208,6 +208,8 @@
                   <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
                 </div>
               </a>
+              {% elif user_setting.name == 'accent_color' %}
+              {# Rendered in dedicated Appearance section below #}
               {% elif user_setting.name.startswith('pwa_') or user_setting.name.startswith('notification_') %}
               {# PWA and notification settings rendered in dedicated sections below #}
               {% else %}
@@ -220,6 +222,67 @@
               </a>
               {% endif %}
               {% endfor %}
+
+              <!-- Appearance Section -->
+              <legend>{{ _('Appearance') }}</legend>
+
+              <div class="padding primary-container" style="border-radius: 0.75rem;">
+                <nav>
+                  <i>palette</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Accent color') }}</h6>
+                  </div>
+                </nav>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;">
+                  {% set presets = [
+                    ('#F44336', 'Red 500'),
+                    ('#E91E63', 'Pink 500'),
+                    ('#9C27B0', 'Purple 500'),
+                    ('#673AB7', 'Deep Purple 500'),
+                    ('#3F51B5', 'Indigo 500'),
+                    ('#2196F3', 'Blue 500'),
+                    ('#03A9F4', 'Light Blue 500'),
+                    ('#00BCD4', 'Cyan 500'),
+                    ('#009688', 'Teal 500'),
+                    ('#4CAF50', 'Green 500'),
+                    ('#8BC34A', 'Light Green 500'),
+                    ('#CDDC39', 'Lime 500'),
+                    ('#FFEB3B', 'Yellow 500'),
+                    ('#FFC107', 'Amber 500'),
+                    ('#FF9800', 'Orange 500'),
+                    ('#FF5722', 'Deep Orange 500'),
+                    ('#795548', 'Brown 500'),
+                    ('#607D8B', 'Blue Grey 500'),
+                    ('#D32F2F', 'Red 700'),
+                    ('#7B1FA2', 'Purple 700'),
+                    ('#1976D2', 'Blue 700'),
+                    ('#00796B', 'Teal 700'),
+                    ('#388E3C', 'Green 700'),
+                    ('#F57C00', 'Orange 700'),
+                    ('#6750A4', 'M3 Primary'),
+                  ] %}
+                  {% for hex, name in presets %}
+                  <button class="circle small accent-swatch"
+                          data-color="{{ hex }}"
+                          style="background:{{ hex }}; width:2.5rem; height:2.5rem; min-width:2.5rem;
+                                 border:3px solid {% if accent_color == hex %}var(--on-surface){% else %}transparent{% endif %};"
+                          onclick="selectAccentColor('{{ hex }}')"
+                          title="{{ name }}">
+                  </button>
+                  {% endfor %}
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+                  <div id="color-preview-swatch" style="width:2.5rem; height:2.5rem; min-width:2.5rem; border-radius:50%; border:2px solid var(--outline); background:{{ accent_color }};"></div>
+                  <div class="field label border max">
+                    <input type="text" id="input-custom-accent-color"
+                           value="{{ accent_color }}" maxlength="7">
+                    <label>Hex</label>
+                  </div>
+                  <button class="square round small" onclick="applyCustomAccentColor()">
+                    <i>check</i>
+                  </button>
+                </div>
+              </div>
 
               <!-- Notifications Section -->
               <legend>{{ _('Notifications') }}</legend>

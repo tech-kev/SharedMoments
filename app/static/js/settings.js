@@ -1003,12 +1003,75 @@ function initNotificationSettings() {
     }
 }
 
-// Init storage display on page load
+// --- Accent Color ---
+
+async function selectAccentColor(hex) {
+   if (!/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
+   await previewAccentColor(hex);
+   document.querySelectorAll('.accent-swatch').forEach(btn => {
+      btn.style.borderColor = btn.dataset.color === hex.toUpperCase() ? 'var(--on-surface)' : 'transparent';
+   });
+   const ti = document.getElementById('input-custom-accent-color');
+   if (ti) ti.value = hex;
+   const ps = document.getElementById('color-preview-swatch');
+   if (ps) ps.style.background = hex;
+   saveAccentColor(hex);
+}
+
+async function previewAccentColor(hex) {
+   if (!/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
+   if (typeof window.applyTheme === 'function') {
+      await window.applyTheme(hex);
+   } else if (typeof ui === 'function') {
+      await ui('theme', hex);
+   }
+   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', hex);
+}
+
+function applyCustomAccentColor() {
+   const input = document.getElementById('input-custom-accent-color');
+   if (!input) return;
+   let v = input.value.trim().toUpperCase();
+   if (!v.startsWith('#')) v = '#' + v;
+   if (!/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      showSnackbar('settings', true, 'error', _('Invalid color code'), null, false);
+      return;
+   }
+   selectAccentColor(v);
+}
+
+function saveAccentColor(hex) {
+   if (!navigator.onLine) {
+      showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+      return;
+   }
+   const fd = new FormData();
+   fd.append('setting', 'accent_color');
+   fd.append('value', hex);
+   fetch('/api/v2/user-settings', { method: 'PUT', body: fd })
+      .then(async r => {
+         const res = await r.json();
+         if (res.status === 'success') {
+            showSnackbar('settings', true, 'green', res.message, null, false);
+         } else {
+            showSnackbar('settings', true, 'error', res.message, res, true);
+         }
+      })
+      .catch(e => {
+         showSnackbar('settings', true, 'error',
+            String(e) === 'TypeError: Failed to fetch' ? _('Server not reachable') : e, null, false);
+      });
+}
+
+// Init
 if (settingsType === 'user-settings') {
     document.addEventListener('DOMContentLoaded', () => {
         syncPwaTogglesFromLocalStorage();
         updateStorageDisplay();
         syncAllPwaSettings();
         initNotificationSettings();
+        document.getElementById('input-custom-accent-color')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') applyCustomAccentColor();
+        });
     });
 }

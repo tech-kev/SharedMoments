@@ -60,3 +60,17 @@ from app.ai import get_active_provider
 @app.context_processor
 def inject_ai_enabled():
     return dict(ai_enabled=bool(get_active_provider()))
+
+@app.context_processor
+def inject_accent_color():
+    accent_color = '#6750A4'
+    try:
+        from flask import g
+        if hasattr(g, 'user_id') and g.user_id:
+            from app.db_queries import get_user_setting
+            setting = get_user_setting(g.user_id, 'accent_color')
+            if setting and setting.value:
+                accent_color = setting.value
+    except Exception:
+        pass
+    return dict(accent_color=accent_color)
