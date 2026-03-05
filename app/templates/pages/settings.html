@@ -177,6 +177,59 @@
               {% endif %}
               {% endfor %}
 
+              {% if has_permission('Access Admin Panel') %}
+              <!-- Data Management Section -->
+              <legend>{{ _('Data Management') }}</legend>
+
+              <!-- Export -->
+              <a class="row padding primary-container wave" id="export-data-row" onclick="startDataExport(this)">
+                <i>download</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Export data') }}</h6>
+                  <div>{{ _('Download all items and media as ZIP') }}</div>
+                </div>
+              </a>
+
+              <!-- Export Progress -->
+              <div id="export-progress-container" style="display:none;" class="padding primary-container">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <progress id="export-progress-bar" value="0" max="100" style="flex:1;"></progress>
+                  <span id="export-progress-text">0%</span>
+                </div>
+                <a id="export-download-link" style="display:none; margin-top:0.5rem;" class="row wave">
+                  <i>file_download</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Download') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Import -->
+              <a class="row padding primary-container wave" id="import-data-row" onclick="document.getElementById('import-file-input').click()">
+                <i>upload</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Import data') }}</h6>
+                  <div>{{ _('Import items and media from ZIP (v2 only)') }}</div>
+                </div>
+              </a>
+              <input type="file" id="import-file-input" accept=".zip" style="display:none;" onchange="startDataImport(this)">
+
+              <!-- Import Progress -->
+              <div id="import-progress-container" style="display:none;" class="padding primary-container">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <progress id="import-progress-bar" value="0" max="100" style="flex:1;"></progress>
+                  <span id="import-progress-text">0%</span>
+                </div>
+                <p class="small" id="import-progress-phase" style="margin-top:0.25rem; opacity:0.7;"></p>
+              </div>
+
+              <!-- Import Summary -->
+              <div id="import-summary-container" style="display:none;" class="padding primary-container">
+                <h6 class="small">{{ _('Import Summary') }}</h6>
+                <div id="import-summary-text"></div>
+              </div>
+              {% endif %}
+
               {% elif settings_type == 'user-settings' %}
               <!-- Profile picture -->
               <a class="row padding primary-container wave" onclick="document.getElementById('profile-picture-input').click()">

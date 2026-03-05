@@ -160,7 +160,7 @@ def init_db():
 
 # Table Users
 
-def create_user(firstName, lastName, email, birthDate, profilePicture, passwordHash, passwordSalt, public_key, credential_id, sign_count):
+def create_user(firstName, lastName, email, birthDate, profilePicture, passwordHash, passwordSalt, public_key=None, credential_id=None, sign_count=0):
     session = SessionLocal()
     try:
         new_user = User(
@@ -170,12 +170,19 @@ def create_user(firstName, lastName, email, birthDate, profilePicture, passwordH
             birthDate=birthDate,
             profilePicture=profilePicture,
             passwordHash=str(passwordHash),
-            passwordSalt=passwordSalt,
-            public_key=public_key,
-            credential_id=credential_id,
-            sign_count=sign_count
+            passwordSalt=passwordSalt
         )
         session.add(new_user)
+        session.flush()
+        if credential_id and public_key:
+            passkey = Passkey(
+                userID=new_user.id,
+                name='Imported Passkey',
+                credential_id=credential_id,
+                public_key=public_key,
+                sign_count=sign_count or 0
+            )
+            session.add(passkey)
         session.commit()
         return new_user.id
     finally:

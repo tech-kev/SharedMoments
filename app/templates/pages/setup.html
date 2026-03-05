@@ -62,8 +62,27 @@
                         </select>
                         <i style="color: black;">arrow_drop_down</i>
                     </div>
+                    <div style="margin-top:1.5rem; border-top:1px solid rgba(255,255,255,0.3); padding-top:1rem;">
+                        <p>{{ _('Or import data from a previous v2 instance') }}:</p>
+                        <button onclick="document.getElementById('setup-import-input').click()" class="border center white" id="button-setup-import">
+                            <i>upload</i>
+                            <span>{{ _('Import data') }}</span>
+                        </button>
+                        <input type="file" id="setup-import-input" accept=".zip" style="display:none;" onchange="setupImportData(this)">
+                        <div id="setup-import-progress" style="display:none; margin-top:1rem; text-align:left;" class="padding round">
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <progress id="setup-import-progress-bar" value="0" max="100" style="flex:1;"></progress>
+                                <span id="setup-import-progress-text">0%</span>
+                            </div>
+                            <p class="small" id="setup-import-progress-phase" style="margin-top:0.25rem; opacity:0.7;"></p>
+                        </div>
+                        <div id="setup-import-summary" style="display:none; margin-top:1rem; text-align:left;" class="padding round">
+                            <h6 class="small">{{ _('Import Summary') }}</h6>
+                            <div id="setup-import-summary-text"></div>
+                        </div>
+                    </div>
                 </div>
-    
+
             </div>
             <div class="page padding" id="setup-tab-2">
     

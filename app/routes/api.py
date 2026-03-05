@@ -7,7 +7,7 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     update_item, get_list_type_by_id, update_list_type, delete_list_type, create_list_type,
     get_all_settings, update_setting, create_user, get_role_by_name, create_user_role,
     create_user_setting, update_translation, update_user_setting, update_user_profile_picture,
-    create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions,
+    create_permissions_for_list_type, delete_permissions_for_list_type, rename_list_type_permissions, get_user_by_email,
     create_item_share, get_shares_for_item, deactivate_share, get_shared_item_ids,
     get_all_media_urls, get_list_type_by_title,
     get_all_reminders, get_reminder_by_id, create_reminder as db_create_reminder,
@@ -16,14 +16,57 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     save_push_subscription, delete_push_subscription)
 from datetime import datetime
 from app.logger import log
-import os, json, subprocess, shutil
-from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role
+import os, json, subprocess, shutil, threading, uuid, zipfile, tempfile, time
+from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role, Item, ListType, Reminder, ReminderMute
 from app.utils import export_data, find_unmatched_translations, generate_lqip, generate_admin_filename
 from app.translation import _, load_translation_in_cache, set_locale, migrateTranslations
 from app.routes.auth import jwt_required, login_jwt
 from app.permissions import require_permission, require_list_permission
 
 api_bp = Blueprint('api', __name__)
+
+_export_jobs = {}
+_import_jobs = {}
+
+# File-based job status for multi-worker environments (gunicorn)
+_JOBS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'uploads', 'temp', 'jobs')
+os.makedirs(_JOBS_DIR, exist_ok=True)
+
+def _write_job(job_id, data):
+    path = os.path.join(_JOBS_DIR, job_id + '.json')
+    tmp_path = path + '.tmp'
+    with open(tmp_path, 'w') as f:
+        json.dump(data, f)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp_path, path)
+
+def _read_job(job_id):
+    path = os.path.join(_JOBS_DIR, job_id + '.json')
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, 'r') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, ValueError):
+        return None
+
+class _FileJob:
+    """Dict-like job tracker that auto-syncs to a JSON file on every write."""
+    def __init__(self, job_id, initial):
+        self._job_id = job_id
+        self._data = dict(initial)
+        _write_job(job_id, self._data)
+
+    def __setitem__(self, key, value):
+        self._data[key] = value
+        _write_job(self._job_id, self._data)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def get(self, key, default=None):
+        return self._data.get(key, default)
 
 
 @api_bp.route('/api/v2/setup', methods=['POST'])
@@ -233,7 +276,7 @@ def update_settings():
         if setting in ('banner_image', 'banner_song') and value:
             basedir = os.path.abspath(os.path.dirname(__file__))
             if setting == 'banner_image':
-                folder = os.path.join(basedir, '..', 'static', 'images')
+                folder = os.path.join(basedir, '..', 'uploads', 'images')
             else:
                 folder = os.path.join(basedir, '..', 'uploads', 'music')
             old_path = os.path.join(folder, value)
@@ -1800,3 +1843,663 @@ def migration_review_complete():
         return jsonify({'status': 'error', 'message': str(e)}), 500
     finally:
         db_session.close()
+
+
+# ==================== Data Export/Import API ====================
+
+@api_bp.route('/api/v2/data/export', methods=['POST'])
+@jwt_required
+@require_permission('Access Admin Panel')
+def data_export():
+    try:
+        export_id = str(uuid.uuid4())
+        _write_job('export-' + export_id, {'progress': 0, 'status': 'starting', 'filename': None, 'error': None})
+        app_ref = app._get_current_object()
+        t = threading.Thread(target=_run_export, args=(export_id, g.user_id, app_ref), daemon=True)
+        t.start()
+        return jsonify({'status': 'success', 'data': {'export_id': export_id}}), 202
+    except Exception as e:
+        log('error', f'Error starting export: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@api_bp.route('/api/v2/data/export/status/<export_id>', methods=['GET'])
+def data_export_status(export_id):
+    # No JWT/DB needed — reads only from JSON file, UUID is unguessable
+    job = _read_job('export-' + export_id)
+    if not job:
+        return jsonify({'status': 'error', 'message': 'Export not found'}), 404
+    return jsonify({
+        'status': 'success',
+        'data': {
+            'progress': job['progress'],
+            'export_status': job['status'],
+            'filename': job['filename'],
+            'error': job['error']
+        }
+    }), 200
+
+
+@api_bp.route('/api/v2/data/import-chunk', methods=['POST'])
+@jwt_required
+@require_permission('Access Admin Panel')
+def data_import_chunk():
+    return _handle_import_chunk(g.user_id, is_setup=False)
+
+
+@api_bp.route('/api/v2/setup/import-chunk', methods=['POST'])
+@jwt_required
+def setup_import_chunk():
+    setup_setting = get_setting_by_name('setup_complete')
+    if setup_setting and setup_setting.value == 'True':
+        return jsonify({'status': 'error', 'message': 'Setup already completed'}), 403
+    return _handle_import_chunk(g.user_id, is_setup=True)
+
+
+@api_bp.route('/api/v2/data/import/status/<import_id>', methods=['GET'])
+def data_import_status(import_id):
+    # No JWT/DB needed — reads only from JSON file, UUID is unguessable
+    job = _read_job('import-' + import_id)
+    if not job:
+        return jsonify({'status': 'error', 'message': 'Import not found'}), 404
+    return jsonify({
+        'status': 'success',
+        'data': {
+            'import_status': job['status'],
+            'progress': job['progress'],
+            'phase': job['phase'],
+            'result': job.get('result'),
+            'error': job.get('error')
+        }
+    })
+
+
+def _handle_import_chunk(user_id, is_setup=False):
+    try:
+        upload_id = request.headers.get('X-Upload-ID', '')
+        chunk_index = int(request.headers.get('X-Chunk-Index', 0))
+        total_chunks = int(request.headers.get('X-Total-Chunks', 1))
+
+        if not upload_id:
+            return jsonify({'status': 'error', 'message': _('No file provided'), 'data': {'error_code': 400}}), 400
+
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        temp_dir = os.path.join(basedir, '..', 'uploads', 'temp')
+        os.makedirs(temp_dir, exist_ok=True)
+
+        temp_path = os.path.join(temp_dir, secure_filename(upload_id))
+
+        with open(temp_path, 'ab') as f:
+            while True:
+                data = request.stream.read(1024 * 1024)
+                if not data:
+                    break
+                f.write(data)
+
+        # Not the last chunk yet — acknowledge and wait for more
+        if chunk_index < total_chunks - 1:
+            return jsonify({'status': 'success', 'data': {'chunk': chunk_index}})
+
+        # Last chunk — start async processing
+        import_id = str(uuid.uuid4())
+        _write_job('import-' + import_id, {'progress': 0, 'status': 'starting', 'phase': 'extracting', 'result': None, 'error': None})
+        app_ref = app._get_current_object()
+        t = threading.Thread(target=_run_import, args=(import_id, temp_path, user_id, app_ref, is_setup), daemon=True)
+        t.start()
+
+        return jsonify({'status': 'success', 'data': {'import_id': import_id}}), 202
+
+    except Exception as e:
+        log('error', f'Error during import chunk: {e}')
+        return jsonify({
+            'status': 'error',
+            'message': _('An error occurred during import.'),
+            'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}
+        }), 500
+
+
+def _run_import(import_id, zip_path, user_id, app_ref, is_setup=False):
+    with app_ref.app_context():
+        job = _FileJob('import-' + import_id, {'progress': 0, 'status': 'running', 'phase': 'extracting', 'result': None, 'error': None})
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        tmp_dir = tempfile.mkdtemp()
+
+        try:
+            # Phase 1: Extract ZIP (0-30%)
+            job['phase'] = 'extracting'
+            job['progress'] = 0
+            extract_dir = os.path.join(tmp_dir, 'extract')
+            try:
+                with zipfile.ZipFile(zip_path, 'r') as zf:
+                    members = zf.namelist()
+                    for member in members:
+                        member_path = os.path.realpath(os.path.join(extract_dir, member))
+                        if not member_path.startswith(os.path.realpath(extract_dir)):
+                            job['status'] = 'error'
+                            job['error'] = 'Invalid ZIP: path traversal detected'
+                            return
+                    total_members = len(members)
+                    for i, member in enumerate(members):
+                        zf.extract(member, extract_dir)
+                        job['progress'] = int((i + 1) / total_members * 30)
+            except zipfile.BadZipFile:
+                job['status'] = 'error'
+                job['error'] = _('Invalid or corrupted ZIP file')
+                return
+
+            data_json_path = os.path.join(extract_dir, 'data.json')
+            if not os.path.exists(data_json_path):
+                # Search in subdirectories (e.g. ZIP created with wrapper folder)
+                for root, dirs, files in os.walk(extract_dir):
+                    if 'data.json' in files:
+                        data_json_path = os.path.join(root, 'data.json')
+                        extract_dir = root
+                        break
+                else:
+                    job['status'] = 'error'
+                    job['error'] = 'Invalid ZIP: data.json not found'
+                    return
+
+            with open(data_json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            if 'items' not in data or 'listTypes' not in data:
+                job['status'] = 'error'
+                job['error'] = 'Invalid ZIP: missing items or listTypes in data.json'
+                return
+
+            export_version = data.get('version', '')
+            if export_version and not export_version.startswith('2.'):
+                job['status'] = 'error'
+                job['error'] = f'Incompatible export version: {export_version}. Only v2.x exports are supported.'
+                return
+
+            # Phase 2: Import data (30-60%)
+            job['phase'] = 'importing'
+            job['progress'] = 30
+
+            PROTECTED_SETTINGS = {'sm_version', 'setup_complete', 'migration_review_complete'}
+            settings_updated = 0
+            db_session = SessionLocal()
+            try:
+                for s_data in data.get('settings', []):
+                    s_name = s_data.get('name', '')
+                    if s_name in PROTECTED_SETTINGS or not s_name:
+                        continue
+                    existing = db_session.query(Setting).filter(Setting.name == s_name).first()
+                    if existing:
+                        existing.value = s_data.get('value', existing.value)
+                        existing.icon = s_data.get('icon', existing.icon)
+                        existing.edition = s_data.get('edition', existing.edition)
+                        existing.category = s_data.get('category', existing.category)
+                        existing.type = s_data.get('type', existing.type)
+                    else:
+                        db_session.add(Setting(
+                            name=s_name,
+                            value=s_data.get('value'),
+                            icon=s_data.get('icon'),
+                            edition=s_data.get('edition'),
+                            category=s_data.get('category'),
+                            type=s_data.get('type')
+                        ))
+                    settings_updated += 1
+                db_session.commit()
+            finally:
+                db_session.close()
+
+            # ── Wipe existing data and re-import everything ──
+            from datetime import date as date_type
+            wipe_session = SessionLocal()
+            try:
+                wipe_session.query(ReminderMute).delete()
+                wipe_session.query(Reminder).delete()
+                wipe_session.query(UserSetting).delete()
+                wipe_session.query(UserRole).delete()
+                wipe_session.query(Item).delete()
+                wipe_session.commit()
+            finally:
+                wipe_session.close()
+
+            # Import users (update existing by email, create new)
+            users_imported = 0
+            user_email_to_id = {}
+            user_session = SessionLocal()
+            try:
+                for u_data in data.get('users', []):
+                    try:
+                        email = u_data.get('email', '')
+                        if not email:
+                            continue
+                        birth_date = None
+                        if u_data.get('birthDate'):
+                            birth_date = date_type.fromisoformat(u_data['birthDate'])
+                        existing_user = user_session.query(User).filter(User.email == email).first()
+                        if existing_user:
+                            existing_user.firstName = u_data.get('firstName', existing_user.firstName)
+                            existing_user.lastName = u_data.get('lastName', existing_user.lastName)
+                            existing_user.birthDate = birth_date or existing_user.birthDate
+                            existing_user.profilePicture = u_data.get('profilePicture', existing_user.profilePicture)
+                            existing_user.passwordHash = u_data.get('passwordHash', existing_user.passwordHash)
+                            existing_user.passwordSalt = u_data.get('passwordSalt', existing_user.passwordSalt)
+                            user_email_to_id[email] = existing_user.id
+                        else:
+                            new_user = User(
+                                firstName=u_data.get('firstName', ''),
+                                lastName=u_data.get('lastName', ''),
+                                email=email,
+                                birthDate=birth_date,
+                                profilePicture=u_data.get('profilePicture', 'default-profile.png'),
+                                passwordHash=str(u_data.get('passwordHash', '')),
+                                passwordSalt=u_data.get('passwordSalt', '')
+                            )
+                            user_session.add(new_user)
+                            user_session.flush()
+                            user_email_to_id[email] = new_user.id
+                        users_imported += 1
+                    except Exception as e:
+                        log('error', f'Error importing user: {e}')
+                user_session.commit()
+            finally:
+                user_session.close()
+
+            # Assign roles
+            for u_data in data.get('users', []):
+                email = u_data.get('email', '')
+                uid = user_email_to_id.get(email)
+                if not uid:
+                    continue
+                for role_name in u_data.get('roles', []):
+                    if not role_name:
+                        continue
+                    try:
+                        role_id = get_role_by_name(role_name)
+                        if role_id:
+                            create_user_role(uid, role_id)
+                    except Exception:
+                        pass
+
+            # Import user settings
+            user_settings_imported = 0
+            us_session = SessionLocal()
+            try:
+                for us_data in data.get('userSettings', []):
+                    try:
+                        email = us_data.get('userEmail', '')
+                        uid = user_email_to_id.get(email)
+                        if not uid or not us_data.get('name'):
+                            continue
+                        us_session.add(UserSetting(
+                            userID=uid,
+                            name=us_data['name'],
+                            value=us_data.get('value', ''),
+                            icon=us_data.get('icon'),
+                            edition=us_data.get('edition'),
+                            category=us_data.get('category'),
+                            type=us_data.get('type')
+                        ))
+                        user_settings_imported += 1
+                    except Exception as e:
+                        log('error', f'Error importing user setting: {e}')
+                us_session.commit()
+            finally:
+                us_session.close()
+
+            # Import reminders
+            reminders_imported = 0
+            for r_data in data.get('reminders', []):
+                try:
+                    target_date = None
+                    if r_data.get('target_date'):
+                        target_date = date_type.fromisoformat(r_data['target_date'])
+                    db_create_reminder(
+                        title=r_data.get('title', ''),
+                        description=r_data.get('description', ''),
+                        reminder_type=r_data.get('reminder_type', ''),
+                        created_by=user_id,
+                        month=r_data.get('month'),
+                        day=r_data.get('day'),
+                        target_date=target_date,
+                        milestone_days=r_data.get('milestone_days'),
+                        countdown_id=r_data.get('countdown_id'),
+                        notify_days_before=r_data.get('notify_days_before', '0'),
+                        is_global=r_data.get('is_global', True),
+                        is_auto=r_data.get('is_auto', False),
+                        auto_source=r_data.get('auto_source')
+                    )
+                    reminders_imported += 1
+                except Exception as e:
+                    log('error', f'Error importing reminder: {e}')
+
+            # Import list types
+            local_list_types = get_all_list_types()
+            lt_map = {}
+            for lt_data in data.get('listTypes', []):
+                title = lt_data['title']
+                local_lt = None
+                for llt in local_list_types:
+                    if llt.title == title:
+                        local_lt = llt
+                        break
+                if local_lt:
+                    lt_map[title] = local_lt.id
+                else:
+                    new_id = create_list_type(
+                        title=title,
+                        icon=lt_data.get('icon', 'list'),
+                        contentURL=lt_data.get('contentURL', title.lower()),
+                        createdByUser=user_id,
+                        navbar=lt_data.get('navbar', True),
+                        navbarOrder=lt_data.get('navbarOrder', 99),
+                        routeID=lt_data.get('routeID', 0),
+                        mainTitle=lt_data.get('mainTitle', title)
+                    )
+                    create_permissions_for_list_type(new_id, title)
+                    lt_map[title] = new_id
+
+            # Import items
+            imported = 0
+            skipped_duplicate = 0
+            skipped_error = 0
+            items_list = data.get('items', [])
+            total_items = len(items_list)
+
+            for idx, item_data in enumerate(items_list):
+                try:
+                    lt_info = item_data.get('listType', {})
+                    lt_title = lt_info.get('title', '')
+                    list_type_id = lt_map.get(lt_title)
+                    if not list_type_id:
+                        skipped_error += 1
+                        continue
+
+                    date_created_str = item_data.get('dateCreated', '')
+                    date_created = datetime.fromisoformat(date_created_str) if date_created_str else datetime.utcnow()
+
+                    creator_email = item_data.get('creatorEmail', '')
+                    item_owner = user_email_to_id.get(creator_email, user_id) if creator_email else user_id
+
+                    create_item(
+                        title=item_data.get('title', ''),
+                        content=item_data.get('content', ''),
+                        contentType=item_data.get('contentType', ''),
+                        listType=list_type_id,
+                        contentURL=item_data.get('contentURL', ''),
+                        createdByUser=item_owner,
+                        dateCreated=date_created,
+                        edition=item_data.get('edition', 'all'),
+                        blurPlaceholder=item_data.get('blurPlaceholder'),
+                        mediaWidth=item_data.get('mediaWidth'),
+                        mediaHeight=item_data.get('mediaHeight')
+                    )
+                    imported += 1
+                except Exception as e:
+                    log('error', f'Error importing item: {e}')
+                    skipped_error += 1
+
+                if total_items > 0:
+                    job['progress'] = 30 + int((idx + 1) / total_items * 30)
+
+                # Yield DB lock every 10 items so other requests can proceed
+                if (idx + 1) % 10 == 0:
+                    time.sleep(0.05)
+
+            # Phase 3: Copy media (60-100%)
+            job['phase'] = 'copying_media'
+            job['progress'] = 60
+            media_copied = 0
+
+            media_dir = os.path.join(extract_dir, 'media')
+            if os.path.isdir(media_dir):
+                media_files = []
+                for subfolder in ('images', 'videos', 'music', 'profiles'):
+                    src_dir = os.path.join(media_dir, subfolder)
+                    if not os.path.isdir(src_dir):
+                        continue
+                    for fname in os.listdir(src_dir):
+                        src_file = os.path.join(src_dir, fname)
+                        if os.path.isfile(src_file):
+                            media_files.append((src_file, subfolder, fname))
+
+                total_media = len(media_files)
+                for idx, (src_file, subfolder, fname) in enumerate(media_files):
+                    dest_dir = os.path.join(basedir, '..', 'uploads', subfolder)
+                    os.makedirs(dest_dir, exist_ok=True)
+                    dest_file = os.path.join(dest_dir, fname)
+                    if not os.path.exists(dest_file):
+                        shutil.copy2(src_file, dest_file)
+                        media_copied += 1
+                    if total_media > 0:
+                        job['progress'] = 60 + int((idx + 1) / total_media * 40)
+
+            job['progress'] = 100
+            job['status'] = 'done'
+            job['phase'] = 'done'
+            job['result'] = {
+                'imported': imported,
+                'skipped_duplicate': skipped_duplicate,
+                'skipped_error': skipped_error,
+                'media_copied': media_copied,
+                'settings_updated': settings_updated,
+                'users_imported': users_imported,
+                'user_settings_imported': user_settings_imported,
+                'reminders_imported': reminders_imported
+            }
+
+            # If setup import, mark setup as complete
+            if is_setup:
+                # Get edition from imported settings
+                edition_setting = get_setting_by_name('sm_edition')
+                if edition_setting:
+                    update_setting('sm_edition', edition_setting.value)
+                update_setting('setup_complete', 'True')
+
+            log('info', f'Data import completed: {imported} items, {skipped_duplicate} duplicates, {skipped_error} errors, {media_copied} media, {settings_updated} settings, {users_imported} users, {user_settings_imported} user settings, {reminders_imported} reminders')
+
+        except Exception as e:
+            log('error', f'Error during import: {e}')
+            job['status'] = 'error'
+            job['error'] = str(e)
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            if os.path.exists(zip_path):
+                os.remove(zip_path)
+
+
+def _run_export(export_id, user_id, app_ref):
+    with app_ref.app_context():
+        job = _FileJob('export-' + export_id, {'progress': 0, 'status': 'running', 'filename': None, 'error': None})
+        try:
+
+            basedir = os.path.abspath(os.path.dirname(__file__))
+
+            # 1. Query all data (0-10%)
+            db_session = SessionLocal()
+            try:
+                items = db_session.query(Item).all()
+                for item in items:
+                    db_session.expunge(item)
+                list_types_all = db_session.query(ListType).order_by(ListType.navbarOrder.asc()).all()
+                for lt in list_types_all:
+                    db_session.expunge(lt)
+                user_settings_all = db_session.query(UserSetting).all()
+                for us in user_settings_all:
+                    db_session.expunge(us)
+                user_roles_all = db_session.query(UserRole).all()
+                for ur in user_roles_all:
+                    db_session.expunge(ur)
+                roles_all = db_session.query(Role).all()
+                for role in roles_all:
+                    db_session.expunge(role)
+                reminders_all = db_session.query(Reminder).filter(Reminder.active == True).all()
+                for r in reminders_all:
+                    db_session.expunge(r)
+                settings_all = db_session.query(Setting).all()
+                for s in settings_all:
+                    db_session.expunge(s)
+                users = db_session.query(User).all()
+                for u in users:
+                    db_session.expunge(u)
+            finally:
+                db_session.close()
+
+            job['progress'] = 10
+
+            # 2. Build data.json and collect media files
+            lt_map = {lt.id: lt for lt in list_types_all}
+
+            role_map = {role.id: role.roleName for role in roles_all}
+            user_id_map = {u.id: u for u in users}
+
+            export_data_json = {
+                'version': '2.0',
+                'exportedAt': datetime.utcnow().isoformat(),
+                'settings': [],
+                'listTypes': [],
+                'items': [],
+                'users': [],
+                'userSettings': [],
+                'reminders': []
+            }
+
+            for s in settings_all:
+                export_data_json['settings'].append({
+                    'name': s.name,
+                    'value': s.value,
+                    'icon': s.icon,
+                    'edition': s.edition,
+                    'category': s.category,
+                    'type': s.type
+                })
+
+            for lt in list_types_all:
+                export_data_json['listTypes'].append({
+                    'title': lt.title,
+                    'icon': lt.icon,
+                    'routeID': lt.routeID,
+                    'mainTitle': lt.mainTitle,
+                    'contentURL': lt.contentURL,
+                    'navbar': lt.navbar,
+                    'navbarOrder': lt.navbarOrder
+                })
+
+            for user in users:
+                user_roles = [role_map.get(ur.roleID, '') for ur in user_roles_all if ur.userID == user.id]
+                export_data_json['users'].append({
+                    'firstName': user.firstName,
+                    'lastName': user.lastName,
+                    'email': user.email,
+                    'birthDate': user.birthDate.isoformat() if user.birthDate else None,
+                    'profilePicture': user.profilePicture,
+                    'passwordHash': user.passwordHash,
+                    'passwordSalt': user.passwordSalt,
+                    'roles': user_roles
+                })
+
+            media_files = []
+
+            for item in items:
+                lt_obj = lt_map.get(item.listType)
+                creator_obj = user_id_map.get(item.createdByUser)
+                export_data_json['items'].append({
+                    'title': item.title,
+                    'content': item.content,
+                    'contentType': item.contentType,
+                    'contentURL': item.contentURL,
+                    'edition': item.edition,
+                    'dateCreated': item.dateCreated.isoformat() if item.dateCreated else None,
+                    'listType': {
+                        'title': lt_obj.title if lt_obj else '',
+                        'routeID': lt_obj.routeID if lt_obj else ''
+                    },
+                    'creatorEmail': creator_obj.email if creator_obj else None,
+                    'blurPlaceholder': item.blurPlaceholder,
+                    'mediaWidth': item.mediaWidth,
+                    'mediaHeight': item.mediaHeight
+                })
+
+                if item.contentURL:
+                    for fname in item.contentURL.split(';'):
+                        fname = fname.strip()
+                        if not fname:
+                            continue
+                        ext = fname.rsplit('.', 1)[-1].lower() if '.' in fname else ''
+                        if ext in IMAGE_EXTENSIONS:
+                            subfolder = 'images'
+                        elif ext in VIDEO_EXTENSIONS:
+                            subfolder = 'videos'
+                        elif ext in MUSIC_EXTENSIONS:
+                            subfolder = 'music'
+                        else:
+                            subfolder = 'images'
+                        src = os.path.join(basedir, '..', 'uploads', subfolder, fname)
+                        if not os.path.exists(src):
+                            src = os.path.join(basedir, '..', 'uploads', 'images', fname)
+                        media_files.append((src, f'media/{subfolder}/{fname}'))
+
+            for us in user_settings_all:
+                user_obj = user_id_map.get(us.userID)
+                export_data_json['userSettings'].append({
+                    'name': us.name,
+                    'value': us.value,
+                    'icon': us.icon,
+                    'edition': us.edition,
+                    'category': us.category,
+                    'type': us.type,
+                    'userEmail': user_obj.email if user_obj else None
+                })
+
+            for r in reminders_all:
+                export_data_json['reminders'].append({
+                    'title': r.title,
+                    'reminder_type': r.reminder_type,
+                    'month': r.month,
+                    'day': r.day,
+                    'description': r.description or '',
+                    'target_date': r.target_date.isoformat() if r.target_date else None,
+                    'milestone_days': r.milestone_days,
+                    'countdown_id': r.countdown_id,
+                    'notify_days_before': r.notify_days_before,
+                    'is_global': r.is_global,
+                    'is_auto': r.is_auto,
+                    'auto_source': r.auto_source
+                })
+
+            for user in users:
+                if user.profilePicture and user.profilePicture != 'default-profile.png':
+                    src = os.path.join(basedir, '..', 'uploads', 'profiles', user.profilePicture)
+                    media_files.append((src, f'media/profiles/{user.profilePicture}'))
+
+            # Export settings-referenced files (banner_song, banner_image)
+            for s in settings_all:
+                if s.name == 'banner_song' and s.value:
+                    src = os.path.join(basedir, '..', 'uploads', 'music', s.value)
+                    media_files.append((src, f'media/music/{s.value}'))
+                elif s.name == 'banner_image' and s.value:
+                    src = os.path.join(basedir, '..', 'uploads', 'images', s.value)
+                    media_files.append((src, f'media/images/{s.value}'))
+
+            # 3. Write ZIP (10-95%)
+            export_dir = os.path.join(basedir, '..', 'export')
+            os.makedirs(export_dir, exist_ok=True)
+            filename = datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '-data-export.zip'
+            zip_path = os.path.join(export_dir, filename)
+
+            total_files = len(media_files)
+            with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                zf.writestr('data.json', json.dumps(export_data_json, ensure_ascii=False, indent=2))
+                for i, (src, zip_name) in enumerate(media_files):
+                    if os.path.exists(src):
+                        zf.write(src, zip_name)
+                    progress = 10 + int((i + 1) / max(total_files, 1) * 85)
+                    job['progress'] = min(progress, 95)
+
+            # 4. Done
+            job['progress'] = 100
+            job['status'] = 'done'
+            job['filename'] = filename
+            log('info', f'Data export completed: {filename}')
+
+        except Exception as e:
+            log('error', f'Data export failed: {e}')
+            job['status'] = 'error'
+            job['error'] = str(e)

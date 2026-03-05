@@ -419,6 +419,159 @@ function uploadImage(file) {
         });
 }
 
+// --- Data Import during Setup ---
+function setupImportData(input) {
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const btn = document.getElementById('button-setup-import');
+    btnLoading(btn);
+
+    const progressContainer = document.getElementById('setup-import-progress');
+    const progressBar = document.getElementById('setup-import-progress-bar');
+    const progressText = document.getElementById('setup-import-progress-text');
+    const progressPhase = document.getElementById('setup-import-progress-phase');
+
+    progressContainer.style.display = '';
+    document.getElementById('setup-import-summary').style.display = 'none';
+    progressBar.value = 0;
+    progressText.textContent = '0%';
+    progressPhase.textContent = _('Uploading...');
+
+    const CHUNK_SIZE = 100 * 1024 * 1024;
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const uploadId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const totalMB = (file.size / (1024 * 1024)).toFixed(1);
+    const uploadStart = Date.now();
+
+    function formatTime(seconds) {
+        if (seconds < 60) return Math.round(seconds) + 's';
+        const m = Math.floor(seconds / 60);
+        const s = Math.round(seconds % 60);
+        return m + 'min ' + s + 's';
+    }
+
+    function updateProgress(loaded) {
+        const pct = Math.round(loaded / file.size * 100);
+        const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+        progressBar.value = pct;
+        progressText.textContent = pct + '%';
+        const elapsed = (Date.now() - uploadStart) / 1000;
+        let eta = '';
+        if (elapsed > 1 && loaded > 0) {
+            const remaining = (elapsed / loaded) * (file.size - loaded);
+            eta = ' — ' + formatTime(remaining) + ' ' + _('remaining');
+        }
+        progressPhase.textContent = loadedMB + ' / ' + totalMB + ' MB' + eta;
+    }
+
+    function sendChunk(index) {
+        return new Promise((resolve, reject) => {
+            const start = index * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            const chunk = file.slice(start, end);
+
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) updateProgress(start + e.loaded);
+            });
+            xhr.addEventListener('load', () => {
+                try { resolve(JSON.parse(xhr.responseText)); }
+                catch (e) { reject(new Error('HTTP ' + xhr.status + ': ' + xhr.responseText.substring(0, 200))); }
+            });
+            xhr.addEventListener('error', () => reject(new Error(_('Server not reachable'))));
+            xhr.open('POST', '/api/v2/setup/import-chunk');
+            xhr.setRequestHeader('X-Upload-ID', uploadId);
+            xhr.setRequestHeader('X-Chunk-Index', index);
+            xhr.setRequestHeader('X-Total-Chunks', totalChunks);
+            xhr.send(chunk);
+        });
+    }
+
+    (async () => {
+        try {
+            for (let i = 0; i < totalChunks; i++) {
+                const result = await sendChunk(i);
+                if (result.status !== 'success') {
+                    btnReset(btn);
+                    input.value = '';
+                    progressContainer.style.display = 'none';
+                    showSnackbar('setup', true, 'error', result.message, result, true);
+                    return;
+                }
+                // Last chunk returns import_id — start polling
+                if (i === totalChunks - 1) {
+                    progressBar.value = 0;
+                    progressText.textContent = '0%';
+                    progressPhase.textContent = phaseLabels.extracting;
+                    pollSetupImportStatus(result.data.import_id);
+                }
+            }
+        } catch (e) {
+            btnReset(btn);
+            input.value = '';
+            progressContainer.style.display = 'none';
+            showSnackbar('setup', true, 'error', String(e.message || e), null, false);
+        }
+    })();
+}
+
+const phaseLabels = {
+    extracting: _('Extracting ZIP...'),
+    importing: _('Importing items...'),
+    copying_media: _('Copying media files...')
+};
+
+function pollSetupImportStatus(importId) {
+    const progressContainer = document.getElementById('setup-import-progress');
+    const progressBar = document.getElementById('setup-import-progress-bar');
+    const progressText = document.getElementById('setup-import-progress-text');
+    const progressPhase = document.getElementById('setup-import-progress-phase');
+    const btn = document.getElementById('button-setup-import');
+    let failCount = 0;
+
+    const interval = setInterval(() => {
+        fetch('/api/v2/data/import/status/' + importId)
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(result => {
+                failCount = 0;
+                if (result.status !== 'success') return;
+                const d = result.data;
+                progressBar.value = d.progress;
+                progressText.textContent = d.progress + '%';
+                progressPhase.textContent = phaseLabels[d.phase] || d.phase;
+
+                if (d.import_status === 'done') {
+                    clearInterval(interval);
+                    btnReset(btn);
+                    progressPhase.textContent = _('Import completed successfully! Redirecting...');
+                    progressBar.value = 100;
+                    progressText.textContent = '100%';
+                    setTimeout(() => {
+                        window.location.href = '/logout';
+                    }, 2000);
+                } else if (d.import_status === 'error') {
+                    clearInterval(interval);
+                    btnReset(btn);
+                    progressContainer.style.display = 'none';
+                    showSnackbar('setup', true, 'error', d.error || _('Import failed'), null, false);
+                }
+            })
+            .catch(() => {
+                failCount++;
+                if (failCount >= 30) {
+                    clearInterval(interval);
+                    btnReset(btn);
+                    progressContainer.style.display = 'none';
+                    showSnackbar('setup', true, 'error', _('Server not reachable'), null, false);
+                }
+            });
+    }, 2000);
+}
+
 // --- WebAuthn / Passkey ---
 function base64urlToUint8Array(base64urlString) {
     const padding = '='.repeat((4 - (base64urlString.length % 4)) % 4);

@@ -1070,6 +1070,228 @@ function saveAccentColor(hex) {
       });
 }
 
+// --- Data Export/Import ---
+
+function startDataExport(row) {
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+    const ref = _rowSpinnerOn(row);
+
+    fetch('/api/v2/data/export', { method: 'POST' })
+        .then(res => res.json())
+        .then(result => {
+            _rowSpinnerOff(ref);
+            if (result.status === 'success') {
+                const exportId = result.data.export_id;
+                document.getElementById('export-progress-container').style.display = '';
+                document.getElementById('export-download-link').style.display = 'none';
+                document.getElementById('export-progress-bar').value = 0;
+                document.getElementById('export-progress-text').textContent = '0%';
+                pollExportStatus(exportId);
+            } else {
+                showSnackbar('settings', true, 'error', result.message, result, true);
+            }
+        })
+        .catch(error => {
+            _rowSpinnerOff(ref);
+            if (String(error) === 'TypeError: Failed to fetch') error = _('Server not reachable');
+            showSnackbar('settings', true, 'error', String(error), null, false);
+        });
+}
+
+function pollExportStatus(exportId) {
+    const interval = setInterval(() => {
+        fetch('/api/v2/data/export/status/' + exportId)
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    const data = result.data;
+                    document.getElementById('export-progress-bar').value = data.progress;
+                    document.getElementById('export-progress-text').textContent = data.progress + '%';
+
+                    if (data.export_status === 'done') {
+                        clearInterval(interval);
+                        const link = document.getElementById('export-download-link');
+                        link.href = '/api/v2/media/export/' + data.filename;
+                        link.setAttribute('download', data.filename);
+                        link.style.display = '';
+                        showSnackbar('settings', true, 'green', _('Export completed'), null, false);
+                    } else if (data.export_status === 'error') {
+                        clearInterval(interval);
+                        showSnackbar('settings', true, 'error', data.error || _('Export failed'), null, false);
+                    }
+                }
+            })
+            .catch(() => {
+                clearInterval(interval);
+                showSnackbar('settings', true, 'error', _('Server not reachable'), null, false);
+            });
+    }, 1000);
+}
+
+function startDataImport(input) {
+    if (!input.files || !input.files[0]) return;
+    if (!navigator.onLine) {
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+
+    const file = input.files[0];
+    const row = document.getElementById('import-data-row');
+    const ref = _rowSpinnerOn(row);
+    const progressContainer = document.getElementById('import-progress-container');
+    const progressBar = document.getElementById('import-progress-bar');
+    const progressText = document.getElementById('import-progress-text');
+    const progressPhase = document.getElementById('import-progress-phase');
+
+    progressContainer.style.display = '';
+    document.getElementById('import-summary-container').style.display = 'none';
+    progressBar.value = 0;
+    progressText.textContent = '0%';
+    progressPhase.textContent = _('Uploading...');
+
+    const CHUNK_SIZE = 100 * 1024 * 1024;
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const uploadId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const totalMB = (file.size / (1024 * 1024)).toFixed(1);
+    const uploadStart = Date.now();
+
+    function formatTime(seconds) {
+        if (seconds < 60) return Math.round(seconds) + 's';
+        const m = Math.floor(seconds / 60);
+        const s = Math.round(seconds % 60);
+        return m + 'min ' + s + 's';
+    }
+
+    function updateProgress(loaded) {
+        const pct = Math.round(loaded / file.size * 100);
+        const loadedMB = (loaded / (1024 * 1024)).toFixed(1);
+        progressBar.value = pct;
+        progressText.textContent = pct + '%';
+        const elapsed = (Date.now() - uploadStart) / 1000;
+        let eta = '';
+        if (elapsed > 1 && loaded > 0) {
+            const remaining = (elapsed / loaded) * (file.size - loaded);
+            eta = ' — ' + formatTime(remaining) + ' ' + _('remaining');
+        }
+        progressPhase.textContent = loadedMB + ' / ' + totalMB + ' MB' + eta;
+    }
+
+    function sendChunk(index) {
+        return new Promise((resolve, reject) => {
+            const start = index * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, file.size);
+            const chunk = file.slice(start, end);
+
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) updateProgress(start + e.loaded);
+            });
+            xhr.addEventListener('load', () => {
+                try { resolve(JSON.parse(xhr.responseText)); }
+                catch (e) { reject(new Error('HTTP ' + xhr.status + ': ' + xhr.responseText.substring(0, 200))); }
+            });
+            xhr.addEventListener('error', () => reject(new Error(_('Server not reachable'))));
+            xhr.open('POST', '/api/v2/data/import-chunk');
+            xhr.setRequestHeader('X-Upload-ID', uploadId);
+            xhr.setRequestHeader('X-Chunk-Index', index);
+            xhr.setRequestHeader('X-Total-Chunks', totalChunks);
+            xhr.send(chunk);
+        });
+    }
+
+    const phaseLabels = {
+        extracting: _('Extracting ZIP...'),
+        importing: _('Importing items...'),
+        copying_media: _('Copying media files...')
+    };
+
+    function pollImportStatus(importId) {
+        let failCount = 0;
+        const interval = setInterval(() => {
+            fetch('/api/v2/data/import/status/' + importId)
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(result => {
+                    failCount = 0;
+                    if (result.status !== 'success') return;
+                    const d = result.data;
+                    progressBar.value = d.progress;
+                    progressText.textContent = d.progress + '%';
+                    progressPhase.textContent = phaseLabels[d.phase] || d.phase;
+
+                    if (d.import_status === 'done') {
+                        clearInterval(interval);
+                        _rowSpinnerOff(ref);
+                        input.value = '';
+                        progressContainer.style.display = 'none';
+                        const r = d.result;
+                        const summaryEl = document.getElementById('import-summary-text');
+                        summaryEl.innerHTML =
+                            `<p>${_('Items imported')}: ${r.imported}</p>` +
+                            `<p>${_('Skipped (duplicate)')}: ${r.skipped_duplicate}</p>` +
+                            `<p>${_('Skipped (error)')}: ${r.skipped_error}</p>` +
+                            `<p>${_('Users imported')}: ${r.users_imported}</p>` +
+                            `<p>${_('User settings imported')}: ${r.user_settings_imported}</p>` +
+                            `<p>${_('Reminders imported')}: ${r.reminders_imported}</p>` +
+                            `<p>${_('Media files copied')}: ${r.media_copied}</p>` +
+                            `<p>${_('Settings updated')}: ${r.settings_updated}</p>`;
+                        document.getElementById('import-summary-container').style.display = '';
+                        showSnackbar('settings', true, 'green', _('Import completed successfully! Redirecting...'), null, false);
+                        setTimeout(() => { window.location.href = '/logout'; }, 3000);
+                    } else if (d.import_status === 'error') {
+                        clearInterval(interval);
+                        _rowSpinnerOff(ref);
+                        input.value = '';
+                        progressContainer.style.display = 'none';
+                        showSnackbar('settings', true, 'error', d.error || _('Import failed'), null, false);
+                    }
+                })
+                .catch(() => {
+                    failCount++;
+                    if (failCount >= 30) {
+                        clearInterval(interval);
+                        _rowSpinnerOff(ref);
+                        input.value = '';
+                        progressContainer.style.display = 'none';
+                        showSnackbar('settings', true, 'error', _('Server not reachable'), null, false);
+                    }
+                });
+        }, 2000);
+    }
+
+    (async () => {
+        try {
+            for (let i = 0; i < totalChunks; i++) {
+                const result = await sendChunk(i);
+                if (result.status !== 'success') {
+                    _rowSpinnerOff(ref);
+                    input.value = '';
+                    progressContainer.style.display = 'none';
+                    showSnackbar('settings', true, 'error', result.message, result, true);
+                    return;
+                }
+                // Last chunk returns import_id — start polling
+                if (i === totalChunks - 1) {
+                    progressBar.value = 0;
+                    progressText.textContent = '0%';
+                    progressPhase.textContent = phaseLabels.extracting;
+                    pollImportStatus(result.data.import_id);
+                }
+            }
+        } catch (e) {
+            _rowSpinnerOff(ref);
+            input.value = '';
+            progressContainer.style.display = 'none';
+            showSnackbar('settings', true, 'error', String(e.message || e), null, false);
+        }
+    })();
+}
+
 // Init
 if (settingsType === 'user-settings') {
     document.addEventListener('DOMContentLoaded', () => {

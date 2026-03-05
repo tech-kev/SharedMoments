@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint, DateTime, event
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from config import Config
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -255,6 +255,13 @@ class NotificationLog(Base):
 
 # Database connection
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+
+@event.listens_for(engine, 'connect')
+def _set_sqlite_pragma(dbapi_conn, connection_record):
+    cursor = dbapi_conn.cursor()
+    cursor.execute('PRAGMA busy_timeout=5000')
+    cursor.close()
+
 Base.metadata.create_all(engine)
 
 # Session creation

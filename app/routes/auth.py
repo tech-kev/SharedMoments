@@ -45,7 +45,7 @@ def jwt_required(f):
         # Block access during setup — only /setup and assets are allowed
         setup_setting = get_setting_by_name('setup_complete')
         if setup_setting and setup_setting.value == 'False':
-            allowed_paths = ('/static/', '/api/v2/media/', '/api/v2/setup', '/api/v2/translations/', '/api/v2/upload')
+            allowed_paths = ('/static/', '/api/v2/media/', '/api/v2/setup', '/api/v2/translations/', '/api/v2/upload', '/api/v2/data/import/status/', '/api/v2/data/export/status/')
             if not any(request.path.startswith(p) for p in allowed_paths):
                 return redirect(url_for('pages.setup'))
 
@@ -87,7 +87,7 @@ def login_jwt(user, remember_me=False):
 
 @auth_bp.before_app_request
 def before_request():
-    if request.path.startswith('/s/'):
+    if request.path.startswith('/s/') or request.path.startswith('/api/v2/data/import/status/') or request.path.startswith('/api/v2/data/export/status/'):
         return
     token = request.cookies.get('jwt_token')
     if token:

@@ -93,5 +93,35 @@ def migrateTranslations(overwrite=False):
                 existing_translation.helpText = helpText
                 log('debug', f'Updating translation: {entityType} (ID: {entityID}), lang={languageCode}, field={fieldName}')
 
-    db_session.commit()
+    try:
+        db_session.commit()
+    except Exception:
+        db_session.rollback()
+        # Retry one-by-one to handle concurrent workers
+        for file_path in translation_files:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                try:
+                    translations = json.load(f)
+                except Exception:
+                    continue
+            for translation_data in translations:
+                try:
+                    existing = db_session.query(Translation).filter_by(
+                        entityType=translation_data['entityType'],
+                        entityID=translation_data['entityID'],
+                        languageCode=translation_data['languageCode'],
+                        fieldName=translation_data['fieldName']
+                    ).first()
+                    if not existing:
+                        db_session.add(Translation(
+                            entityType=translation_data['entityType'],
+                            entityID=translation_data['entityID'],
+                            languageCode=translation_data['languageCode'],
+                            fieldName=translation_data['fieldName'],
+                            translatedText=translation_data['translatedText'],
+                            helpText=translation_data.get('helpText', None)
+                        ))
+                        db_session.commit()
+                except Exception:
+                    db_session.rollback()
     log('info', 'Translation migration completed')
