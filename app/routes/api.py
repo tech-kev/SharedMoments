@@ -85,6 +85,11 @@ def setup_complete():
         users = setup_data['users']
         settings = setup_data['settings']
 
+        # Save edition to DB
+        sm_edition_setting = db_session.query(Setting).filter_by(name='sm_edition').first()
+        if sm_edition_setting:
+            sm_edition_setting.value = sm_edition.lower()
+
         title = settings[0]['title']
         relationship_status = settings[0]['relationshipStatus']
         anniversary_date = settings[0]['anniversary']
@@ -92,6 +97,8 @@ def setup_complete():
         friend_group_name = settings[0]['friendGroupName']
         wedding_date = settings[0]['weddingAnniversary']
         engaged_date = settings[0]['engagement']
+        family_founding_date = settings[0].get('familyFoundingDate', '')
+        friend_group_founding_date = settings[0].get('friendGroupFoundingDate', '')
 
         title_setting = db_session.query(Setting).filter_by(name='title').first()
         if title_setting:
@@ -120,6 +127,14 @@ def setup_complete():
         engaged_date_setting = db_session.query(Setting).filter_by(name='engaged_date').first()
         if engaged_date_setting:
             engaged_date_setting.value = engaged_date
+
+        family_founding_date_setting = db_session.query(Setting).filter_by(name='family_founding_date').first()
+        if family_founding_date_setting:
+            family_founding_date_setting.value = family_founding_date
+
+        friend_group_founding_date_setting = db_session.query(Setting).filter_by(name='friend_group_founding_date').first()
+        if friend_group_founding_date_setting:
+            friend_group_founding_date_setting.value = friend_group_founding_date
 
         db_session.flush()
 
@@ -173,7 +188,7 @@ def setup_complete():
                     identifier = f"{firstName}_{lastName}" if lastName else firstName
                     new_name = generate_admin_filename('profile', identifier, ext)
                     new_path = os.path.join(profiles_folder, new_name)
-                    os.rename(old_path, new_path)
+                    shutil.move(old_path, new_path)
                     new_user.profilePicture = new_name
 
             if credential_id:
@@ -254,7 +269,7 @@ def update_settings():
         setting = request.form['setting']
         value = request.form['value']
 
-        if setting == 'banner_image' and value:
+        if setting in ('banner_image', 'family_banner_image', 'friends_banner_image') and value:
             ext = value.rsplit('.', 1)[-1].lower() if '.' in value else ''
             if ext not in IMAGE_EXTENSIONS:
                 return jsonify({
@@ -273,9 +288,9 @@ def update_settings():
                 }), 400
 
         # Rename banner files to descriptive names
-        if setting in ('banner_image', 'banner_song') and value:
+        if setting in ('banner_image', 'family_banner_image', 'friends_banner_image', 'banner_song') and value:
             basedir = os.path.abspath(os.path.dirname(__file__))
-            if setting == 'banner_image':
+            if setting in ('banner_image', 'family_banner_image', 'friends_banner_image'):
                 folder = os.path.join(basedir, '..', 'uploads', 'images')
             else:
                 folder = os.path.join(basedir, '..', 'uploads', 'music')
@@ -284,12 +299,20 @@ def update_settings():
                 ext = value.rsplit('.', 1)[-1] if '.' in value else ''
                 new_name = generate_admin_filename(setting, '', ext)
                 new_path = os.path.join(folder, new_name)
-                os.rename(old_path, new_path)
+                shutil.move(old_path, new_path)
                 value = new_name
 
         update_setting(setting, value)
 
         log('info', f'Setting updated: {setting}')
+
+        # Trigger reminder sync when edition changes
+        if setting == 'sm_edition':
+            try:
+                from app.scheduler import sync_auto_reminders
+                sync_auto_reminders()
+            except Exception as e:
+                log('warning', f'Failed to sync reminders after edition change: {e}')
 
         return jsonify({
             'status': 'success',
@@ -618,7 +641,7 @@ def upload_chunk():
             os.makedirs(dest_folder, exist_ok=True)
             final_name = datetime.now().strftime("%Y%m%d") + '-' + safe_name
             final_path = os.path.join(dest_folder, final_name)
-            os.rename(temp_path, final_path)
+            shutil.move(temp_path, final_path)
 
             return jsonify({
                 'status': 'success',
@@ -976,6 +999,7 @@ def list_type_by_id(id):
             routeID = request.form.get('routeID', '')
             mainTitle = request.form.get('mainTitle', '')
             navbar = request.form.get('navbar', '')
+            edition = request.form.get('edition', '')
 
             message = _('List type updated successfully')
 
@@ -1001,10 +1025,12 @@ def list_type_by_id(id):
                     mainTitle = list_type.mainTitle
                 if not navbar:
                     navbar = list_type.navbar
+                if not edition:
+                    edition = list_type.edition
 
             # Check if title changed — rename associated permissions
             old_title = list_type.title if list_type else None
-            update_list_type(id, title, icon, contentURL, navbar, navbarOrder, routeID, mainTitle)
+            update_list_type(id, title, icon, contentURL, navbar, navbarOrder, routeID, mainTitle, edition=edition)
             if old_title and title != old_title:
                 rename_list_type_permissions(id, title)
 
@@ -1084,7 +1110,8 @@ def list_types():
         if navbar == 'true':
             navbar = True
 
-        new_item_id = create_list_type(title, icon, contentURL, createdByUser, navbar, navbarOrder, routeID, mainTitle)
+        edition = request.form.get('edition', 'all')
+        new_item_id = create_list_type(title, icon, contentURL, createdByUser, navbar, navbarOrder, routeID, mainTitle, edition=edition)
         create_permissions_for_list_type(new_item_id, title)
 
         log('info', f'List type created: ID={new_item_id}')
@@ -2502,7 +2529,7 @@ def _run_export(export_id, user_id, app_ref):
                 if s.name == 'banner_song' and s.value:
                     src = os.path.join(basedir, '..', 'uploads', 'music', s.value)
                     media_files.append((src, f'media/music/{s.value}'))
-                elif s.name == 'banner_image' and s.value:
+                elif s.name in ('banner_image', 'family_banner_image', 'friends_banner_image') and s.value:
                     src = os.path.join(basedir, '..', 'uploads', 'images', s.value)
                     media_files.append((src, f'media/images/{s.value}'))
 

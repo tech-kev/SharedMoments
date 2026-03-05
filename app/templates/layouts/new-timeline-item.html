@@ -43,6 +43,7 @@ async function saveNewTimelineItem() {
    formData.append("contentType", "text");
    formData.append("listType", 2);
    formData.append("dateCreated", dateCreated);
+   formData.append("edition", window.currentEdition || 'all');
 
    fetch("/api/v2/items", {
       method: "POST",

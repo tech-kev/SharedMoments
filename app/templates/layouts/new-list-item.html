@@ -30,6 +30,7 @@
       formData.append("content", 0);
       formData.append("contentType", 'list');
       formData.append("listType", listType);
+      formData.append("edition", window.currentEdition || 'all');
 
       fetch("/api/v2/items", {
          method: "POST",
@@ -70,7 +71,7 @@
             contentType: 'list',
             listType: listType,
             dateCreated: '',
-            edition: 'all',
+            edition: window.currentEdition || 'all',
             files: [],
             contentURL: '',
          });

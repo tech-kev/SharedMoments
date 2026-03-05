@@ -60,6 +60,12 @@ function showInfo(value) {
         infoFamily.classList.remove('active');
         infoFriends.classList.add('active');
     }
+
+    // Update tab 3 edition image
+    var tab3Img = document.getElementById('setup-tab-3-image');
+    if (tab3Img) {
+        tab3Img.src = '/api/v2/media/static/setup-' + value.toLowerCase() + '.jpg';
+    }
 }
 
 // --- Setup Completion ---
@@ -138,6 +144,8 @@ function callUi(id) {
             document.getElementById('wedding-anniversary').closest('.s6').classList.add('hidden');
             document.getElementById('family-name').closest('.s12').classList.add('hidden');
             document.getElementById('friend-group-name').closest('.s12').classList.add('hidden');
+            document.getElementById('family-founding-date').closest('.s6').classList.add('hidden');
+            document.getElementById('friend-group-founding-date').closest('.s6').classList.add('hidden');
         }
         document.body.style.overflow = "auto";
     } else {
@@ -150,16 +158,25 @@ function callUi(id) {
             document.getElementById('add-user-render-profile-picture').src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
             // First user defaults to Admin, subsequent users to Adult
             document.getElementById("add-user-role").value = users.length === 0 ? 'Admin' : 'Adult';
+            // Hide Child role for Couples edition
+            var childOption = document.querySelector('#add-user-role option[value="Child"]');
+            if (childOption) childOption.style.display = sm_edition === 'Couples' ? 'none' : '';
         } else if (id === '#edit-settings') {
             document.getElementById("div-overlay-setup-edit-settings").classList.add("active");
             if (sm_edition === 'Couples') {
                 document.getElementById('title').closest('.hidden').classList.remove('hidden');
                 document.getElementById('relationship-status').closest('.hidden').classList.remove('hidden');
                 document.getElementById('anniversary').closest('.hidden').classList.remove('hidden');
+                // Apply date requirements based on current relationship status
+                setupUpdateDateFields();
+                // Listen for status changes
+                document.getElementById('relationship-status').onchange = function() { setupUpdateDateFields(); };
             } else if (sm_edition === 'Family') {
                 document.getElementById('family-name').closest('.hidden').classList.remove('hidden');
+                document.getElementById('family-founding-date').closest('.hidden').classList.remove('hidden');
             } else if (sm_edition === 'Friends') {
                 document.getElementById('friend-group-name').closest('.hidden').classList.remove('hidden');
+                document.getElementById('friend-group-founding-date').closest('.hidden').classList.remove('hidden');
             }
         }
         document.body.style.overflow = "hidden";
@@ -360,6 +377,31 @@ function updateExitButton() {
 }
 
 // --- Settings ---
+var setupDateRequirements = {
+    '1': ['anniversary'],
+    '2': ['anniversary', 'engagement'],
+    '3': ['wedding-anniversary'],
+    '4': ['anniversary'],
+    '5': ['anniversary']
+};
+
+function setupUpdateDateFields() {
+    var status = document.getElementById('relationship-status').value;
+    var required = setupDateRequirements[String(status)] || [];
+
+    // Hide all date fields first
+    ['anniversary', 'engagement', 'wedding-anniversary'].forEach(function(field) {
+        var el = document.getElementById(field);
+        if (el) el.closest('.s6').classList.add('hidden');
+    });
+
+    // Show required ones
+    required.forEach(function(field) {
+        var el = document.getElementById(field);
+        if (el) el.closest('.hidden').classList.remove('hidden');
+    });
+}
+
 function saveSettings() {
     var title = document.getElementById('title').value;
     var familyName = document.getElementById('family-name').value;
@@ -368,6 +410,8 @@ function saveSettings() {
     var engagement = document.getElementById('engagement').value;
     var weddingAnniversary = document.getElementById('wedding-anniversary').value;
     var relationshipStatus = document.getElementById('relationship-status').value;
+    var familyFoundingDate = document.getElementById('family-founding-date').value;
+    var friendGroupFoundingDate = document.getElementById('friend-group-founding-date').value;
 
     settings = [{
         title: title,
@@ -376,7 +420,9 @@ function saveSettings() {
         anniversary: anniversary,
         engagement: engagement,
         weddingAnniversary: weddingAnniversary,
-        relationshipStatus: relationshipStatus
+        relationshipStatus: relationshipStatus,
+        familyFoundingDate: familyFoundingDate,
+        friendGroupFoundingDate: friendGroupFoundingDate
     }];
 
     updateExitButton();

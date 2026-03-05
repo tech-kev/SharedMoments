@@ -13,6 +13,7 @@ from app.db_queries import (
 from app.models import User, Role, Permission, Passkey, RolePermission, UserRole, UserSetting, SessionLocal
 from app.logger import log
 from app.utils import generate_admin_filename
+from app.routes.pages import get_display_title
 from datetime import datetime
 import os
 
@@ -30,11 +31,12 @@ def admin_panel():
         role_permissions_map = get_role_permissions_map()
         user_roles_map = get_user_roles_map()
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         settings = get_all_settings()
         active_shares = get_all_active_shares()
+        sm_edition = get_setting_by_name('sm_edition').value
 
         return render_template('pages/admin.html',
                                users=users,
@@ -47,7 +49,8 @@ def admin_panel():
                                darkmode=darkmode,
                                user_data=user_data,
                                settings=settings,
-                               active_shares=active_shares)
+                               active_shares=active_shares,
+                               sm_edition=sm_edition)
     except Exception as e:
         log('error', f'Error while rendering the admin panel: {e}')
         return "An error occurred while rendering the page. Please check the server logs for details.", 500

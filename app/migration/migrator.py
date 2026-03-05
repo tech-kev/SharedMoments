@@ -844,7 +844,7 @@ def _step_rename_admin_images(status, dry_run, prefix):
 
             log('info', f'{prefix} Profile: "{old_name}" -> "{new_name}" (user {user.id})')
             if not dry_run:
-                os.rename(old_path, new_path)
+                shutil.move(old_path, new_path)
                 user.profilePicture = new_name
             renamed += 1
 
@@ -861,7 +861,7 @@ def _step_rename_admin_images(status, dry_run, prefix):
                 new_path = os.path.join(target_folder, new_name)
                 log('info', f'{prefix} Banner: "{old_name}" -> "{new_name}"')
                 if not dry_run:
-                    os.rename(old_path, new_path)
+                    shutil.move(old_path, new_path)
                     banner_setting.value = new_name
                 renamed += 1
             else:
@@ -879,7 +879,7 @@ def _step_rename_admin_images(status, dry_run, prefix):
                 new_path = os.path.join(music_folder, new_name)
                 log('info', f'{prefix} Banner song: "{old_name}" -> "{new_name}"')
                 if not dry_run:
-                    os.rename(old_path, new_path)
+                    shutil.move(old_path, new_path)
                     song_setting.value = new_name
                 renamed += 1
             else:

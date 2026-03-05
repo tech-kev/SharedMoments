@@ -66,6 +66,7 @@ function saveNewCountdown(btn) {
     formData.append('contentType', 'countdown');
     formData.append('listType', window.countdownListTypeId);
     formData.append('dateCreated', date);
+    formData.append('edition', window.currentEdition || 'all');
 
     fetch('/api/v2/items', { method: 'POST', body: formData })
         .then(async (response) => {

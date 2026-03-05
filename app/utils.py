@@ -51,77 +51,121 @@ def generate_lqip(image_path):
         return None, None, None
 
 
-def generate_banner_text():
+def generate_banner_text(edition='couples'):
     try:
-        relationship_status_setting = get_setting_by_name('relationship_status')
-        if not relationship_status_setting or not relationship_status_setting.value:
-            return None
+        if edition == 'family':
+            return _generate_banner_text_family()
+        elif edition == 'friends':
+            return _generate_banner_text_friends()
+        else:
+            return _generate_banner_text_couples()
+    except Exception as e:
+        log('error', f'Failed to generate banner text: {e}')
+        return None
 
-        relationship_status_id = int(relationship_status_setting.value)
-        relationship_status_field = get_field_name('relationship_status', relationship_status_id)
-        relationship_status = _(relationship_status_field)
 
-        # Schreibe den ersten Buchstaben klein, damit das in den Text passt
-        relationship_status = relationship_status[0].lower() + relationship_status[1:]
+def _generate_banner_text_couples():
+    relationship_status_setting = get_setting_by_name('relationship_status')
+    if not relationship_status_setting or not relationship_status_setting.value:
+        return None
 
-        if relationship_status_id == 1 and os.environ['LANG'] == 'de': # zusammen klingt im Text besser
-            relationship_status = 'zusammen'
+    relationship_status_id = int(relationship_status_setting.value)
+    relationship_status_field = get_field_name('relationship_status', relationship_status_id)
+    relationship_status = _(relationship_status_field)
 
-        if relationship_status_id == 1 or relationship_status_id == 4 or relationship_status_id == 5: # in einer Beziehung, in einer offenen Beziehung, in einer komplizierten Beziehung
-            anniversary_date = get_setting_by_name('anniversary_date').value
-            if not anniversary_date:
-                return _('Please set your anniversary date in the settings.')
-            years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(anniversary_date)
-            translated_text = _('banner_text_anniversary')
+    # Schreibe den ersten Buchstaben klein, damit das in den Text passt
+    relationship_status = relationship_status[0].lower() + relationship_status[1:]
 
-        elif relationship_status_id == 2: # Verlobt
-            anniversary_date = get_setting_by_name('anniversary_date').value
-            enganment_date = get_setting_by_name('engaged_date').value
-            if not enganment_date:
-                return _('Please set your engagement date in the settings.')
-            years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(enganment_date)
-            translated_text = _('banner_text_engaged')
+    if relationship_status_id == 1 and os.environ['LANG'] == 'de': # zusammen klingt im Text besser
+        relationship_status = 'zusammen'
 
-            if not anniversary_date:
-                return _('Please set your anniversary date in the settings.')
+    if relationship_status_id == 1 or relationship_status_id == 4 or relationship_status_id == 5: # in einer Beziehung, in einer offenen Beziehung, in einer komplizierten Beziehung
+        anniversary_date = get_setting_by_name('anniversary_date').value
+        if not anniversary_date:
+            return _('Please set your anniversary date in the settings.')
+        years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(anniversary_date)
+        translated_text = _('banner_text_anniversary')
 
-            banner_text = translated_text.format(
+    elif relationship_status_id == 2: # Verlobt
+        anniversary_date = get_setting_by_name('anniversary_date').value
+        enganment_date = get_setting_by_name('engaged_date').value
+        if not enganment_date:
+            return _('Please set your engagement date in the settings.')
+        years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(enganment_date)
+        translated_text = _('banner_text_engaged')
+
+        if not anniversary_date:
+            return _('Please set your anniversary date in the settings.')
+
+        banner_text = translated_text.format(
+        relationship_status=relationship_status,
+        years_count=years_count,
+        months_count=months_count,
+        days_count=days_count,
+        diffInMonthsTotal=diffInMonthsTotal,
+        diffInWeeksTotal=diffInWeeksTotal,
+        diffInDays=diffInDays,
+        anniversary_date=datetime.strptime(anniversary_date, "%Y-%m-%d").strftime("%d.%m.%Y") #TODO: Andere Sprache hat anders format! Ganzen Code betrachten
+    )
+
+    elif relationship_status_id == 3:
+        wedding_date = get_setting_by_name('wedding_date').value
+        if not wedding_date:
+            return _('Please set your wedding date in the settings.')
+        years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(wedding_date)
+        translated_text = _('banner_text_wedding')
+
+    else:
+        return None
+
+    if relationship_status_id != 2:
+        banner_text = translated_text.format(
             relationship_status=relationship_status,
             years_count=years_count,
             months_count=months_count,
             days_count=days_count,
             diffInMonthsTotal=diffInMonthsTotal,
             diffInWeeksTotal=diffInWeeksTotal,
-            diffInDays=diffInDays,
-            anniversary_date=datetime.strptime(anniversary_date, "%Y-%m-%d").strftime("%d.%m.%Y") #TODO: Andere Sprache hat anders format! Ganzen Code betrachten
+            diffInDays=diffInDays
         )
 
-        elif relationship_status_id == 3:
-            wedding_date = get_setting_by_name('wedding_date').value
-            if not wedding_date:
-                return _('Please set your wedding date in the settings.')
-            years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(wedding_date)
-            translated_text = _('banner_text_wedding')
+    return banner_text
 
-        else:
-            return None
 
-        if relationship_status_id != 2:
-            banner_text = translated_text.format(
-                relationship_status=relationship_status,
-                years_count=years_count,
-                months_count=months_count,
-                days_count=days_count,
-                diffInMonthsTotal=diffInMonthsTotal,
-                diffInWeeksTotal=diffInWeeksTotal,
-                diffInDays=diffInDays
-            )
-
-        return banner_text
-
-    except Exception as e:
-        log('error', f'Failed to generate banner text: {e}')
+def _generate_banner_text_family():
+    founding_date_setting = get_setting_by_name('family_founding_date')
+    if not founding_date_setting or not founding_date_setting.value:
         return None
+
+    years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(founding_date_setting.value)
+    translated_text = _('banner_text_family')
+
+    return translated_text.format(
+        years_count=years_count,
+        months_count=months_count,
+        days_count=days_count,
+        diffInMonthsTotal=diffInMonthsTotal,
+        diffInWeeksTotal=diffInWeeksTotal,
+        diffInDays=diffInDays
+    )
+
+
+def _generate_banner_text_friends():
+    founding_date_setting = get_setting_by_name('friend_group_founding_date')
+    if not founding_date_setting or not founding_date_setting.value:
+        return None
+
+    years_count, months_count, days_count, diffInMonthsTotal, diffInWeeksTotal, diffInDays = calculate_banner_diff(founding_date_setting.value)
+    translated_text = _('banner_text_friends')
+
+    return translated_text.format(
+        years_count=years_count,
+        months_count=months_count,
+        days_count=days_count,
+        diffInMonthsTotal=diffInMonthsTotal,
+        diffInWeeksTotal=diffInWeeksTotal,
+        diffInDays=diffInDays
+    )
 
 def calculate_banner_diff(date):
     try:
@@ -167,15 +211,23 @@ def get_texts_for_translations():
                 return True
         return False
 
+    SKIP_DIRS = {'.git', '__pycache__', 'node_modules', '.venv', 'venv'}
+    BINARY_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.ico', '.webp', '.mp4', '.mov', '.zip', '.gz', '.db', '.sqlite', '.woff', '.woff2', '.ttf', '.eot', '.idx', '.pack', '.rev', '.ctl'}
+
     # Durchlaufe alle Dateien im angegebenen Verzeichnis
     for root, dirs, files in os.walk(directory):
-        # Filtere Verzeichnisse, die in .gitignore stehen
-        dirs[:] = [d for d in dirs if not should_ignore(os.path.join(root, d))]
+        # Filtere Verzeichnisse, die in .gitignore stehen oder übersprungen werden
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not should_ignore(os.path.join(root, d))]
 
         for file in files:
             # Überprüfe, ob die Datei ignoriert werden soll
             file_path = os.path.join(root, file)
             if should_ignore(file_path):
+                continue
+
+            # Binärdateien überspringen
+            ext = os.path.splitext(file)[1].lower()
+            if ext in BINARY_EXTENSIONS:
                 continue
 
             # Nur Dateien verarbeiten

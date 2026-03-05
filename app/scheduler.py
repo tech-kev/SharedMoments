@@ -138,10 +138,16 @@ def _get_target_dates(reminder, today):
 
     elif reminder.reminder_type == 'milestone':
         if reminder.milestone_days:
-            anniversary_setting = get_setting_by_name('anniversary_date')
-            if anniversary_setting and anniversary_setting.value:
+            # Determine start date based on auto_source prefix
+            if reminder.auto_source and reminder.auto_source.startswith('family_milestone_'):
+                date_setting = get_setting_by_name('family_founding_date')
+            elif reminder.auto_source and reminder.auto_source.startswith('friends_milestone_'):
+                date_setting = get_setting_by_name('friend_group_founding_date')
+            else:
+                date_setting = get_setting_by_name('anniversary_date')
+            if date_setting and date_setting.value:
                 try:
-                    start_date = datetime.strptime(anniversary_setting.value, '%Y-%m-%d').date()
+                    start_date = datetime.strptime(date_setting.value, '%Y-%m-%d').date()
                     target = start_date + timedelta(days=reminder.milestone_days)
                     dates.append(target)
                 except (ValueError, TypeError):
@@ -198,7 +204,7 @@ def _translate_reminder_title(reminder, lang):
         return reminder.title
 
     # Simple translatable keys
-    if reminder.title in ('Anniversary', 'Wedding Day', 'Engagement Day'):
+    if reminder.title in ('Anniversary', 'Wedding Day', 'Engagement Day', 'Family Day', 'Friendship Day'):
         return _t(reminder.title, lang)
 
     # Birthday pattern: "Birthday of <name>"
@@ -212,8 +218,8 @@ def _translate_reminder_title(reminder, lang):
             pass
         return reminder.title
 
-    # Milestone pattern
-    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+    # Milestone pattern (all prefixes)
+    if reminder.auto_source and 'milestone_' in reminder.auto_source:
         days = reminder.milestone_days
         if days:
             if days % 365 == 0:
@@ -237,11 +243,16 @@ def _translate_reminder_description(reminder, lang):
     if not reminder.is_auto or not reminder.description:
         return reminder.description
 
-    # Milestone description
-    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+    # Milestone description (edition-dependent)
+    if reminder.auto_source and 'milestone_' in reminder.auto_source:
         days = reminder.milestone_days
         if days:
-            return _t('{n} days together!', lang).format(n=days)
+            if reminder.auto_source.startswith('family_milestone_'):
+                return _t('{n} days of shared memories!', lang).format(n=days)
+            elif reminder.auto_source.startswith('friends_milestone_'):
+                return _t('{n} days of friendship!', lang).format(n=days)
+            else:
+                return _t('{n} days together!', lang).format(n=days)
 
     # Countdown description
     if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
@@ -257,26 +268,68 @@ def sync_auto_reminders():
     """Sync auto-generated reminders from settings and user birthdays."""
     log('info', 'Syncing auto-reminders...')
 
-    # Date settings to create annual reminders for
-    date_settings = {
-        'anniversary_date': 'Anniversary',
-        'wedding_date': 'Wedding Day',
-        'engaged_date': 'Engagement Day',
-    }
+    edition = get_setting_by_name('sm_edition').value
 
-    for setting_name, label in date_settings.items():
-        setting = get_setting_by_name(setting_name)
+    # --- Couples-Reminder ---
+    if edition == 'couples':
+        date_settings = {
+            'anniversary_date': 'Anniversary',
+            'wedding_date': 'Wedding Day',
+            'engaged_date': 'Engagement Day',
+        }
+        for setting_name, label in date_settings.items():
+            setting = get_setting_by_name(setting_name)
+            if setting and setting.value:
+                try:
+                    d = datetime.strptime(setting.value, '%Y-%m-%d').date()
+                    _ensure_auto_annual_reminder(setting_name, label, d.month, d.day)
+                    if setting_name == 'anniversary_date':
+                        _ensure_milestone_reminders(d)
+                except (ValueError, TypeError):
+                    delete_auto_reminders_by_source(setting_name)
+            else:
+                delete_auto_reminders_by_source(setting_name)
+    else:
+        # Clean up Couples-Reminder when edition changed
+        for source in ('anniversary_date', 'wedding_date', 'engaged_date'):
+            delete_auto_reminders_by_source(source)
+        _cleanup_milestones_by_prefix('milestone_')
+
+    # --- Family-Reminder ---
+    if edition == 'family':
+        setting = get_setting_by_name('family_founding_date')
         if setting and setting.value:
             try:
                 d = datetime.strptime(setting.value, '%Y-%m-%d').date()
-                _ensure_auto_annual_reminder(setting_name, label, d.month, d.day)
-                # Create milestone reminders for anniversary_date
-                if setting_name == 'anniversary_date':
-                    _ensure_milestone_reminders(d)
+                _ensure_auto_annual_reminder('family_founding_date', 'Family Day', d.month, d.day)
+                _ensure_milestone_reminders(d, prefix='family_milestone_', desc_template='{n} days of shared memories!')
             except (ValueError, TypeError):
-                delete_auto_reminders_by_source(setting_name)
+                delete_auto_reminders_by_source('family_founding_date')
+                _cleanup_milestones_by_prefix('family_milestone_')
         else:
-            delete_auto_reminders_by_source(setting_name)
+            delete_auto_reminders_by_source('family_founding_date')
+            _cleanup_milestones_by_prefix('family_milestone_')
+    else:
+        delete_auto_reminders_by_source('family_founding_date')
+        _cleanup_milestones_by_prefix('family_milestone_')
+
+    # --- Friends-Reminder ---
+    if edition == 'friends':
+        setting = get_setting_by_name('friend_group_founding_date')
+        if setting and setting.value:
+            try:
+                d = datetime.strptime(setting.value, '%Y-%m-%d').date()
+                _ensure_auto_annual_reminder('friend_group_founding_date', 'Friendship Day', d.month, d.day)
+                _ensure_milestone_reminders(d, prefix='friends_milestone_', desc_template='{n} days of friendship!')
+            except (ValueError, TypeError):
+                delete_auto_reminders_by_source('friend_group_founding_date')
+                _cleanup_milestones_by_prefix('friends_milestone_')
+        else:
+            delete_auto_reminders_by_source('friend_group_founding_date')
+            _cleanup_milestones_by_prefix('friends_milestone_')
+    else:
+        delete_auto_reminders_by_source('friend_group_founding_date')
+        _cleanup_milestones_by_prefix('friends_milestone_')
 
     # User birthdays
     session = SessionLocal()
@@ -325,20 +378,20 @@ def _ensure_auto_annual_reminder(auto_source, title, month, day):
         )
 
 
-def _ensure_milestone_reminders(start_date):
-    """Create milestone reminders for the anniversary date."""
+def _ensure_milestone_reminders(start_date, prefix='milestone_', desc_template='{n} days together!'):
+    """Create milestone reminders for a given start date."""
     today = date.today()
     for days in MILESTONE_DAYS:
         target = start_date + timedelta(days=days)
         # Only create for future milestones (or within 30 days window)
         if target < today - timedelta(days=30):
             continue
-        source = f'milestone_{days}'
+        source = f'{prefix}{days}'
         if days % 365 == 0:
             label = f'{days // 365}-Year Milestone'
         else:
             label = f'{days}-Day Milestone'
-        desc = f'{days} days together!'
+        desc = desc_template.format(n=days)
         existing = get_auto_reminder_by_source(source)
         if not existing:
             create_reminder(
@@ -349,6 +402,21 @@ def _ensure_milestone_reminders(start_date):
             )
         elif existing.title != label or existing.description != desc:
             update_reminder(existing.id, title=label, description=desc)
+
+
+def _cleanup_milestones_by_prefix(prefix):
+    """Remove all milestone auto-reminders matching a prefix."""
+    session = SessionLocal()
+    try:
+        reminders = session.query(Reminder).filter(
+            Reminder.is_auto == True,
+            Reminder.auto_source.like(f'{prefix}%')
+        ).all()
+        sources = [r.auto_source for r in reminders]
+    finally:
+        session.close()
+    for source in sources:
+        delete_auto_reminders_by_source(source)
 
 
 def _sync_countdown_reminders():

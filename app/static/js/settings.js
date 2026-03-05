@@ -256,6 +256,7 @@ function sendSettingUpdate(setting, value) {
                         const displayEl = document.getElementById(setting + '-value');
                         displayEl.textContent = status ? status.name : result.data.value;
                         displayEl.setAttribute('data-value', result.data.value);
+                        filterDateSettingsByStatus();
                         checkRequiredDatesAfterStatusSave(result.data.value);
                     } else if (setting === 'title') {
                         document.getElementById(setting + '-value').textContent = result.data.value;
@@ -512,6 +513,20 @@ function openNextRequiredDate() {
     }, 500);
 }
 
+// --- Filter Date Settings by Relationship Status ---
+function filterDateSettingsByStatus() {
+    var statusEl = document.getElementById('relationship_status-value');
+    if (!statusEl) return;
+    var statusValue = statusEl.getAttribute('data-value') || statusEl.textContent.trim();
+
+    var required = dateRequirements[String(statusValue)] || [];
+
+    document.querySelectorAll('[data-date-setting]').forEach(function(row) {
+        var settingName = row.getAttribute('data-date-setting');
+        row.style.display = required.includes(settingName) ? '' : 'none';
+    });
+}
+
 // --- PWA Settings ---
 
 function togglePwaSetting(settingName) {
@@ -660,7 +675,8 @@ function uploadBannerImage(input) {
         return;
     }
 
-    const row = document.getElementById('banner_image-value')?.closest('a');
+    const settingName = input.dataset.setting || 'banner_image';
+    const row = document.getElementById(settingName + '-value')?.closest('a');
     const ref = _rowSpinnerOn(row);
 
     const formData = new FormData();
@@ -675,7 +691,7 @@ function uploadBannerImage(input) {
         if (result.status === 'success') {
             const filename = result.data.filename;
             const settingForm = new FormData();
-            settingForm.append('setting', 'banner_image');
+            settingForm.append('setting', settingName);
             settingForm.append('value', filename);
 
             return fetch('/api/v2/settings', {
@@ -689,7 +705,7 @@ function uploadBannerImage(input) {
     .then(result => {
         _rowSpinnerOff(ref);
         if (result && result.status === 'success') {
-            document.getElementById('banner_image-value').textContent = result.data.value;
+            document.getElementById(settingName + '-value').textContent = result.data.value;
             showSnackbar('settings', true, 'green', result.message, null, false);
             location.reload();
         } else if (result) {
@@ -706,7 +722,8 @@ function uploadBannerImage(input) {
     });
 }
 
-function deleteBannerImage(btn) {
+function deleteBannerImage(btn, settingName) {
+    settingName = settingName || 'banner_image';
     if (!navigator.onLine) {
         showSnackbar('settings', true, 'error', _('You are offline'), null, false);
         return;
@@ -715,7 +732,7 @@ function deleteBannerImage(btn) {
     btnLoading(btn);
 
     const formData = new FormData();
-    formData.append('setting', 'banner_image');
+    formData.append('setting', settingName);
     formData.append('value', '');
 
     fetch('/api/v2/settings', {
@@ -725,7 +742,7 @@ function deleteBannerImage(btn) {
     .then(res => res.json())
     .then(result => {
         if (result.status === 'success') {
-            document.getElementById('banner_image-value').textContent = _('No image');
+            document.getElementById(settingName + '-value').textContent = _('No image');
             showSnackbar('settings', true, 'green', result.message, null, false);
             btnReset(btn);
             location.reload();
@@ -1344,6 +1361,12 @@ function startDataImport(input) {
 }
 
 // Init
+if (settingsType === 'settings') {
+    document.addEventListener('DOMContentLoaded', () => {
+        filterDateSettingsByStatus();
+    });
+}
+
 if (settingsType === 'user-settings') {
     document.addEventListener('DOMContentLoaded', () => {
         syncPwaTogglesFromLocalStorage();

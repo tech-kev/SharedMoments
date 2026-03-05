@@ -58,6 +58,8 @@ function renderRoleCheckboxes(containerId, selectedRoleIds) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
     allRoles.forEach(roleId => {
+        // Hide Child role for Couples edition
+        if (typeof currentEdition !== 'undefined' && currentEdition === 'couples' && allRoleNames[roleId] === 'Child') return;
         const checked = selectedRoleIds.includes(roleId) ? 'checked' : '';
         container.innerHTML += `
             <label class="checkbox" style="display: inline-block; margin: 4px 12px 4px 0;">

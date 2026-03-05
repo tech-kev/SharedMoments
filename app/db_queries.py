@@ -123,7 +123,11 @@ def init_db():
             Setting(name='engaged_date', value='', icon='event', edition='couples', category='general', type='date'),
             Setting(name='wedding_date', value='', icon='event', edition='couples', category='general', type='date'),
             Setting(name='share_tracking', value='True', icon='analytics', edition='all', category='general', type='toggle'),
-            Setting(name='banner_image', value='', icon='image', edition='all', category='general', type='file'),
+            Setting(name='banner_image', value='', icon='image', edition='couples', category='general', type='file'),
+            Setting(name='family_banner_image', value='', icon='image', edition='family', category='general', type='file'),
+            Setting(name='friends_banner_image', value='', icon='image', edition='friends', category='general', type='file'),
+            Setting(name='family_founding_date', value='', icon='event', edition='family', category='general', type='date'),
+            Setting(name='friend_group_founding_date', value='', icon='event', edition='friends', category='general', type='date'),
             Setting(name='banner_song', value='', icon='music_note', edition='couples', category='general', type='file'),
             Setting(name='migration_review_complete', value='True', icon='', edition='all', category='', type='text'),
         ]
@@ -813,7 +817,7 @@ def delete_item(item_id):
 
 # Table ListType
 
-def create_list_type(title, icon, contentURL, createdByUser, navbar, navbarOrder, routeID, mainTitle):
+def create_list_type(title, icon, contentURL, createdByUser, navbar, navbarOrder, routeID, mainTitle, edition='all'):
     session = SessionLocal()
     try:
         new_list_type = ListType(
@@ -824,7 +828,8 @@ def create_list_type(title, icon, contentURL, createdByUser, navbar, navbarOrder
             navbarOrder=navbarOrder,
             navbar=navbar,
             routeID=routeID,
-            mainTitle=mainTitle
+            mainTitle=mainTitle,
+            edition=edition
         )
         session.add(new_list_type)
         session.commit()
@@ -857,7 +862,7 @@ def get_all_list_types():
     finally:
         session.close()
 
-def update_list_type(list_type_id, title=None, icon=None, contentURL=None, navbar=None, navbarOrder=None, routeID=None, mainTitle=None):
+def update_list_type(list_type_id, title=None, icon=None, contentURL=None, navbar=None, navbarOrder=None, routeID=None, mainTitle=None, edition=None):
     session = SessionLocal()
     try:
         list_type = session.query(ListType).filter(ListType.id == list_type_id).first()
@@ -876,6 +881,8 @@ def update_list_type(list_type_id, title=None, icon=None, contentURL=None, navba
                 list_type.mainTitle = mainTitle
             if navbarOrder is not None:
                 list_type.navbarOrder = navbarOrder
+            if edition is not None:
+                list_type.edition = edition
             session.commit()
     finally:
         session.close()
@@ -909,6 +916,43 @@ def ensure_banner_song_setting():
             return
         session.add(Setting(name='banner_song', value='', icon='music_note', edition='couples', category='general', type='file'))
         session.commit()
+    finally:
+        session.close()
+
+
+def ensure_edition_settings():
+    """For existing databases: creates family_founding_date and friend_group_founding_date settings if missing."""
+    session = SessionLocal()
+    try:
+        new_settings = [
+            {'name': 'family_founding_date', 'value': '', 'icon': 'event', 'edition': 'family', 'category': 'general', 'type': 'date'},
+            {'name': 'friend_group_founding_date', 'value': '', 'icon': 'event', 'edition': 'friends', 'category': 'general', 'type': 'date'},
+            {'name': 'family_banner_image', 'value': '', 'icon': 'image', 'edition': 'family', 'category': 'general', 'type': 'file'},
+            {'name': 'friends_banner_image', 'value': '', 'icon': 'image', 'edition': 'friends', 'category': 'general', 'type': 'file'},
+        ]
+        for s in new_settings:
+            existing = session.query(Setting).filter(Setting.name == s['name']).first()
+            if not existing:
+                session.add(Setting(**s))
+        # Migrate banner_image from edition='all' to edition='couples'
+        banner_img = session.query(Setting).filter(Setting.name == 'banner_image').first()
+        if banner_img and banner_img.edition == 'all':
+            banner_img.edition = 'couples'
+        session.commit()
+    finally:
+        session.close()
+
+
+def ensure_list_type_edition_column():
+    """For existing databases: adds the edition column to listTypes if missing."""
+    session = SessionLocal()
+    try:
+        from sqlalchemy import inspect, text
+        inspector = inspect(session.bind)
+        columns = [c['name'] for c in inspector.get_columns('listTypes')]
+        if 'edition' not in columns:
+            session.execute(text("ALTER TABLE listTypes ADD COLUMN edition VARCHAR(50) DEFAULT 'all'"))
+            session.commit()
     finally:
         session.close()
 
@@ -1063,16 +1107,33 @@ def get_translation_for_entity(entityType, entityID, languageCode):
 def create_new_translations(new_translations_array):
     session = SessionLocal()
     try:
-        for translation in new_translations_array:
-            new_translation = Translation(
-                entityType=translation['entityType'],
-                entityID=0,
-                languageCode='en',
-                fieldName=translation['fieldName'],
-                translatedText="",
-                helpText=""
-            )
-            session.add(new_translation)
+        # Deduplizieren nach (entityType, fieldName)
+        seen = set()
+        unique_translations = []
+        for t in new_translations_array:
+            key = (t['entityType'], t['fieldName'])
+            if key not in seen:
+                seen.add(key)
+                unique_translations.append(t)
+
+        for translation in unique_translations:
+            existing = session.query(Translation).filter(
+                Translation.entityType == translation['entityType'],
+                Translation.entityID == 0,
+                Translation.languageCode == 'en',
+                Translation.fieldName == translation['fieldName']
+            ).first()
+            if not existing:
+                new_translation = Translation(
+                    entityType=translation['entityType'],
+                    entityID=0,
+                    languageCode='en',
+                    fieldName=translation['fieldName'],
+                    translatedText="",
+                    helpText=""
+                )
+                session.add(new_translation)
+                session.flush()
         session.commit()
     finally:
         session.close()

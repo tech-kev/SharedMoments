@@ -168,6 +168,7 @@ class ListType(Base):
     navbar = Column(Boolean)
     routeID = Column(Integer, default=0)
     mainTitle = Column(String(255))
+    edition = Column(String(50), default='all')
     dateCreated = Column(TIMESTAMP, server_default=func.current_timestamp())
     dateModified = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
 

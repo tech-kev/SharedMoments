@@ -57,13 +57,13 @@
             {% if setting.category == 'about' %}
               {% if setting.name == 'sm_version' %}
               {# Version: nur Anzeige, nicht editierbar #}
-              <div class="row padding primary-container">
+              <a class="row padding primary-container">
                 <i>{{ setting.icon }}</i>
                 <div class="max">
                   <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
                   <div id="{{setting.name}}-value">{{ setting.value }}</div>
                 </div>
-              </div>
+              </a>
               {% elif setting.name == 'sm_edition' %}
               {# Edition: Dropdown mit Bestätigungsdialog #}
               <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editEdition(){% endif %}">
@@ -98,8 +98,9 @@
               {% endfor %}
 
               {% for setting in settings %}
-              {% if setting.category == 'general' and setting.edition == ns.edition and setting.name not in ['banner_song', 'banner_image'] %}
-              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}'){% endif %}">
+              {% if setting.category == 'general' and setting.edition == ns.edition and setting.name not in ['banner_song', 'banner_image', 'family_banner_image', 'friends_banner_image'] %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}'){% endif %}"
+                {% if setting.name in ['anniversary_date', 'engaged_date', 'wedding_date'] %} data-date-setting="{{ setting.name }}"{% endif %}>
                 <i>{{ setting.icon }}</i>
                 <div class="max">
                   <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
@@ -119,44 +120,40 @@
               {% endif %}
               {% endfor %}
 
-              {# banner_image file upload #}
+              {# banner_image file upload (edition-specific) #}
               {% for setting in settings %}
-              {% if setting.name == 'banner_image' %}
-              <div class="row padding primary-container">
-                <a class="row max{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-image-input').click()"{% endif %} style="padding:0;text-decoration:none;">
-                  <i>{{ setting.icon }}</i>
-                  <div class="max">
-                    <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
-                    <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No image') }}</div>
-                  </div>
-                </a>
+              {% if (setting.name == 'banner_image' and ns.edition == 'couples') or (setting.name == 'family_banner_image' and ns.edition == 'family') or (setting.name == 'friends_banner_image' and ns.edition == 'friends') %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-image-input').click()"{% endif %}>
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No image') }}</div>
+                </div>
                 {% if setting.value and has_permission('Update Setting') %}
-                <button class="transparent circle" onclick="deleteBannerImage(this)">
+                <button class="transparent circle" onclick="event.stopPropagation(); deleteBannerImage(this, '{{ setting.name }}')">
                   <i>delete</i>
                 </button>
                 {% endif %}
-              </div>
-              <input type="file" id="banner-image-input" accept="image/*" style="display:none;" onchange="uploadBannerImage(this)">
+              </a>
+              <input type="file" id="banner-image-input" accept="image/*" style="display:none;" data-setting="{{ setting.name }}" onchange="uploadBannerImage(this)">
               {% endif %}
               {% endfor %}
 
               {# banner_song file upload (couples edition) #}
               {% for setting in settings %}
               {% if setting.name == 'banner_song' and setting.edition == ns.edition %}
-              <div class="row padding primary-container">
-                <a class="row max{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-song-input').click()"{% endif %} style="padding:0;text-decoration:none;">
-                  <i>{{ setting.icon }}</i>
-                  <div class="max">
-                    <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
-                    <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No song') }}</div>
-                  </div>
-                </a>
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-song-input').click()"{% endif %}>
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No song') }}</div>
+                </div>
                 {% if setting.value and has_permission('Update Setting') %}
-                <button class="transparent circle" onclick="deleteBannerSong(this)">
+                <button class="transparent circle" onclick="event.stopPropagation(); deleteBannerSong(this)">
                   <i>delete</i>
                 </button>
                 {% endif %}
-              </div>
+              </a>
               <input type="file" id="banner-song-input" accept=".mp3,audio/mpeg" style="display:none;" onchange="uploadBannerSong(this)">
               {% endif %}
               {% endfor %}

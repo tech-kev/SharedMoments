@@ -17,6 +17,20 @@ from app.permissions import require_permission, has_list_permission
 
 pages_bp = Blueprint('pages', __name__)
 
+
+def get_display_title():
+    """Returns the appropriate title setting based on the current edition."""
+    edition = get_setting_by_name('sm_edition').value
+    if edition == 'family':
+        family_name = get_setting_by_name('family_name')
+        if family_name and family_name.value:
+            return family_name
+    elif edition == 'friends':
+        friend_name = get_setting_by_name('friend_group_name')
+        if friend_name and friend_name.value:
+            return friend_name
+    return get_setting_by_name('title')
+
 # Paths that bypass the migration gate
 _MIGRATION_ALLOWED_PREFIXES = ('/static/', '/api/v2/migration/', '/migration-complete',
                                 '/migration-progress', '/manifest.json', '/sw.js',
@@ -93,7 +107,11 @@ def inject_static_text():
         }, ensure_ascii=False)
     except Exception:
         pass
-    return dict(_=_, translations_json=translations_json)
+    try:
+        nav_edition = get_setting_by_name('sm_edition').value
+    except Exception:
+        nav_edition = 'couples'
+    return dict(_=_, translations_json=translations_json, nav_edition=nav_edition)
 
 
 @pages_bp.route('/')
@@ -150,13 +168,13 @@ def home():
         sm_edition = get_setting_by_name('sm_edition').value
         items = get_items_by_type(list_type, 'desc', edition=sm_edition)
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         settings = get_all_settings()
         list_type_moments = 2
         moments = get_items_by_type(list_type_moments, 'asc', edition=sm_edition)
-        banner_text = generate_banner_text() if sm_edition == 'couples' else None
+        banner_text = generate_banner_text(sm_edition)
         shared_item_ids = get_shared_item_ids()
 
         ensure_countdown_list_type()
@@ -178,7 +196,7 @@ def manage_translations():
     try:
         dev = request.args.get('dev')
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         settings = get_all_settings()
@@ -199,7 +217,7 @@ def settings():
     try:
         settings = get_all_settings()
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         settings_type = 'settings'
@@ -207,7 +225,8 @@ def settings():
         relationship_statuses = get_relationship_statuses_with_names(lang)
         supported_languages = get_supported_languages()
 
-        return render_template('pages/settings.html', settings=settings, list_types=list_types, title=title, darkmode=darkmode, user_data=user_data, settings_type=settings_type, relationship_statuses=relationship_statuses, supported_languages=supported_languages)
+        sm_edition = get_setting_by_name('sm_edition').value
+        return render_template('pages/settings.html', settings=settings, list_types=list_types, title=title, darkmode=darkmode, user_data=user_data, settings_type=settings_type, relationship_statuses=relationship_statuses, supported_languages=supported_languages, sm_edition=sm_edition)
     except Exception as e:
         log('error', f'Error while rendering the settings.html-Template: {e}')
         return "An error occurred while rendering the page. Please check the server logs for details.", 500
@@ -220,7 +239,7 @@ def user_settings():
         ensure_notification_settings(g.user_id)
         settings = get_all_settings()
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         user_settings = get_user_settings(g.user_id)
@@ -249,7 +268,7 @@ def gallery(id):
             raise Exception(_('Item is not a gallery'))
 
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
 
@@ -364,7 +383,7 @@ def _translate_reminder_title(reminder):
     if not reminder.is_auto:
         return reminder.title
 
-    if reminder.title in ('Anniversary', 'Wedding Day', 'Engagement Day'):
+    if reminder.title in ('Anniversary', 'Wedding Day', 'Engagement Day', 'Family Day', 'Friendship Day'):
         return _(reminder.title)
 
     if reminder.auto_source and reminder.auto_source.startswith('user_birthday_'):
@@ -377,7 +396,7 @@ def _translate_reminder_title(reminder):
             pass
         return reminder.title
 
-    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+    if reminder.auto_source and 'milestone_' in reminder.auto_source:
         days = reminder.milestone_days
         if days:
             if days % 365 == 0:
@@ -400,10 +419,15 @@ def _translate_reminder_description(reminder):
     if not reminder.is_auto or not reminder.description:
         return reminder.description
 
-    if reminder.auto_source and reminder.auto_source.startswith('milestone_'):
+    if reminder.auto_source and 'milestone_' in reminder.auto_source:
         days = reminder.milestone_days
         if days:
-            return _('{n} days together!').format(n=days)
+            if reminder.auto_source.startswith('family_milestone_'):
+                return _('{n} days of shared memories!').format(n=days)
+            elif reminder.auto_source.startswith('friends_milestone_'):
+                return _('{n} days of friendship!').format(n=days)
+            else:
+                return _('{n} days together!').format(n=days)
 
     if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
         item_title = reminder.title
@@ -420,7 +444,7 @@ def _translate_reminder_description(reminder):
 def reminders():
     try:
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         reminder_list = get_all_reminders()
@@ -451,7 +475,7 @@ def list_view(content_url):
         sm_edition = get_setting_by_name('sm_edition').value
         items = get_items_by_type(list_type.id, edition=sm_edition, checked_last=True)
         list_types = get_all_list_types()
-        title = get_setting_by_name('title')
+        title = get_display_title()
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
 
@@ -464,7 +488,8 @@ def list_view(content_url):
                                darkmode=darkmode,
                                user_data=user_data,
                                error_msg=error_msg,
-                               list_type_title=list_type.title)
+                               list_type_title=list_type.title,
+                               sm_edition=sm_edition)
     except Exception as e:
         log('error', f'Error while processing the list view: {e}')
         return "An error occurred while processing your request. Page not found.", 500

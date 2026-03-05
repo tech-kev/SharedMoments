@@ -47,6 +47,7 @@ function openCreateListType() {
     document.getElementById('manage-list-type-path').value = '';
     document.getElementById('manage-list-type-icon').value = 'list';
     document.getElementById('manage-list-type-icon-preview').textContent = 'list';
+    document.getElementById('manage-list-type-edition').value = 'all';
     document.getElementById('manage-list-type-dialog-title').textContent = _('Create new list');
     document.getElementById('manage-list-type-delete-btn').style.display = 'none';
     document.getElementById('manage-list-type-path-helper').textContent = _('Only lowercase letters, numbers and hyphens');
@@ -62,6 +63,7 @@ function openEditListTypeFromElement(el) {
     document.getElementById('manage-list-type-path').value = el.dataset.contenturl;
     document.getElementById('manage-list-type-icon').value = el.dataset.icon;
     document.getElementById('manage-list-type-icon-preview').textContent = el.dataset.icon;
+    document.getElementById('manage-list-type-edition').value = el.dataset.edition || 'all';
     document.getElementById('manage-list-type-dialog-title').textContent = _('Edit list');
     document.getElementById('manage-list-type-delete-btn').style.display = '';
     document.getElementById('manage-list-type-path-helper').textContent = _('Only lowercase letters, numbers and hyphens');
@@ -192,12 +194,15 @@ function saveListType(btn) {
 
     btnLoading(btn);
 
+    const edition = document.getElementById('manage-list-type-edition').value;
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('mainTitle', mainTitle || title);
     formData.append('contentURL', path);
     formData.append('icon', icon);
     formData.append('navbar', true);
+    formData.append('edition', edition);
 
     const isEdit = !!id;
     const url = isEdit ? `/api/v2/list_type/${id}` : '/api/v2/list_type';

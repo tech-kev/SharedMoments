@@ -209,7 +209,7 @@
                 <div class="">
                     <h5>{{ _('Final touches') }}</h5>
                     <br>
-                    <img class="circle setup-image center" src="/api/v2/media/static/profile-men.jpg"
+                    <img class="circle setup-image center" id="setup-tab-3-image" src="/api/v2/media/static/setup-couples.jpg"
                         style="width: 100%; height: 100%;">
                     <br>
                     <br>
@@ -243,7 +243,19 @@
                                     <label>{{ _('Name of your friend group') }}</label>
                                 </div>
                             </div>
-    
+                            <div class="s6 hidden">
+                                <div class="field label border">
+                                    <input type="date" id="family-founding-date">
+                                    <label>{{ _('Family founding date') }}</label>
+                                </div>
+                            </div>
+                            <div class="s6 hidden">
+                                <div class="field label border">
+                                    <input type="date" id="friend-group-founding-date">
+                                    <label>{{ _('Founding date') }}</label>
+                                </div>
+                            </div>
+
                             <div class="s6 hidden">
     
                                 <div class="field label suffix border">
