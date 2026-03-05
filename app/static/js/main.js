@@ -173,7 +173,17 @@ function observeLazyImages(container) {
    images.forEach(img => lazyObserver.observe(img));
 }
 
-document.addEventListener('DOMContentLoaded', () => observeLazyImages());
+document.addEventListener('DOMContentLoaded', () => {
+   observeLazyImages();
+   const btt = document.getElementById('btn-back-to-top');
+   if (btt) {
+      window.addEventListener('scroll', () => {
+         const show = window.scrollY > 300;
+         btt.style.opacity = show ? '1' : '0';
+         btt.style.pointerEvents = show ? 'auto' : 'none';
+      }, { passive: true });
+   }
+});
 
 function showMoreInfo(element, result, mode) {
    if (mode === 'open') {
