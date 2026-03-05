@@ -177,6 +177,49 @@ function observeLazyImages(container) {
    images.forEach(img => lazyObserver.observe(img));
 }
 
+// Enter to submit active dialogs
+document.addEventListener('keydown', function(e) {
+   if (e.key !== 'Enter') return;
+   // Never intercept Enter inside textarea or select
+   if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+   const dialog = e.target.closest('dialog.active');
+   if (!dialog) return;
+
+   let submitBtn = null;
+   const topNav = dialog.querySelector('nav');
+
+   // 1) Fullscreen/bottom dialogs: <a onclick="save..."> in top nav
+   if (topNav) {
+      submitBtn = topNav.querySelector(':scope > a[onclick]');
+   }
+
+   // 2) Standard dialogs: last button in nav.right-align (skip error/delete buttons)
+   if (!submitBtn) {
+      const rightNav = dialog.querySelector('nav.right-align');
+      if (rightNav) {
+         const lastBtn = rightNav.querySelector('button:last-child');
+         if (lastBtn && !lastBtn.classList.contains('error')) {
+            submitBtn = lastBtn;
+         }
+      }
+   }
+
+   // 3) Admin dialogs: last button[onclick] in top nav (e.g. edit-user save button)
+   if (!submitBtn && topNav) {
+      const buttons = topNav.querySelectorAll(':scope > button[onclick]');
+      if (buttons.length > 1) {
+         const lastBtn = buttons[buttons.length - 1];
+         if (!lastBtn.classList.contains('error')) submitBtn = lastBtn;
+      }
+   }
+
+   if (!submitBtn || submitBtn.disabled) return;
+
+   e.preventDefault();
+   submitBtn.click();
+});
+
 document.addEventListener('DOMContentLoaded', () => {
    observeLazyImages();
    const btt = document.getElementById('btn-back-to-top');
