@@ -912,7 +912,7 @@ function selectImage(event) {
 
 // XHR-Upload mit Progress-Callback
 function uploadFileXHR(file, onProgress) {
-   const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
+   const CHUNK_SIZE = 50 * 1024 * 1024; // 50 MB
    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
    const uploadId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
