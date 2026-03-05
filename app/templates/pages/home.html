@@ -57,9 +57,115 @@
    <!-- Overlay für Edit-Timeline-Dialog -->
    <div class="overlay" id="div-overlay-edit-timeline-item" onclick="callUi('#dialog-edit-timeline-item')"></div>
 
+   <!-- Timeline Details Dialog -->
+   <dialog class="modal" id="dialog-details-timeline-item">
+     <nav>
+        <h5 id="timeline-detail-title" class="max" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h5>
+        {% if has_list_permission('Delete', moments_title) %}
+        <button class="circle transparent" onclick="deleteTimelineItem(this)"><i>delete</i></button>
+        {% endif %}
+        {% if has_list_permission('Update', moments_title) %}
+        <button class="circle transparent" onclick="editTimelineItem()"><i>edit</i></button>
+        {% endif %}
+     </nav>
+     <p id="timeline-detail-date" class="small"></p>
+     <div id="div-details-timeline-item"></div>
+     <nav class="right-align no-space">
+       <button class="transparent link" onclick="callUi('#dialog-details-timeline-item')">{{ _('Close') }}</button>
+     </nav>
+   </dialog>
+
+   <!-- Timeline Edit Dialog -->
+   <dialog class="bottom" id="dialog-edit-timeline-item">
+     <nav>
+       <button class="circle transparent" onclick="callUi('#dialog-edit-timeline-item')"><i>close</i></button>
+       <h5>{{ _('Edit moment') }}</h5>
+       <div class="max"></div>
+       <a onclick="saveEditedTimelineItem(this)">{{ _('Save') }}</a>
+     </nav>
+     <div class="grid">
+       <div class="s12">
+         <div class="field label border">
+           <input type="text" id="edit-timeline-item-title">
+           <label>{{ _('Title') }}</label>
+         </div>
+       </div>
+       <div class="s12">
+         <div class="field label border textarea">
+           <textarea id="edit-timeline-item-content"></textarea>
+           <label>{{ _('Description') }}</label>
+         </div>
+       </div>
+       <div class="s12">
+         <div class="field label border">
+           <input type="date" id="edit-timeline-item-date">
+           <label>{{ _('Creation Date') }}</label>
+         </div>
+       </div>
+     </div>
+     <input type="hidden" id="edit-timeline-item-id">
+   </dialog>
+
    <!-- Overlay für Countdown-Dialoge -->
    <div class="overlay" id="div-overlay-create-countdown" onclick="callUi('#dialog-create-countdown')"></div>
    <div class="overlay" id="div-overlay-edit-countdown" onclick="callUi('#dialog-edit-countdown')"></div>
+
+   <!-- Countdown Create Dialog -->
+   <dialog class="bottom" id="dialog-create-countdown">
+      <nav>
+         <button class="circle transparent" onclick="callUi('#dialog-create-countdown')"><i>close</i></button>
+         <h5>{{ _('Create countdown') }}</h5>
+         <div class="max"></div>
+         <a onclick="saveNewCountdown(this)">{{ _('Save') }}</a>
+      </nav>
+      <div class="grid">
+         <div class="s12">
+            <div class="field label border">
+               <input type="text" id="input-create-countdown-title">
+               <label>{{ _('Title') }}</label>
+            </div>
+         </div>
+         <div class="s12">
+            <div class="field label border">
+               <input type="date" id="input-create-countdown-date">
+               <label>{{ _('Target date') }}</label>
+            </div>
+         </div>
+      </div>
+   </dialog>
+
+   <!-- Countdown Edit Dialog -->
+   <dialog class="bottom" id="dialog-edit-countdown">
+      <nav>
+         <button class="circle transparent" onclick="callUi('#dialog-edit-countdown')"><i>close</i></button>
+         <h5>{{ _('Edit countdown') }}</h5>
+         <div class="max"></div>
+         <a onclick="saveEditedCountdown(this)">{{ _('Save') }}</a>
+      </nav>
+      <div class="grid">
+         <div class="s12">
+            <div class="field label border">
+               <input type="text" id="input-edit-countdown-title">
+               <label>{{ _('Title') }}</label>
+            </div>
+         </div>
+         <div class="s12">
+            <div class="field label border">
+               <input type="date" id="input-edit-countdown-date">
+               <label>{{ _('Target date') }}</label>
+            </div>
+         </div>
+      </div>
+      <nav class="right-align">
+         {% if has_list_permission('Delete', countdown_title) %}
+         <button class="transparent error" onclick="deleteCountdown(this)">
+            <i>delete</i>
+            <span>{{ _('Delete') }}</span>
+         </button>
+         {% endif %}
+      </nav>
+      <input type="hidden" id="input-edit-countdown-id">
+   </dialog>
 
    <!-- Feed-Karten -->
    <main class="responsive">
