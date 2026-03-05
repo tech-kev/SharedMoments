@@ -288,6 +288,13 @@ function toggleDarkmode() {
 
     document.body.classList.toggle('dark', toggle.checked);
 
+    // Re-apply accent color theme for new mode
+    const accentHex = document.getElementById('input-custom-accent-color')?.value
+        || document.querySelector('meta[name="theme-color"]')?.content;
+    if (accentHex && typeof window.applyTheme === 'function') {
+        window.applyTheme(accentHex);
+    }
+
     const formData = new FormData();
     formData.append("setting", "darkmode");
     formData.append("value", value);
