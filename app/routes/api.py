@@ -13,7 +13,8 @@ from app.db_queries import (approve_new_translations_to_all_languages, create_ne
     get_all_reminders, get_reminder_by_id, create_reminder as db_create_reminder,
     update_reminder as db_update_reminder, delete_reminder as db_delete_reminder,
     get_user_muted_reminder_ids, mute_reminder, unmute_reminder,
-    save_push_subscription, delete_push_subscription)
+    save_push_subscription, delete_push_subscription,
+    get_passkeys_by_user, create_passkey as db_create_passkey, delete_passkey as db_delete_passkey, rename_passkey as db_rename_passkey)
 from datetime import datetime
 from app.logger import log
 import os, json, subprocess, shutil, threading, uuid, zipfile, tempfile, time
@@ -1684,6 +1685,103 @@ def get_vapid_key():
     except Exception as e:
         log('error', f'Error getting VAPID key: {e}')
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# ==================== Passkeys API ====================
+
+@api_bp.route('/api/v2/passkeys', methods=['GET'])
+@jwt_required
+def list_passkeys():
+    try:
+        passkeys = get_passkeys_by_user(g.user_id)
+        data = [{
+            'id': p.id,
+            'name': p.name,
+            'dateCreated': p.dateCreated.strftime('%d.%m.%Y') if p.dateCreated else None
+        } for p in passkeys]
+        return jsonify({'status': 'success', 'data': {'passkeys': data}}), 200
+    except Exception as e:
+        log('error', f'Error loading passkeys: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while loading passkeys.')}), 500
+
+
+@api_bp.route('/api/v2/passkeys', methods=['POST'])
+@jwt_required
+def create_passkey_endpoint():
+    try:
+        data = request.get_json() if request.is_json else request.form
+        name = data.get('name', '').strip()
+        if not name:
+            return jsonify({'status': 'error', 'message': _('Name is required')}), 400
+
+        email = session.get('email')
+        webauth_data = session.get('webauth_data', {})
+        user_data = webauth_data.get(email, {})
+
+        credential_id = user_data.get('credential_id')
+        public_key = user_data.get('public_key')
+        sign_count = user_data.get('sign_count', 0)
+
+        if not credential_id or not public_key:
+            return jsonify({'status': 'error', 'message': _('No passkey registration data found. Please register a passkey first.')}), 400
+
+        new_id = db_create_passkey(g.user_id, name, credential_id, public_key, sign_count)
+
+        # Clear session data after saving
+        if email in webauth_data:
+            del webauth_data[email]
+            session['webauth_data'] = webauth_data
+
+        log('info', f'Passkey created: ID={new_id} for user {g.user_id}')
+        return jsonify({'status': 'success', 'message': _('Passkey created successfully'), 'data': {'id': new_id}}), 201
+    except Exception as e:
+        log('error', f'Error creating passkey: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while creating the passkey.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/passkeys/<int:id>', methods=['PUT'])
+@jwt_required
+def update_passkey_endpoint(id):
+    try:
+        data = request.get_json() if request.is_json else request.form
+        name = data.get('name', '').strip()
+        if not name:
+            return jsonify({'status': 'error', 'message': _('Name is required')}), 400
+
+        success = db_rename_passkey(id, g.user_id, name)
+        if success:
+            log('info', f'Passkey renamed: ID={id}')
+            return jsonify({'status': 'success', 'message': _('Passkey renamed successfully')}), 200
+        else:
+            return jsonify({'status': 'error', 'message': _('Passkey not found')}), 404
+    except Exception as e:
+        log('error', f'Error renaming passkey {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while renaming the passkey.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
+
+
+@api_bp.route('/api/v2/passkeys/<int:id>', methods=['DELETE'])
+@jwt_required
+def delete_passkey_endpoint(id):
+    try:
+        # Check if this is the last passkey and user has no password
+        passkeys = get_passkeys_by_user(g.user_id)
+        user = get_user_by_id(g.user_id)
+
+        if len(passkeys) <= 1 and (not user.passwordHash or user.passwordHash == ''):
+            return jsonify({'status': 'error', 'message': _('Cannot delete the last passkey when no password is set.')}), 400
+
+        success = db_delete_passkey(id, g.user_id)
+        if success:
+            log('info', f'Passkey deleted: ID={id} by user {g.user_id}')
+            return jsonify({'status': 'success', 'message': _('Passkey deleted successfully')}), 200
+        else:
+            return jsonify({'status': 'error', 'message': _('Passkey not found')}), 404
+    except Exception as e:
+        log('error', f'Error deleting passkey {id}: {e}')
+        return jsonify({'status': 'error', 'message': _('An error occurred while deleting the passkey.'),
+                        'data': {'error_code': 500, 'error_message': str(e) if app.debug else None}}), 500
 
 
 # ==================== Notification Test API ====================

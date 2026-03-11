@@ -241,22 +241,89 @@ def get_user_by_credential_id(credential_id):
     session = SessionLocal()
     try:
         credentials = session.query(Passkey).filter(Passkey.credential_id == credential_id).first()
+        if not credentials:
+            return None, None
         user = session.query(User).filter(User.id == credentials.userID).first()
-        if credentials:
-            session.expunge(credentials)
+        session.expunge(credentials)
         if user:
             session.expunge(user)
         return credentials, user
     finally:
         session.close()
 
-def update_passkey_sign_count(user_id, sign_count):
+def update_passkey_sign_count(credential_id, sign_count):
     session = SessionLocal()
     try:
-        credentials = session.query(Passkey).filter(Passkey.userID == user_id).first()
+        credentials = session.query(Passkey).filter(Passkey.credential_id == credential_id).first()
         if credentials:
             credentials.sign_count = sign_count
             session.commit()
+    finally:
+        session.close()
+
+
+def get_passkeys_by_user(user_id):
+    """Alle Passkeys eines Users laden."""
+    session = SessionLocal()
+    try:
+        passkeys = session.query(Passkey).filter(Passkey.userID == user_id).all()
+        for p in passkeys:
+            session.expunge(p)
+        return passkeys
+    finally:
+        session.close()
+
+
+def create_passkey(user_id, name, credential_id, public_key, sign_count=0):
+    """Neuen Passkey für User anlegen."""
+    session = SessionLocal()
+    try:
+        passkey = Passkey(
+            userID=user_id,
+            name=name,
+            credential_id=credential_id,
+            public_key=public_key,
+            sign_count=sign_count
+        )
+        session.add(passkey)
+        session.commit()
+        session.refresh(passkey)
+        pid = passkey.id
+        return pid
+    finally:
+        session.close()
+
+
+def delete_passkey(passkey_id, user_id):
+    """Passkey löschen (nur wenn er dem User gehört)."""
+    session = SessionLocal()
+    try:
+        passkey = session.query(Passkey).filter(
+            Passkey.id == passkey_id,
+            Passkey.userID == user_id
+        ).first()
+        if passkey:
+            session.delete(passkey)
+            session.commit()
+            return True
+        return False
+    finally:
+        session.close()
+
+
+def rename_passkey(passkey_id, user_id, new_name):
+    """Passkey umbenennen (nur wenn er dem User gehört)."""
+    session = SessionLocal()
+    try:
+        passkey = session.query(Passkey).filter(
+            Passkey.id == passkey_id,
+            Passkey.userID == user_id
+        ).first()
+        if passkey:
+            passkey.name = new_name
+            session.commit()
+            return True
+        return False
     finally:
         session.close()
 

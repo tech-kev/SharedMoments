@@ -18,6 +18,27 @@ from webauthn.helpers.structs import (
 auth_bp = Blueprint('auth', __name__)
 
 
+def _get_webauthn_rp_id():
+    """Return RP ID from config or auto-detect from request host."""
+    from app import app
+    configured = app.config.get('WEBAUTHN_RP_ID')
+    if configured and configured != 'localhost':
+        return configured
+    # Auto-detect: hostname without port
+    hostname = request.host.split(':')[0]
+    return hostname
+
+
+def _get_webauthn_origin():
+    """Return origin from config or auto-detect from request."""
+    from app import app
+    configured = app.config.get('WEBAUTHN_ORIGIN')
+    if configured:
+        return configured
+    # Auto-detect from request
+    return request.origin or f"{request.scheme}://{request.host}"
+
+
 def get_secret_key():
     from app import app
     return app.config['SECRET_KEY']
@@ -203,7 +224,7 @@ def webauthn_register():
 
         options = generate_registration_options(
             rp_name=app.config['WEBAUTHN_RP_NAME'],
-            rp_id=app.config['WEBAUTHN_RP_ID'],
+            rp_id=_get_webauthn_rp_id(),
             user_id=email.encode(),
             user_name=name,
             attestation=AttestationConveyancePreference.DIRECT,
@@ -261,8 +282,8 @@ def webauthn_register_verify():
         verification = verify_registration_response(
             credential=credential,
             expected_challenge=base64url_to_bytes(challenge),
-            expected_rp_id=app.config['WEBAUTHN_RP_ID'],
-            expected_origin=app.config['WEBAUTHN_ORIGIN']
+            expected_rp_id=_get_webauthn_rp_id(),
+            expected_origin=_get_webauthn_origin()
         )
 
         if verification:
@@ -298,7 +319,7 @@ def webauthn_authenticate():
     from app import app
     try:
         options = generate_authentication_options(
-            rp_id=app.config['WEBAUTHN_RP_ID']
+            rp_id=_get_webauthn_rp_id()
         )
 
         session['current_challenge'] = bytes_to_base64url(options.challenge)
@@ -344,17 +365,27 @@ def webauthn_authenticate_verify():
 
         credentials, user = get_user_by_credential_id(credential['id'])
 
+        if not credentials or not user:
+            return jsonify({
+                'status': 'error',
+                'message': _('Passkey not recognized. It may have been deleted.'),
+                'data': {
+                    'error_code': 401,
+                    'error_message': _('Passkey not recognized. It may have been deleted.')
+                }
+            }), 401
+
         verification = verify_authentication_response(
             credential=credential,
             expected_challenge=base64url_to_bytes(challenge),
-            expected_origin=app.config['WEBAUTHN_ORIGIN'],
-            expected_rp_id=app.config['WEBAUTHN_RP_ID'],
+            expected_origin=_get_webauthn_origin(),
+            expected_rp_id=_get_webauthn_rp_id(),
             credential_public_key=base64url_to_bytes(credentials.public_key),
             credential_current_sign_count=credentials.sign_count
         )
 
         if verification:
-            update_passkey_sign_count(user.id, verification.new_sign_count)
+            update_passkey_sign_count(credentials.credential_id, verification.new_sign_count)
             response = login_jwt(user, remember_me=True)
             log('info', f'User {user.id} authenticated successfully')
             return response

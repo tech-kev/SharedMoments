@@ -12,10 +12,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024 * 1024  # 2 GB
 
-    # WebAuthn
-    WEBAUTHN_RP_ID = os.environ.get('WEBAUTHN_RP_ID') or 'localhost'
+    # WebAuthn (ORIGIN auto-detected from request, RP_ID must be a domain - not an IP)
+    WEBAUTHN_RP_ID = os.environ.get('WEBAUTHN_RP_ID') or ''
     WEBAUTHN_RP_NAME = os.environ.get('WEBAUTHN_RP_NAME') or 'SharedMoments'
-    WEBAUTHN_ORIGIN = os.environ.get('WEBAUTHN_ORIGIN') or 'http://localhost:5001'
+    WEBAUTHN_ORIGIN = os.environ.get('WEBAUTHN_ORIGIN') or ''
 
     # AI Provider
     OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')

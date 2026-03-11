@@ -7,7 +7,7 @@ from app.db_queries import (get_all_list_types, get_all_relationship_statuses,
     get_item_by_id, get_user_settings, get_list_type_by_content_url, get_all_settings,
     get_shared_item_ids, get_list_type_by_title, ensure_countdown_list_type,
     ensure_banner_song_setting, get_all_reminders, get_user_muted_reminder_ids,
-    ensure_notification_settings)
+    ensure_notification_settings, get_passkeys_by_user)
 from app.logger import log
 import os
 from app.utils import generate_banner_text
@@ -250,9 +250,10 @@ def user_settings():
         telegram_available = bool(os.environ.get('TELEGRAM_BOT_TOKEN', ''))
         telegram_chat_id_setting = get_user_setting(g.user_id, 'notification_telegram_chat_id')
         telegram_chat_id = telegram_chat_id_setting.value if telegram_chat_id_setting else ''
+        passkeys = get_passkeys_by_user(g.user_id)
 
         return render_template('pages/settings.html', settings=settings, list_types=list_types, title=title, darkmode=darkmode, user_data=user_data, user_settings=user_settings, settings_type=settings_type, supported_languages=supported_languages,
-            smtp_available=smtp_available, telegram_available=telegram_available, telegram_chat_id=telegram_chat_id)
+            smtp_available=smtp_available, telegram_available=telegram_available, telegram_chat_id=telegram_chat_id, passkeys=passkeys)
     except Exception as e:
         log('error', f'Error while rendering the settings.html-Template: {e}')
         return "An error occurred while rendering the page. Please check the server logs for details.", 500

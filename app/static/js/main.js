@@ -1,5 +1,17 @@
 // Translations: translationsArray is set inline in head.html, _() is defined in pwa.js
 
+// Base64url decode helper (used by WebAuthn in setup, login, settings)
+function base64urlToUint8Array(base64urlString) {
+   const padding = '='.repeat((4 - (base64urlString.length % 4)) % 4);
+   const base64 = (base64urlString + padding).replace(/-/g, '+').replace(/_/g, '/');
+   const rawData = window.atob(base64);
+   const outputArray = new Uint8Array(rawData.length);
+   for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+   }
+   return outputArray;
+}
+
 // Umschalten zwischen Modal anzeigen und verstecken
 function callUi(id) {
    if (document.querySelector(id).classList.contains("active")) { // Wenn Modal angezeigt wird
@@ -39,6 +51,8 @@ function callUi(id) {
          document.getElementById("div-overlay-delete-ghostcard").classList.remove("active");
       } else if (id == "#dialog-change-password") {
          document.getElementById("div-overlay-change-password").classList.remove("active");
+      } else if (id == "#dialog-rename-passkey") {
+         document.getElementById("div-overlay-rename-passkey").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -79,6 +93,8 @@ function callUi(id) {
          document.getElementById("div-overlay-delete-ghostcard").classList.add("active");
       } else if (id == "#dialog-change-password") {
          document.getElementById("div-overlay-change-password").classList.add("active");
+      } else if (id == "#dialog-rename-passkey") {
+         document.getElementById("div-overlay-rename-passkey").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }

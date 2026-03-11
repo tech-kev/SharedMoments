@@ -111,6 +111,13 @@
                 return;
             }
 
+            // Passkeys only work on localhost or matching domain, not via IP
+            const hostname = window.location.hostname;
+            if (hostname !== 'localhost' && /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+                showSnackbar('setup', true, 'error', "{{ _('Passkey login is not available when accessing via IP address. Use localhost or a domain name.') }}", null, false);
+                return;
+            }
+
             const formData = new FormData();
             formData.append("email", document.getElementById("email").value);
 
@@ -157,13 +164,11 @@
                     showSnackbar('setup', true, 'error', result.message, result, true);
                 }
             } catch (error) {
-                error = {
-                    data: {
-                        error_code: 'NotAllowedError',
-                        error_message: error.toString()
-                    }
+                let msg = "{{ _('Passkey login failed.') }}";
+                if (error.message && error.message.includes('rp.id')) {
+                    msg = "{{ _('Passkey login is not available when accessing via IP address. Use localhost or a domain name.') }}";
                 }
-                showSnackbar('setup', true, 'error', "Credential creation failed.", error, true);
+                showSnackbar('setup', true, 'error', msg, {data: {error_code: error.name || 'Error', error_message: error.toString()}}, true);
             }
         }
 

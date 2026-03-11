@@ -1360,6 +1360,140 @@ function startDataImport(input) {
     })();
 }
 
+// --- Passkeys ---
+
+function prepareRenamePasskey(id, name) {
+    document.getElementById('input-rename-passkey-id').value = id;
+    document.getElementById('input-rename-passkey').value = name;
+}
+
+function saveRenamePasskey() {
+    const id = document.getElementById('input-rename-passkey-id').value;
+    const name = document.getElementById('input-rename-passkey').value.trim();
+    if (!name) return;
+
+    fetch('/api/v2/passkeys/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status === 'success') {
+            callUi('#dialog-rename-passkey');
+            showSnackbar('settings', true, 'green', result.message, null, false);
+            location.reload();
+        } else {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+        }
+    })
+    .catch(error => {
+        if (String(error) === 'TypeError: Failed to fetch') error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    });
+}
+
+function deletePasskey(id, name) {
+    if (!confirm(_('Delete passkey') + ' "' + name + '"?')) return;
+
+    fetch('/api/v2/passkeys/' + id, { method: 'DELETE' })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status === 'success') {
+            showSnackbar('settings', true, 'green', result.message, null, false);
+            location.reload();
+        } else {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+        }
+    })
+    .catch(error => {
+        if (String(error) === 'TypeError: Failed to fetch') error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    });
+}
+
+async function addPasskey() {
+    // IP-Check: Passkeys don't work via raw IP
+    const hostname = window.location.hostname;
+    if (hostname !== 'localhost' && /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+        showSnackbar('settings', true, 'error', _('Passkeys are not available via IP address'), null, false);
+        return;
+    }
+
+    if (!navigator.credentials || !navigator.credentials.create) {
+        showSnackbar('settings', true, 'error', _('WebAuthn is not supported in this browser'), null, false);
+        return;
+    }
+
+    try {
+        // 1. Get registration options from server
+        const formData = new FormData();
+        formData.append('email', passkeysUserEmail);
+        formData.append('name', passkeysUserName);
+
+        const resp = await fetch('/webauthn/register', { method: 'POST', body: formData });
+        const result = await resp.json();
+        if (result.status !== 'success') {
+            showSnackbar('settings', true, 'error', result.message, result, true);
+            return;
+        }
+
+        // 2. Create credential via browser
+        const options = JSON.parse(result.data);
+        options.challenge = base64urlToUint8Array(options.challenge);
+        options.user.id = base64urlToUint8Array(options.user.id);
+        if (options.excludeCredentials) {
+            options.excludeCredentials = options.excludeCredentials.map(c => ({
+                ...c, id: base64urlToUint8Array(c.id)
+            }));
+        }
+
+        const credential = await navigator.credentials.create({ publicKey: options });
+
+        // 3. Verify with server
+        const credentialData = {
+            id: credential.id,
+            rawId: Array.from(new Uint8Array(credential.rawId)),
+            type: credential.type,
+            response: {
+                attestationObject: Array.from(new Uint8Array(credential.response.attestationObject)),
+                clientDataJSON: Array.from(new Uint8Array(credential.response.clientDataJSON))
+            }
+        };
+
+        const verifyResp = await fetch('/webauthn/register/verify', {
+            method: 'POST',
+            body: JSON.stringify(credentialData),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const verifyResult = await verifyResp.json();
+        if (verifyResult.status !== 'success') {
+            showSnackbar('settings', true, 'error', verifyResult.message, verifyResult, true);
+            return;
+        }
+
+        // 4. Save passkey with name via new API
+        const name = prompt(_('Name for this passkey'), _('My Passkey'));
+        if (!name) return;
+
+        const saveResp = await fetch('/api/v2/passkeys', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        const saveResult = await saveResp.json();
+        if (saveResult.status === 'success') {
+            showSnackbar('settings', true, 'green', saveResult.message, null, false);
+            location.reload();
+        } else {
+            showSnackbar('settings', true, 'error', saveResult.message, saveResult, true);
+        }
+    } catch (error) {
+        if (String(error) === 'TypeError: Failed to fetch') error = _('Server not reachable');
+        showSnackbar('settings', true, 'error', String(error), null, false);
+    }
+}
+
 // Init
 if (settingsType === 'settings') {
     document.addEventListener('DOMContentLoaded', () => {

@@ -249,6 +249,38 @@
                 <i>chevron_right</i>
               </a>
 
+              <!-- Passkeys Section -->
+              <legend>{{ _('Passkeys') }}</legend>
+
+              {% for passkey in passkeys %}
+              <div class="row padding primary-container" style="cursor:pointer;" onclick="callUi('#dialog-rename-passkey'); prepareRenamePasskey({{ passkey.id }}, '{{ passkey.name|e }}')">
+                <i>passkey</i>
+                <div class="max">
+                  <h6 class="small">{{ passkey.name }}</h6>
+                  <div>{{ _('Created') }}: {{ passkey.dateCreated.strftime('%d.%m.%Y') if passkey.dateCreated else '-' }}</div>
+                </div>
+                <button class="transparent circle" onclick="event.stopPropagation(); deletePasskey({{ passkey.id }}, '{{ passkey.name|e }}')">
+                  <i>delete</i>
+                </button>
+              </div>
+              {% endfor %}
+
+              {% if passkeys|length == 0 %}
+              <div class="row padding primary-container">
+                <i>info</i>
+                <div class="max">
+                  <div>{{ _('No passkeys configured') }}</div>
+                </div>
+              </div>
+              {% endif %}
+
+              <a class="row padding primary-container wave" onclick="addPasskey()">
+                <i>add</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Add passkey') }}</h6>
+                </div>
+              </a>
+
               {% for user_setting in user_settings %}
               {% if user_setting.name == 'darkmode' %}
               <a class="row padding primary-container wave" onclick="toggleDarkmode()">
@@ -573,6 +605,21 @@
       </nav>
    </dialog>
 
+   <!-- Rename Passkey Dialog -->
+   <div class="overlay" id="div-overlay-rename-passkey" onclick="callUi('#dialog-rename-passkey')"></div>
+   <dialog id="dialog-rename-passkey">
+      <h5>{{ _('Rename passkey') }}</h5>
+      <div class="field label border">
+         <input type="text" id="input-rename-passkey">
+         <label>{{ _('Name') }}</label>
+      </div>
+      <input type="hidden" id="input-rename-passkey-id">
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-rename-passkey')">{{ _('Cancel') }}</button>
+         <button class="transparent link" onclick="saveRenamePasskey()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
    <!-- Edition-Wechsel Bestätigungsdialog -->
    <div class="overlay" id="div-overlay-edition-confirm" onclick="closeEditionDialog()"></div>
    <dialog id="dialog-edition-confirm">
@@ -611,6 +658,8 @@
     {% set push_val = 'True' %}
     {% for s in user_settings if s.name == 'notification_push_enabled' %}{% set push_val = s.value %}{% endfor %}
     window.pushEnabled = {{ (push_val == 'True')|tojson }};
+    const passkeysUserEmail = {{ user_data.email|tojson }};
+    const passkeysUserName = {{ user_data.firstName|tojson }};
     {% endif %}
    </script>
    <script src="{{ static_versioned('js/settings.js') }}"></script>
