@@ -1189,38 +1189,87 @@ function handleLongPress(id) {
 let touchStartY = 0;
 let touchStartX = 0;
 let isScrolling = false;
+let touchLongPressTimer = null;
+let touchLongPressFired = false;
+let touchTargetArticle = null;
 
 // Funktion zum Start des Touch-Events
 function handleTouchStart(event) {
-   if (event.touches.length > 0) { // Wenn es mehr als 0 Touches gibt
-      const touch = event.touches[0]; // Hole den ersten Touch
-      touchStartY = touch.clientY; // Speichere die Y-Position des Touchs
-      touchStartX = touch.clientX; // Speichere die X-Position des Touchs
-      isScrolling = false; // Setze das Scrollen auf false
+   if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      touchStartY = touch.clientY;
+      touchStartX = touch.clientX;
+      isScrolling = false;
+      touchLongPressFired = false;
+
+      // Finde das article-Element für den Long Press
+      touchTargetArticle = event.currentTarget;
+
+      // Starte den Long-Press-Timer hier (nicht bei touchend)
+      if (window.canSelectItems) {
+         touchLongPressTimer = setTimeout(() => {
+            touchLongPressFired = true;
+            // Visuelles Feedback entfernen
+            if (touchTargetArticle) touchTargetArticle.classList.remove('long-press-active');
+            // Auswahl durchführen
+            selectItemsStarted({ currentTarget: touchTargetArticle });
+         }, 500);
+
+         // Visuelles Feedback: leichtes Skalieren nach 100ms
+         setTimeout(() => {
+            if (touchLongPressTimer && touchTargetArticle && !isScrolling) {
+               touchTargetArticle.classList.add('long-press-active');
+            }
+         }, 100);
+      }
    }
 }
 
 // Funktion zum Bewegen des Touchs
 function handleTouchMove(event) {
-   if (event.touches.length > 0) { // Wenn es mehr als 0 Touches gibt
-      const touch = event.touches[0]; // Hole den ersten Touch
-      const deltaY = Math.abs(touch.clientY - touchStartY); // Berechne die Distanz in der Y-Richtung
-      const deltaX = Math.abs(touch.clientX - touchStartX); // Berechne die Distanz in der X-Richtung
+   if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      const deltaY = Math.abs(touch.clientY - touchStartY);
+      const deltaX = Math.abs(touch.clientX - touchStartX);
 
-      // Wenn die Bewegung signifikant in der Y-Richtung ist, dann scrollen
-      if (deltaY > deltaX) {
-         isScrolling = true; // Setze das Scrollen auf true
+      // Wenn Bewegung > 10px, als Scroll erkennen und Timer abbrechen
+      if (deltaY > 10 || deltaX > 10) {
+         isScrolling = true;
+         clearTimeout(touchLongPressTimer);
+         touchLongPressTimer = null;
+         if (touchTargetArticle) touchTargetArticle.classList.remove('long-press-active');
       }
    }
 }
 
 // Funktion zum Beenden des Touchs
 function handleTouchEnd(event) {
+   // Timer abbrechen falls noch aktiv (kurzer Tap)
+   clearTimeout(touchLongPressTimer);
+   touchLongPressTimer = null;
+   if (touchTargetArticle) touchTargetArticle.classList.remove('long-press-active');
+
+   if (touchLongPressFired) {
+      // Long Press wurde erkannt — nichts weiter tun (Selektion bereits passiert)
+      return;
+   }
+
    if (isScrolling) {
-      // Scrollen erkannt, keine Auswahl durchführen
-   } else {
-      // Keine Scroll-Bewegung, daher Auswahl durchführen
-      selectItemsStarted(event);
+      // Scrollen erkannt — nichts tun
+      return;
+   }
+
+   // Kurzer Tap: Falls bereits im Selektionsmodus, Artikel an-/abwählen
+   if (selectStarted) {
+      selectItemsStarted({ currentTarget: event.currentTarget });
+   }
+   // Sonst: normaler Tap — Links (Gallery) etc. funktionieren durch Default-Verhalten
+}
+
+// Kontextmenü bei Long Press auf Touch unterdrücken
+function handleTouchContextMenu(event) {
+   if (touchLongPressTimer || touchLongPressFired) {
+      event.preventDefault();
    }
 }
 
@@ -1233,9 +1282,10 @@ function addEventListeners() {
          article.addEventListener("mousedown", selectItemsStarted);
          article.addEventListener("mouseup", selectItemsStopped);
       } else { // Ansonsten Touch-Events verwenden
-         article.addEventListener("touchstart", handleTouchStart);
+         article.addEventListener("touchstart", handleTouchStart, { passive: true });
          article.addEventListener("touchend", handleTouchEnd);
-         article.addEventListener("touchmove", handleTouchMove);
+         article.addEventListener("touchmove", handleTouchMove, { passive: true });
+         article.addEventListener("contextmenu", handleTouchContextMenu);
       }
    });
 }

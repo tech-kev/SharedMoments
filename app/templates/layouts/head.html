@@ -130,6 +130,15 @@ if ('serviceWorker' in navigator) {
    .outbox-ghost-card, .outbox-ghost-item {
       border-left: 3px solid var(--tertiary);
    }
+   /* Long Press Feedback */
+   .home-item.long-press-active {
+      transform: scale(0.97);
+      opacity: 0.85;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+   }
+   .home-item {
+      transition: transform 0.15s ease, opacity 0.15s ease;
+   }
 </style>
 
 <!-- Ghostcard Delete Dialog -->
