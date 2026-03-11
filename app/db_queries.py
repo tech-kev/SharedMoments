@@ -1166,8 +1166,17 @@ def get_translation(fieldName, languageCode):
 def get_translation_for_entity(entityType, entityID, languageCode):
     session = SessionLocal()
     try:
-        translations = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == languageCode).all()
-        return translations[0].translatedText
+        # Normalize language code (e.g. "en_US.UTF-8" -> "en")
+        lang = languageCode.split('_')[0].split('.')[0] if languageCode else 'en'
+        translation = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == lang).first()
+        if translation:
+            return translation.translatedText
+        # Fallback to English
+        if lang != 'en':
+            translation = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == 'en').first()
+            if translation:
+                return translation.translatedText
+        return f'{entityType}_{entityID}'
     finally:
         session.close()
 
