@@ -239,6 +239,16 @@ def setup_complete():
         db_session.commit()
         db_session.close()
 
+        # Sync auto-reminders after short delay so the response returns first
+        from app.scheduler import sync_auto_reminders
+        def _delayed_sync():
+            time.sleep(3)
+            try:
+                sync_auto_reminders()
+            except Exception as e:
+                log('warning', f'Auto-reminder sync after setup failed: {e}')
+        threading.Thread(target=_delayed_sync, daemon=True).start()
+
         response = make_response(jsonify({
             'status': 'success',
             'message': _('Setup successful')

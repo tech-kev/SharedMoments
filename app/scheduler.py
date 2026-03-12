@@ -1,3 +1,4 @@
+import os
 from datetime import date, timedelta, datetime
 from app.logger import log
 from app.db_queries import (
@@ -37,9 +38,19 @@ MILESTONE_DAYS.sort()
 
 
 def start_scheduler(app):
-    """Start the APScheduler background scheduler."""
+    """Start the APScheduler background scheduler (only once across all workers)."""
     global _scheduler
     if _scheduler is not None:
+        return
+
+    import fcntl
+    lock_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'scheduler.lock')
+    os.makedirs(os.path.dirname(lock_path), exist_ok=True)
+    try:
+        lock_file = open(lock_path, 'w')
+        fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except (IOError, OSError):
+        log('info', 'Scheduler already running in another worker, skipping')
         return
 
     try:
