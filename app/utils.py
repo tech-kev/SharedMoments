@@ -294,7 +294,7 @@ def export_data(mode, type, parameters):
 
             # Erstelle den Dateinamen für die JSON-Datei
             date = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-            directory = './app/export'
+            directory = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'export')
             file_name = f'{date}-export-translations-{languageCode}.json'
             json_file_path = os.path.join(directory, file_name)
 

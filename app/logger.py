@@ -21,7 +21,7 @@ def _get_logger():
         _logger.addHandler(console_handler)
 
         # File handler
-        log_folder = './logs'
+        log_folder = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'logs')
         log_filename = 'sharedmoments.log'
         if not os.path.exists(log_folder):
             os.makedirs(log_folder)
