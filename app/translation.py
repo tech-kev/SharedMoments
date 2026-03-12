@@ -121,7 +121,10 @@ def migrateTranslations(overwrite=False):
                             translatedText=translation_data['translatedText'],
                             helpText=translation_data.get('helpText', None)
                         ))
-                        db_session.commit()
+                    elif existing and overwrite:
+                        existing.translatedText = translation_data['translatedText']
+                        existing.helpText = translation_data.get('helpText', None)
+                    db_session.commit()
                 except Exception:
                     db_session.rollback()
     log('info', 'Translation migration completed')

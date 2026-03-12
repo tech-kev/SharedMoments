@@ -10,7 +10,7 @@ init_db()
 ensure_reminder_permissions()
 ensure_edition_settings()
 ensure_list_type_edition_column()
-migrateTranslations()
+migrateTranslations(overwrite=True)
 load_translation_in_cache()
 
 # VAPID key generation (for push notifications)

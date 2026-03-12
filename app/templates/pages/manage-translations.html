@@ -388,7 +388,7 @@ function getTranslations(language) {
                   download_link = result.data.download_link;
                   var a = document.createElement('a');
                   a.href = download_link;
-                  a.download = language + ".json";
+                  a.download = download_link.split('/').pop();
                   a.click();
                } else {
                   showSnackbar('home', true, 'error', result.message, result, true);

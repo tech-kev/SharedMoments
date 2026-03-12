@@ -64,7 +64,7 @@ function renderRoleCheckboxes(containerId, selectedRoleIds) {
         container.innerHTML += `
             <label class="checkbox" style="display: inline-block; margin: 4px 12px 4px 0;">
                 <input type="checkbox" value="${roleId}" ${checked}>
-                <span>${allRoleNames[roleId]}</span>
+                <span>${_(allRoleNames[roleId])}</span>
             </label>
         `;
     });
@@ -252,7 +252,7 @@ function saveUserRoles(btn) {
 // --- Role Permissions ---
 function editRolePermissions(roleId, roleName) {
     document.getElementById('edit-role-permissions-role-id').value = roleId;
-    document.getElementById('edit-role-permissions-title').textContent = roleName;
+    document.getElementById('edit-role-permissions-title').textContent = _(roleName);
 
     const currentPerms = rolePermissionsMap[roleId] || [];
     const container = document.getElementById('edit-role-permissions-checkboxes');
@@ -340,7 +340,7 @@ function editRolePermissions(roleId, roleName) {
         html += `<tr><td colspan="5" style="padding-top: 16px;"><strong>${_('General')}</strong></td></tr>`;
         Object.keys(crudGroups).sort().forEach(entity => {
             const g = crudGroups[entity];
-            html += `<tr><td style="padding-left: 16px;">${entity}</td>`;
+            html += `<tr><td style="padding-left: 16px;">${_(entity)}</td>`;
             // Map Read→View column position
             html += cell(g['View'] || g['Read']);
             html += cell(g['Create']);

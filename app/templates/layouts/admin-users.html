@@ -9,7 +9,7 @@
                 {% for role_id in user_roles_map[user.id] %}
                     {% for role in roles %}
                         {% if role.id == role_id %}
-                            <span class="chip small">{{ role.roleName }}</span>
+                            <span class="chip small">{{ _(role.roleName) }}</span>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
