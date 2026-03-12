@@ -200,9 +200,6 @@ ask "Git Branch" "main" GIT_BRANCH
 
 GIT_BRANCH="v2.0-rebuild"
 
-ask_choice "Edition" "Couples|Family|Friends" "1" EDITION
-EDITION_LOWER=$(echo "$EDITION" | tr '[:upper:]' '[:lower:]')
-
 ask_choice "Database" "SQLite (recommended)|MySQL (external)" "1" DB_CHOICE
 
 DB_URL=""
@@ -256,7 +253,6 @@ echo -e "  ${DIM}┌────────────────────
 echo -e "  ${DIM}│${NC}  Directory:    ${BOLD}${INSTALL_DIR}${NC}"
 echo -e "  ${DIM}│${NC}  Domain:       ${BOLD}${DOMAIN}:${PORT}${NC}"
 echo -e "  ${DIM}│${NC}  Branch:       ${BOLD}${GIT_BRANCH}${NC}"
-echo -e "  ${DIM}│${NC}  Edition:      ${BOLD}${EDITION}${NC}"
 if [[ -n "$DB_URL" ]]; then
 echo -e "  ${DIM}│${NC}  Database:     ${BOLD}MySQL${NC}"
 else
@@ -449,14 +445,10 @@ ensure_list_type_edition_column()
 migrateTranslations()
 load_translation_in_cache()
 _ensure_vapid_keys()
-
-# Set edition
-from app.db_queries import update_setting
-update_setting('sm_edition', '${EDITION_LOWER}')
 "
 }
 run_task "Initializing database..." _task_init_db
-success "Database initialized (edition: ${EDITION})"
+success "Database initialized"
 
 # ── Step 6: Systemd Service ──────────────────────────────────────────────────
 
@@ -478,8 +470,8 @@ WorkingDirectory=${INSTALL_DIR}
 EnvironmentFile=${INSTALL_DIR}/.env
 ExecStart=${INSTALL_DIR}/.venv/bin/gunicorn \\
     --bind 0.0.0.0:${PORT} \\
-    --workers 4 \\
-    --threads 2 \\
+    --workers 1 \\
+    --threads 4 \\
     --timeout 300 \\
     --access-logfile ${INSTALL_DIR}/logs/access.log \\
     --error-logfile ${INSTALL_DIR}/logs/error.log \\
