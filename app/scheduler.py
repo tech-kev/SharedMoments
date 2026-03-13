@@ -1,4 +1,3 @@
-import os
 from datetime import date, timedelta, datetime
 from app.logger import log
 from app.db_queries import (
@@ -38,19 +37,9 @@ MILESTONE_DAYS.sort()
 
 
 def start_scheduler(app):
-    """Start the APScheduler background scheduler (only once across all workers)."""
+    """Start the APScheduler background scheduler."""
     global _scheduler
     if _scheduler is not None:
-        return
-
-    import fcntl
-    lock_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'scheduler.lock')
-    os.makedirs(os.path.dirname(lock_path), exist_ok=True)
-    try:
-        lock_file = open(lock_path, 'w')
-        fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except (IOError, OSError):
-        log('info', 'Scheduler already running in another worker, skipping')
         return
 
     try:
@@ -96,6 +85,9 @@ def _run_with_app_context(app, func):
 
 def check_reminders():
     """Check all active reminders and send notifications where due."""
+    setup = get_setting_by_name('setup_complete')
+    if not setup or setup.value != 'True':
+        return
     today = date.today()
     reminders = get_all_reminders()
 
@@ -277,6 +269,11 @@ def _translate_reminder_description(reminder, lang):
 
 def sync_auto_reminders():
     """Sync auto-generated reminders from settings and user birthdays."""
+    setup = get_setting_by_name('setup_complete')
+    if not setup or setup.value != 'True':
+        log('info', 'Skipping auto-reminder sync — setup not complete')
+        return
+
     log('info', 'Syncing auto-reminders...')
 
     edition = get_setting_by_name('sm_edition').value
