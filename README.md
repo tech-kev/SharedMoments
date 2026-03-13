@@ -31,6 +31,8 @@ Translations are currently available for the following languages:
 - en_US
 - pt_BR
 - es_ES
+- be_BY
+- ru_RU
 
 If you would like to help with the translation, please see the [wiki](https://github.com/tech-kev/SharedMoments/wiki#-translation) for more informations.
 
