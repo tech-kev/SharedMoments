@@ -448,6 +448,7 @@ User=sharedmoments
 Group=sharedmoments
 WorkingDirectory=${INSTALL_DIR}
 EnvironmentFile=${INSTALL_DIR}/.env
+ExecStartPre=/bin/rm -f ${INSTALL_DIR}/gunicorn.ctl
 ExecStart=${INSTALL_DIR}/.venv/bin/gunicorn \\
     --bind 0.0.0.0:${PORT} \\
     --workers 1 \\
