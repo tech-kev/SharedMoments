@@ -200,18 +200,6 @@ ask "Git Branch" "main" GIT_BRANCH
 
 GIT_BRANCH="v2.0-rebuild"
 
-ask_choice "Database" "SQLite (recommended)|MySQL (external)" "1" DB_CHOICE
-
-DB_URL=""
-if [[ "$DB_CHOICE" == *"MySQL"* ]]; then
-    ask "MySQL Host" "localhost" MYSQL_HOST
-    ask "MySQL Port" "3306" MYSQL_PORT
-    ask "MySQL Database" "sharedmoments" MYSQL_DB
-    ask "MySQL User" "sharedmoments" MYSQL_USER
-    ask_secret "MySQL Password" MYSQL_PASS
-    DB_URL="mysql+mysqlconnector://${MYSQL_USER}:${MYSQL_PASS}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}"
-fi
-
 echo ""
 info "Optional: Configure notification channels (press Enter to skip)"
 ask "SMTP Host (for email notifications)" "" SMTP_HOST
@@ -253,11 +241,6 @@ echo -e "  ${DIM}┌────────────────────
 echo -e "  ${DIM}│${NC}  Directory:    ${BOLD}${INSTALL_DIR}${NC}"
 echo -e "  ${DIM}│${NC}  Domain:       ${BOLD}${DOMAIN}:${PORT}${NC}"
 echo -e "  ${DIM}│${NC}  Branch:       ${BOLD}${GIT_BRANCH}${NC}"
-if [[ -n "$DB_URL" ]]; then
-echo -e "  ${DIM}│${NC}  Database:     ${BOLD}MySQL${NC}"
-else
-echo -e "  ${DIM}│${NC}  Database:     ${BOLD}SQLite${NC}"
-fi
 echo -e "  ${DIM}│${NC}  Notifications:${BOLD}$([ -n "$SMTP_HOST" ] && echo " Email")$([ -n "$TELEGRAM_BOT_TOKEN" ] && echo " Telegram")$([ -z "$SMTP_HOST" ] && [ -z "$TELEGRAM_BOT_TOKEN" ] && echo " None")${NC}"
 echo -e "  ${DIM}│${NC}  AI:           ${BOLD}$([ -n "$OPENAI_API_KEY" ] && echo " OpenAI")$([ -n "$ANTHROPIC_API_KEY" ] && echo " Anthropic")$([ -z "$OPENAI_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ] && echo " None")${NC}"
 echo -e "  ${DIM}└─────────────────────────────────────────────────────┘${NC}"
@@ -393,9 +376,6 @@ cat > "$INSTALL_DIR/.env" << ENVEOF
 # Core
 SECRET_KEY=${SECRET_KEY}
 PORT=${PORT}
-
-# Database (leave empty for SQLite)
-DATABASE_URL=${DB_URL}
 
 # WebAuthn / Passkeys
 WEBAUTHN_RP_ID=${WEBAUTHN_RP_ID}
