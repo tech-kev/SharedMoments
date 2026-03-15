@@ -215,6 +215,7 @@ function getFileContentType (dataUrl=null, filename=null) {
 }
 
 let errorOnUpload = false; // Variable zum Speichern eines Fehlers beim Hochladen
+let failedUploadFiles = []; // File-Objekte der fehlgeschlagenen Uploads
 
 // Hilfsfunktion: Home-Item in Outbox speichern
 // uploadedContentURL: Falls Dateien bereits hochgeladen wurden, deren URLs (z.B. "file1.mp4;file2.mp4")
@@ -295,6 +296,66 @@ async function saveHomeItemToOutbox(uploadedContentURL) {
    }
 }
 
+// Dialog für fehlgeschlagene Uploads anzeigen
+function showFailedUploadsDialog() {
+   const grid = document.getElementById('div-failed-uploads-grid');
+   grid.innerHTML = '';
+
+   for (const file of failedUploadFiles) {
+      if (!file) continue;
+
+      const container = document.createElement('div');
+      container.className = 'preview-image-container';
+
+      const url = URL.createObjectURL(file);
+      const fileType = getFileContentType(null, file.name);
+
+      if (fileType === 'image') {
+         const img = document.createElement('img');
+         img.src = url;
+         img.className = 'preview-image';
+         container.appendChild(img);
+      } else if (fileType === 'video' || fileType === 'video-mov') {
+         const video = document.createElement('video');
+         video.src = url;
+         video.style.display = 'none';
+         const canvas = document.createElement('canvas');
+         canvas.className = 'video-thumbnail';
+         video.addEventListener('loadeddata', () => { video.currentTime = 5; });
+         video.addEventListener('seeked', () => {
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const thumbnailImg = document.createElement('img');
+            thumbnailImg.src = canvas.toDataURL();
+            thumbnailImg.className = 'preview-image';
+            container.appendChild(thumbnailImg);
+         });
+         video.addEventListener('error', () => {
+            const img = document.createElement('img');
+            img.className = 'preview-image';
+            img.src = '/api/v2/media/static/filenotsupported.png';
+            container.appendChild(img);
+         });
+         video.load();
+      }
+
+      const name = document.createElement('span');
+      name.className = 'small';
+      name.style.cssText = 'display:block;text-align:center;margin-top:4px;word-break:break-all;';
+      name.textContent = file.name;
+
+      const wrapper = document.createElement('div');
+      wrapper.appendChild(container);
+      wrapper.appendChild(name);
+      grid.appendChild(wrapper);
+   }
+
+   document.getElementById('span-failed-uploads-count').textContent = failedUploadFiles.length;
+   callUi('#dialog-failed-uploads');
+}
+
 // Speichern eines neuen Homeitems
 async function saveNewHomeItem(btn) {
    // === Offline-Erstellung: Wenn offline, in IndexedDB Outbox speichern ===
@@ -322,13 +383,14 @@ async function saveNewHomeItem(btn) {
       var uploadedURLs = document.getElementById("input-uploaded-urls").value;
 
       if (errorOnUpload) {
-         // Wenn trotz Fehler schon URLs vorhanden sind, trotzdem Item erstellen versuchen
          if (!uploadedURLs) {
+            // Alle Uploads fehlgeschlagen — Fehler-Dialog mit Vorschau zeigen
+            showFailedUploadsDialog();
             document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
             btnReset(btn);
-            await saveHomeItemToOutbox();
             return;
          }
+         // Einige Uploads erfolgreich — Item mit erfolgreichen URLs erstellen, danach Fehler-Dialog zeigen
       }
 
    }
@@ -393,6 +455,9 @@ async function saveNewHomeItem(btn) {
                showSnackbar('home', true, 'green', result.message, null, false);
                btnReset(btn);
                createSuccess = true;
+               if (failedUploadFiles.length > 0) {
+                  showFailedUploadsDialog();
+               }
                break;
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
@@ -435,12 +500,7 @@ async function saveNewHomeItem(btn) {
    if (!createSuccess) {
       document.getElementById("div-render-home-items").innerHTML = originalContent;
       addEventListeners();
-      var alreadyUploadedURLs = document.getElementById("input-uploaded-urls").value;
-      if (typeof addToOutbox === 'function' && alreadyUploadedURLs) {
-         await saveHomeItemToOutbox(alreadyUploadedURLs);
-      } else {
-         showSnackbar('home', true, 'error', _('Server not reachable'), null, false);
-      }
+      showSnackbar('home', true, 'error', _('Server not reachable'), null, false);
       document.getElementById('dialog-create-new-home-item').style.overflow = "auto";
       btnReset(btn);
    }
@@ -942,11 +1002,23 @@ function uploadFileXHR(file, onProgress) {
       });
    }
 
+   async function sendChunkWithRetry(index, maxRetries = 3) {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+         try {
+            const result = await sendChunk(index);
+            if (result.status === 'success' || attempt === maxRetries) return result;
+            await new Promise(r => setTimeout(r, 2000));
+         } catch (error) {
+            if (attempt === maxRetries) throw error;
+            await new Promise(r => setTimeout(r, 2000));
+         }
+      }
+   }
+
    return (async () => {
       for (let i = 0; i < totalChunks; i++) {
-         const result = await sendChunk(i);
+         const result = await sendChunkWithRetry(i);
          if (result.status !== 'success') return result;
-         // Last chunk returns the final filename
          if (i === totalChunks - 1) return result;
       }
    })();
@@ -966,6 +1038,7 @@ function formatTime(seconds) {
 
 // Funktion zum Hochladen der ausgewählten Bilder
 async function uploadImages(mode) {
+   failedUploadFiles = []; // Reset fehlgeschlagene Dateien
    let uploadedImages = []; // Liste zum Speichern der hochgeladenen Bilder
    let existingImages = []; // Liste zum Speichern der bereits vorhandenen Bilder
    let fileInputId, hiddenInputId; // Variablen zum Speichern der IDs der File-Inputs
@@ -1045,10 +1118,12 @@ async function uploadImages(mode) {
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
                errorOnUpload = true;
+               failedUploadFiles.push(file);
             }
          } catch (error) {
             showSnackbar('home', true, 'error', error.message || error, null, false);
             errorOnUpload = true;
+            failedUploadFiles.push(file);
          }
 
       } else if (mode === "edit") {
@@ -1088,10 +1163,12 @@ async function uploadImages(mode) {
                } else {
                   showSnackbar('home', true, 'error', result.message, result, true);
                   errorOnUpload = true;
+                  failedUploadFiles.push(file);
                }
             } catch (error) {
                showSnackbar('home', true, 'error', error.message || error, null, false);
                errorOnUpload = true;
+               failedUploadFiles.push(file);
             }
          }
       }

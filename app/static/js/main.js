@@ -53,6 +53,8 @@ function callUi(id) {
          document.getElementById("div-overlay-change-password").classList.remove("active");
       } else if (id == "#dialog-rename-passkey") {
          document.getElementById("div-overlay-rename-passkey").classList.remove("active");
+      } else if (id == "#dialog-failed-uploads") {
+         document.getElementById("div-overlay-failed-uploads").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -95,6 +97,8 @@ function callUi(id) {
          document.getElementById("div-overlay-change-password").classList.add("active");
       } else if (id == "#dialog-rename-passkey") {
          document.getElementById("div-overlay-rename-passkey").classList.add("active");
+      } else if (id == "#dialog-failed-uploads") {
+         document.getElementById("div-overlay-failed-uploads").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }

@@ -4038,5 +4038,21 @@
         "languageCode": "de",
         "entityType": "ui",
         "translatedText": "Erinnerungen ansehen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Upload failed",
+        "helpText": "",
+        "languageCode": "de",
+        "entityType": "ui",
+        "translatedText": "Upload fehlgeschlagen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "file(s) could not be uploaded:",
+        "helpText": "",
+        "languageCode": "de",
+        "entityType": "ui",
+        "translatedText": "Datei(en) konnten nicht hochgeladen werden:"
     }
 ]

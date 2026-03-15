@@ -4038,5 +4038,21 @@
         "languageCode": "en",
         "entityType": "ui",
         "translatedText": "View Reminders"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Upload failed",
+        "helpText": "",
+        "languageCode": "en",
+        "entityType": "ui",
+        "translatedText": "Upload failed"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "file(s) could not be uploaded:",
+        "helpText": "",
+        "languageCode": "en",
+        "entityType": "ui",
+        "translatedText": "file(s) could not be uploaded:"
     }
 ]

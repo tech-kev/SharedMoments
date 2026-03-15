@@ -298,6 +298,20 @@
    </nav>
    </dialog>
 
+   <div class="overlay" id="div-overlay-failed-uploads"></div>
+
+   <dialog id="dialog-failed-uploads" style="max-width:500px;">
+      <h5>{{ _('Upload failed') }}</h5>
+      <p>
+         <span id="span-failed-uploads-count"></span> {{ _('file(s) could not be uploaded:') }}
+      </p>
+      <div id="div-failed-uploads-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;max-height:300px;overflow-y:auto;margin:16px 0;">
+      </div>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-failed-uploads')">{{ _('OK') }}</button>
+      </nav>
+   </dialog>
+
    <!-- Verstecktes Eingabefeld zur Speicherung der URLs TODO: Umbauen auf variable -->
    <input type="hidden" id="input-uploaded-urls">
 
