@@ -6,6 +6,7 @@ from sqlalchemy.orm import joinedload
 from datetime import date
 from sqlalchemy import desc, asc, and_, or_
 from app.logger import log
+from app.version import __version__
 
 
 # Initial Database Setup
@@ -113,7 +114,7 @@ def init_db():
         # Settings
         settings = [
             Setting(name='sm_edition', value='couples', icon='stacks', edition='all', category='about', type='variant'),
-            Setting(name='sm_version', value='2.0alpha', icon='update', edition='all', category='about', type='text'),
+            Setting(name='sm_version', value=__version__, icon='update', edition='all', category='about', type='text'),
             Setting(name='setup_complete', value='False', icon='', edition='all', category='', type='text'),
             Setting(name='title', value='', icon='title', edition='couples', category='general', type='text'),
             Setting(name='family_name', value='', icon='diversity_3', edition='family', category='general', type='text'),
@@ -137,6 +138,7 @@ def init_db():
         for i in range(1, 6):
             session.add(RelationshipStatus(id=i))
 
+
         # Default user setting
         session.add(UserSetting(userID=system_user.id, name='language', value='en'))
 
@@ -158,6 +160,19 @@ def init_db():
 
         session.commit()
         log('info', 'Database initialized successfully')
+    finally:
+        session.close()
+
+
+def sync_version_to_db():
+    """Update the sm_version setting in the DB to match app/version.py."""
+    session = SessionLocal()
+    try:
+        setting = session.query(Setting).filter_by(name='sm_version').first()
+        if setting and setting.value != __version__:
+            setting.value = __version__
+            session.commit()
+            log('info', f'Updated sm_version in DB to {__version__}')
     finally:
         session.close()
 

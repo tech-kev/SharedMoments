@@ -3,6 +3,8 @@ import json
 import os
 from datetime import datetime
 
+from app.version import __version__
+
 STATUS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'migration_data')
 STATUS_FILE = os.path.join(STATUS_DIR, 'migration_status.json')
 
@@ -43,7 +45,7 @@ def save_status(status):
 def create_status(dry_run=False):
     """Create a fresh migration status with all steps pending."""
     status = {
-        'version': '2.0',
+        'version': __version__,
         'started_at': datetime.now().isoformat(),
         'completed_at': None,
         'backup_path': None,

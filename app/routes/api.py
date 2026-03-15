@@ -21,6 +21,7 @@ import os, json, subprocess, shutil, threading, uuid, zipfile, tempfile, time
 from app.models import Passkey, SessionLocal, User, UserRole, Setting, UserSetting, Role, Item, ListType, Reminder, ReminderMute
 from app.utils import export_data, find_unmatched_translations, generate_lqip, generate_admin_filename
 from app.translation import _, load_translation_in_cache, set_locale, migrateTranslations
+from app.version import __version__, VERSION_MAJOR
 from app.routes.auth import jwt_required, login_jwt
 from app.permissions import require_permission, require_list_permission
 
@@ -2172,9 +2173,9 @@ def _run_import(import_id, zip_path, user_id, app_ref, is_setup=False):
                 return
 
             export_version = data.get('version', '')
-            if export_version and not export_version.startswith('2.'):
+            if export_version and not export_version.startswith(f'{VERSION_MAJOR}.'):
                 job['status'] = 'error'
-                job['error'] = f'Incompatible export version: {export_version}. Only v2.x exports are supported.'
+                job['error'] = f'Incompatible export version: {export_version}. Only v{VERSION_MAJOR}.x exports are supported.'
                 return
 
             # Phase 2: Import data (30-60%)
@@ -2514,7 +2515,7 @@ def _run_export(export_id, user_id, app_ref):
             user_id_map = {u.id: u for u in users}
 
             export_data_json = {
-                'version': '2.0',
+                'version': __version__,
                 'exportedAt': datetime.utcnow().isoformat(),
                 'settings': [],
                 'listTypes': [],
