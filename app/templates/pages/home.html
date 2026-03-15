@@ -207,6 +207,7 @@
 
       <!-- Dialog zum Teilen von Einträgen -->
       {% if has_permission('Share Items') %}
+      <div class="overlay" id="div-overlay-share-item"></div>
       <dialog id="dialog-share-item">
          <h5>{{ _('Share item') }}</h5>
          <input type="hidden" id="input-share-item-id">
@@ -269,7 +270,7 @@
          </button>
          {% endif %}
          {% if has_permission('Share Items') %}
-         <button class="circle transparent" onclick="shareSelectedItems()">
+         <button class="circle transparent" id="btn-share-home-item" onclick="shareSelectedItems()">
          <i>share</i>
          </button>
          {% endif %}

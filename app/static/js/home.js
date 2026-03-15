@@ -1245,8 +1245,10 @@ function handleLongPress(id) {
       article.style.border = "2px solid #007bff"; // Setze den Rahmen des Artikels auf blau //TODO: Farbe in CSS-Klasse auslagern, bzw. von BeerCSS nehmen
 
       const editFab = document.getElementById("fab-edit-home-item");
-      if (selectedArticles.length > 1 && editFab) { // Wenn mehr als ein Artikel ausgewählt ist
-          editFab.disabled = true; // Deaktiviere den Edit-FAB
+      const shareFab = document.getElementById("btn-share-home-item");
+      if (selectedArticles.length > 1) {
+          if (editFab) editFab.disabled = true;
+          if (shareFab) shareFab.disabled = true;
       }
    } else {
       // Artikel ist bereits ausgewählt, entferne ihn aus der Auswahl
@@ -1258,7 +1260,9 @@ function handleLongPress(id) {
       selectItemsStopped(); // Beende die Auswahl
    } else if (selectedArticles.length === 1) { // Wenn ein Artikel ausgewählt ist
       const editFab = document.getElementById("fab-edit-home-item");
-      if (editFab) editFab.disabled = false; // Aktiviere den Edit-FAB
+      const shareFab = document.getElementById("btn-share-home-item");
+      if (editFab) editFab.disabled = false;
+      if (shareFab) shareFab.disabled = false;
    }
 }
 
@@ -1453,13 +1457,11 @@ function shareSelectedItems() {
    document.getElementById('div-share-result').style.display = 'none';
    document.getElementById('btn-create-share').style.display = '';
 
-   document.getElementById('dialog-share-item').classList.add('active');
-   document.body.style.overflow = 'hidden';
+   callUi('#dialog-share-item');
 }
 
 function closeShareDialog() {
-   document.getElementById('dialog-share-item').classList.remove('active');
-   document.body.style.overflow = 'auto';
+   callUi('#dialog-share-item');
 }
 
 async function createShareLink() {

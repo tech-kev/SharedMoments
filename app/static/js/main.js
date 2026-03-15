@@ -55,6 +55,8 @@ function callUi(id) {
          document.getElementById("div-overlay-rename-passkey").classList.remove("active");
       } else if (id == "#dialog-failed-uploads") {
          document.getElementById("div-overlay-failed-uploads").classList.remove("active");
+      } else if (id == "#dialog-share-item") {
+         document.getElementById("div-overlay-share-item").classList.remove("active");
       }
       document.body.style.overflow = "auto"; // Scrollen wieder erlauben
    } else {
@@ -99,6 +101,8 @@ function callUi(id) {
          document.getElementById("div-overlay-rename-passkey").classList.add("active");
       } else if (id == "#dialog-failed-uploads") {
          document.getElementById("div-overlay-failed-uploads").classList.add("active");
+      } else if (id == "#dialog-share-item") {
+         document.getElementById("div-overlay-share-item").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
    }
