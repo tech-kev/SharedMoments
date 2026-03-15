@@ -274,19 +274,23 @@ function deleteListTypeFromDialog() {
         });
 }
 
-// --- Drag and Drop for reordering ---
+// --- Drag and Drop for reordering (SortableJS) ---
+
+let sortableInstance = null;
 
 function changeNavOrder(mode) {
     if (mode == 'edit') {
         const checkElements = document.getElementsByClassName('check');
         for (let i = 0; i < checkElements.length; i++) {
-            const checkElement = checkElements[i];
-            checkElement.textContent = 'drag_handle';
-            checkElement.removeAttribute('onclick');
-
-            const parentDiv = checkElement.closest('[id^="div-nav-"]');
-            if (parentDiv) parentDiv.setAttribute('draggable', 'true');
+            checkElements[i].textContent = 'drag_handle';
+            checkElements[i].removeAttribute('onclick');
         }
+
+        sortableInstance = new Sortable(
+            document.getElementById('div-nav-sortable'),
+            { animation: 150, handle: '.check', ghostClass: 'sortable-ghost' }
+        );
+
         document.getElementById('a-change-nav-order').textContent = _('Save order');
         document.getElementById('a-change-nav-order').setAttribute('onclick', "changeNavOrder('save')");
 
@@ -295,7 +299,13 @@ function changeNavOrder(mode) {
             showSnackbar('navbar', true, 'error', _('You are offline'), null, false);
             return;
         }
-        const listTypes = document.querySelectorAll('[id^="div-nav"]');
+
+        if (sortableInstance) {
+            sortableInstance.destroy();
+            sortableInstance = null;
+        }
+
+        const listTypes = document.querySelectorAll('#div-nav-sortable > [id^="div-nav-"]');
 
         for (let i = 0; i < listTypes.length; i++) {
             const id = listTypes[i].id.split('-')[2];
@@ -329,42 +339,10 @@ function changeNavOrder(mode) {
 
         const checkElements = document.getElementsByClassName('check');
         for (let i = 0; i < checkElements.length; i++) {
-            const checkElement = checkElements[i];
-            checkElement.textContent = 'edit';
-            checkElement.setAttribute('onclick', "openEditListTypeFromElement(this.closest('a'))");
-
-            const parentDiv = checkElement.closest('[id^="div-nav-"]');
-            if (parentDiv) parentDiv.setAttribute('draggable', 'false');
+            checkElements[i].textContent = 'edit';
+            checkElements[i].setAttribute('onclick', "openEditListTypeFromElement(this.closest('a'))");
         }
         document.getElementById('a-change-nav-order').textContent = _('Change order');
         document.getElementById('a-change-nav-order').setAttribute('onclick', "changeNavOrder('edit')");
-    }
-}
-
-let draggedElement = null;
-
-function dragStart(event) {
-    draggedElement = event.currentTarget;
-    event.dataTransfer.effectAllowed = 'move';
-}
-
-function dragOver(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-}
-
-function drop(event) {
-    event.preventDefault();
-
-    const target = event.currentTarget;
-
-    if (draggedElement !== target) {
-        const parent = draggedElement.parentNode;
-        if (target.nextSibling === draggedElement) {
-            parent.insertBefore(draggedElement, target);
-        } else {
-            parent.insertBefore(target, draggedElement);
-            parent.insertBefore(draggedElement, target.nextSibling);
-        }
     }
 }

@@ -87,9 +87,10 @@
     <div class="right-align">
        <a id="a-change-nav-order" onclick="changeNavOrder('edit')">{{ _('Change order') }}</a>
     </div>
+    <div id="div-nav-sortable">
     {% for list_type in list_types %}
     {% if list_type.navbar == 1 %}
-    <div class="s12" id="div-nav-{{ list_type.id }}" draggable="false" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
+    <div class="s12" id="div-nav-{{ list_type.id }}">
        <a class="row padding surface-container" data-id="{{ list_type.id }}" data-title="{{ list_type.title }}" data-maintitle="{{ list_type.mainTitle }}" data-contenturl="{{ list_type.contentURL }}" data-icon="{{ list_type.icon }}" data-edition="{{ list_type.edition }}">
           <i>{{ list_type.icon }}</i>
           <div class="max">
@@ -97,10 +98,11 @@
           </div>
           <i class="check" onclick="openEditListTypeFromElement(this.closest('a'))">edit</i>
        </a>
+       <hr>
     </div>
-    <hr>
     {% endif %}
     {% endfor %}
+    </div>
  </dialog>
 
  <!-- Overlay for Manage List Type Dialog -->
