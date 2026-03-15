@@ -3237,7 +3237,7 @@
         "helpText": "",
         "languageCode": "en",
         "entityType": "setting",
-        "translatedText": "share_tracking"
+        "translatedText": "Tracking shares"
     },
     {
         "entityID": 0,
@@ -3245,7 +3245,7 @@
         "helpText": "",
         "languageCode": "en",
         "entityType": "setting",
-        "translatedText": "banner_image"
+        "translatedText": "Banner Image"
     },
     {
         "entityID": 0,
@@ -3253,7 +3253,7 @@
         "helpText": "",
         "languageCode": "en",
         "entityType": "setting",
-        "translatedText": "banner_song"
+        "translatedText": "Banner Song"
     },
     {
         "entityID": 0,
