@@ -77,8 +77,10 @@ def init_db():
         adult_role = roles['Adult']
         child_role = roles['Child']
 
-        # Admin gets all permissions
+        # Admin gets all permissions except Manage Translations
         for perm in permissions.values():
+            if perm.permissionName == 'Manage Translations':
+                continue
             session.add(RolePermission(roleID=admin_role.id, permissionID=perm.id))
 
         # Adult permissions
