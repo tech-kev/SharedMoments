@@ -1,0 +1,9 @@
+.venv
+__pycache__
+*.pyc
+.env
+.git
+.claude
+app/database/*.db
+app/uploads/
+app/export/
