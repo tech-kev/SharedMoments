@@ -32,5 +32,27 @@
       "purpose": "maskable"
     }
   ],
-  "_todo_screenshots": "TODO: Add real screenshots when the app UI is finalized"
+  "screenshots": [
+    {
+      "src": "/static/pwa/screenshots/home-feed.jpg",
+      "sizes": "1080x2404",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Home Feed"
+    },
+    {
+      "src": "/static/pwa/screenshots/home-feed-02.jpg",
+      "sizes": "1080x2404",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Home Feed"
+    },
+    {
+      "src": "/static/pwa/screenshots/gallery.jpg",
+      "sizes": "1080x2404",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Gallery"
+    }
+  ]
 }
