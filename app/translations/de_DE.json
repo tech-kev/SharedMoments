@@ -2169,6 +2169,14 @@
     },
     {
         "entityID": 0,
+        "fieldName": "Please fill in all date fields.",
+        "helpText": "",
+        "languageCode": "de",
+        "entityType": "static",
+        "translatedText": "Bitte fülle alle Datumsfelder aus."
+    },
+    {
+        "entityID": 0,
         "fieldName": "Do you want to complete the setup?",
         "helpText": "",
         "languageCode": "de",

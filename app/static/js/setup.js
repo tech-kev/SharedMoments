@@ -413,6 +413,17 @@ function saveSettings() {
     var familyFoundingDate = document.getElementById('family-founding-date').value;
     var friendGroupFoundingDate = document.getElementById('friend-group-founding-date').value;
 
+    // Validate visible date fields
+    var dateFields = ['anniversary', 'engagement', 'wedding-anniversary', 'family-founding-date', 'friend-group-founding-date'];
+    for (var i = 0; i < dateFields.length; i++) {
+        var el = document.getElementById(dateFields[i]);
+        if (el && !el.closest('.hidden') && !el.value) {
+            el.focus();
+            showSnackbar('setup', true, 'error', _('Please fill in all date fields.'), null, false);
+            return;
+        }
+    }
+
     settings = [{
         title: title,
         familyName: familyName,

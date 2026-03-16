@@ -136,7 +136,6 @@
                                     <span class="helper" id="birthdate-helper"></span>
                                 </div>
                             </div>
-                            <div id="password-input"></div>
                             <div class="s12">
                                 <div class="field label border">
                                     <input type="password" id="add-user-password" onblur="validateUserInputs('password')">
@@ -146,7 +145,7 @@
                             </div>
                             <div class="s12">
                                 <div class="field label border">
-                                    <input type="password" id="add-user-password-confirm" oninput="validateUserInputs('password-confirm')">
+                                    <input type="password" id="add-user-password-confirm" onblur="validateUserInputs('password-confirm')">
                                     <label>{{ _('Repeat password') }}</label>
                                     <span class="helper" id="password-confirm-helper"></span>
                                 </div>
