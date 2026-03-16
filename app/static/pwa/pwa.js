@@ -373,7 +373,7 @@ async function renderOutboxGhostCards() {
   if (homeContainer) {
     homeContainer.querySelectorAll('.outbox-ghost-card').forEach((el) => el.remove());
 
-    const currentListType = document.getElementById('input-list-type')?.value;
+    const currentListType = window.listType;
     const homeItems = items.filter((i) => i.contentType !== 'list' && String(i.listType) === String(currentListType));
 
     for (const item of homeItems) {

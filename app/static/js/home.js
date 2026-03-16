@@ -224,7 +224,7 @@ async function saveHomeItemToOutbox(uploadedContentURL) {
    try {
       const title = document.getElementById("div-create-home-item-title").value;
       const content = document.getElementById("textarea-create-home-item-content").value;
-      const listType = document.getElementById("input-list-type").value;
+      const listType = window.listType;
       const dateCreated = document.getElementById("div-create-home-item-date-created").value;
       const allEditionsChecked = document.getElementById("checkbox-create-home-item-all-editions").checked;
       const edition = allEditionsChecked ? 'all' : (window.currentEdition || 'all');
@@ -277,7 +277,7 @@ async function saveHomeItemToOutbox(uploadedContentURL) {
       callUi("#dialog-create-new-home-item");
       document.getElementById("div-create-home-item-title").value = "";
       document.getElementById("textarea-create-home-item-content").value = "";
-      document.getElementById("input-uploaded-urls").value = "";
+      window.uploadedUrls = "";
       document.getElementById("div-create-home-item-date-created").value = "";
       document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
       document.getElementById("file-input-create-home-item").value = "";
@@ -380,7 +380,7 @@ async function saveNewHomeItem(btn) {
       document.getElementById('div-overlay-new-home-item').classList.remove('active');
       document.getElementById('progress-new-home-item').style.display = "none";
 
-      var uploadedURLs = document.getElementById("input-uploaded-urls").value;
+      var uploadedURLs = window.uploadedUrls;
 
       if (errorOnUpload) {
          if (!uploadedURLs) {
@@ -395,8 +395,8 @@ async function saveNewHomeItem(btn) {
 
    }
 
-   var content_urls = document.getElementById("input-uploaded-urls").value.split(";"); // Hole die Urls aus dem Hidden-Input
-//   var firstFileExtension = document.getElementById("input-uploaded-urls").value.split(";")[0].split(".").pop(); // Hole die Dateiendung des ersten Bildes
+   var content_urls = window.uploadedUrls.split(";"); // Hole die Urls aus dem Hidden-Input
+//   var firstFileExtension = window.uploadedUrls.split(";")[0].split(".").pop(); // Hole die Dateiendung des ersten Bildes
 
    var contentTypeFirstFile;
    contentTypeFirstFile = getFileContentType(null, content_urls[0]); // Ermittle den ContentType
@@ -420,8 +420,8 @@ async function saveNewHomeItem(btn) {
    formData.append("title", document.getElementById("div-create-home-item-title").value);
    formData.append("content", document.getElementById("textarea-create-home-item-content").value);
    formData.append("contentType", contentType);
-   formData.append("listType", document.getElementById("input-list-type").value);
-   formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+   formData.append("listType", window.listType);
+   formData.append("contentURL", window.uploadedUrls);
    formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
    formData.append("edition", edition);
 
@@ -446,7 +446,7 @@ async function saveNewHomeItem(btn) {
                addEventListeners();
                document.getElementById("div-create-home-item-title").value = "";
                document.getElementById("textarea-create-home-item-content").value = "";
-               document.getElementById("input-uploaded-urls").value = "";
+               window.uploadedUrls = "";
                document.getElementById("div-create-home-item-date-created").value = "";
                document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
                document.getElementById("file-input-create-home-item").value = "";
@@ -471,8 +471,8 @@ async function saveNewHomeItem(btn) {
             formData.append("title", document.getElementById("div-create-home-item-title").value);
             formData.append("content", document.getElementById("textarea-create-home-item-content").value);
             formData.append("contentType", contentType);
-            formData.append("listType", document.getElementById("input-list-type").value);
-            formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+            formData.append("listType", window.listType);
+            formData.append("contentURL", window.uploadedUrls);
             formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
             formData.append("edition", edition);
             continue;
@@ -488,8 +488,8 @@ async function saveNewHomeItem(btn) {
             formData.append("title", document.getElementById("div-create-home-item-title").value);
             formData.append("content", document.getElementById("textarea-create-home-item-content").value);
             formData.append("contentType", contentType);
-            formData.append("listType", document.getElementById("input-list-type").value);
-            formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+            formData.append("listType", window.listType);
+            formData.append("contentURL", window.uploadedUrls);
             formData.append("dateCreated", document.getElementById("div-create-home-item-date-created").value);
             formData.append("edition", edition);
             continue;
@@ -530,7 +530,7 @@ async function saveEditedHomeItem(btn) {
       return;
    }
 
-   var content_urls = document.getElementById("input-uploaded-urls").value.split(";");
+   var content_urls = window.uploadedUrls.split(";");
    //var firstFileExtension = content_urls[0].split(".").pop();
 
    var contentTypeFirstFile;
@@ -556,8 +556,8 @@ async function saveEditedHomeItem(btn) {
    formData.append("content", document.getElementById("edit-home-item-content").value);
    formData.append("dateCreated", document.getElementById("edit-home-item-date-created").value);
    formData.append("contentType", contentType);
-   formData.append("listType", document.getElementById("input-list-type").value);
-   formData.append("contentURL", document.getElementById("input-uploaded-urls").value);
+   formData.append("listType", window.listType);
+   formData.append("contentURL", window.uploadedUrls);
    formData.append("edition", edition);
 
    selectedArticles = selectedArticles.map((id) => id.replace("article_", "")); // Entferne "article_" aus der ID, um diese im nächsten Schritt zu verwenden
@@ -622,7 +622,7 @@ async function deleteHomeItems(btn) {
 
    var formData = new FormData();
    formData.append("ids", selectedArticles.map((id) => id.replace("article_", "")));
-   formData.append("listType", document.getElementById("input-list-type").value);
+   formData.append("listType", window.listType);
 
    var originalDeleteContent = document.getElementById("div-render-home-items").innerHTML;
    showSkeletonCards('div-render-home-items');
@@ -1180,7 +1180,7 @@ async function uploadImages(mode) {
    console.log(`Finale Bild-URLs: ${finalImageURLs}`);
 
    // Speichern der URLs in den Hidden-Input
-   document.getElementById("input-uploaded-urls").value = finalImageURLs;
+   window.uploadedUrls = finalImageURLs;
 
    return errorOnUpload;
 }

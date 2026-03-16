@@ -313,21 +313,18 @@
       </nav>
    </dialog>
 
-   <!-- Verstecktes Eingabefeld zur Speicherung der URLs TODO: Umbauen auf variable -->
-   <input type="hidden" id="input-uploaded-urls">
-
    <script>
       window.currentEdition = '{{ sm_edition }}';
       window.canSelectItems = {{ 'true' if has_list_permission('Update', list_type_title) or has_list_permission('Delete', list_type_title) else 'false' }};
       window.countdownListTypeId = '{{ countdown_list_type_id }}';
+      window.listType = '{{ list_type }}';
+      window.uploadedUrls = '';
    </script>
    <script src="{{ static_versioned('js/main.js') }}"></script>
    <script src="{{ static_versioned('js/home.js') }}"></script>
    <script src="{{ static_versioned('js/timeline.js') }}"></script>
    <script src="{{ static_versioned('js/countdown.js') }}"></script>
 
-   <!-- Verstecktes Eingabefeld zur Speicherung des listen Types TODO: Umbauen auf variable -->
-   <input type="hidden" id="input-list-type" value="{{ list_type }}">
 
    </body>
 </html>

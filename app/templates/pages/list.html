@@ -77,13 +77,9 @@
     <script src="{{ static_versioned('js/list.js') }}"></script>
 
 <script>
-    let listType;
-    listType = '{{ list_type }}';
+    window.listType = '{{ list_type }}';
     window.currentEdition = '{{ sm_edition }}';
 </script>
-
-<!-- Verstecktes Eingabefeld zur Speicherung des listen Types -->
-<input type="hidden" id="input-list-type" value="{{ list_type }}">
 
 </body>
 

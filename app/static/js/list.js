@@ -9,7 +9,7 @@ function updateListItem(id, value) {
 
     var formData = new FormData();
     formData.append("content", value);
-    formData.append("listType", document.getElementById("input-list-type").value);
+    formData.append("listType", window.listType);
 
     fetch("/api/v2/item/" + id, {
         method: "PUT",
