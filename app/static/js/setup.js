@@ -155,7 +155,7 @@ function callUi(id) {
             // Reset form fields
             ['firstname', 'lastname', 'email', 'birthdate', 'password', 'password-confirm'].forEach(f => document.getElementById('add-user-' + f).value = '');
             document.getElementById('add-user-profile-picture').value = '';
-            document.getElementById('add-user-render-profile-picture').src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+            document.getElementById('add-user-render-profile-picture').src = '/api/v2/media/static/profile-placeholder.jpg';
             // First user defaults to Admin, subsequent users to Adult
             document.getElementById("add-user-role").value = users.length === 0 ? 'Admin' : 'Adult';
             // Hide Child role for Couples edition
@@ -277,7 +277,7 @@ async function saveUser() {
     var profilePictureBase64 = await renderFile(profilePicture, 'return');
 
     if (!profilePicture) {
-        profilePicture = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+        profilePicture = 'profile-placeholder.jpg';
     }
 
     var userDiv = document.getElementById('users');
@@ -288,7 +288,7 @@ async function saveUser() {
         removeUser(userCount + 1);
     };
     var img = document.createElement('img');
-    img.src = profilePictureBase64;
+    img.src = profilePictureBase64 || '/api/v2/media/static/profile-placeholder.jpg';
     var span = document.createElement('span');
     span.textContent = firstname;
     var i = document.createElement('i');

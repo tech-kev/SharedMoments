@@ -1,6 +1,6 @@
 {% for user in users %}
 <article class="surface-container row padding no-margin" style="margin-bottom: 8px !important; border-radius: 12px;">
-    <img class="circle medium" src="/api/v2/media/static/{{ user.profilePicture or 'profile-men.jpg' }}" alt="{{ user.firstName }}">
+    <img class="circle medium" src="/api/v2/media/static/{{ user.profilePicture or 'profile-placeholder.jpg' }}" alt="{{ user.firstName }}">
     <div class="max" style="margin-left: 12px;">
         <h6 class="small no-margin">{{ user.firstName }} {{ user.lastName }}</h6>
         <p class="no-margin" style="font-size: 0.85em; opacity: 0.7;">{{ user.email }}</p>

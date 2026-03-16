@@ -243,7 +243,7 @@ def create_user_route():
             return jsonify({'status': 'error', 'message': _('E-Mail already in use. Please choose a different one.')}), 400
 
         # Handle profile picture upload
-        profilePicture = 'default-profile.png'
+        profilePicture = 'profile-placeholder.jpg'
         if 'profilePicture' in request.files:
             file = request.files['profilePicture']
             if file and file.filename:

@@ -179,7 +179,7 @@ def setup_complete():
             user_id = new_user.id
 
             # Rename and move profile picture from static/images/ to uploads/profiles/
-            if profilePicture and profilePicture != 'default-profile.png':
+            if profilePicture and profilePicture != 'profile-placeholder.jpg':
                 basedir = os.path.abspath(os.path.dirname(__file__))
                 static_folder = os.path.join(basedir, '..', 'static', 'images')
                 profiles_folder = os.path.join(basedir, '..', 'uploads', 'profiles')
@@ -2252,7 +2252,7 @@ def _run_import(import_id, zip_path, user_id, app_ref, is_setup=False):
                                 lastName=u_data.get('lastName', ''),
                                 email=email,
                                 birthDate=birth_date,
-                                profilePicture=u_data.get('profilePicture', 'default-profile.png'),
+                                profilePicture=u_data.get('profilePicture', 'profile-placeholder.jpg'),
                                 passwordHash=str(u_data.get('passwordHash', '')),
                                 passwordSalt=u_data.get('passwordSalt', '')
                             )
@@ -2629,7 +2629,7 @@ def _run_export(export_id, user_id, app_ref):
                 })
 
             for user in users:
-                if user.profilePicture and user.profilePicture != 'default-profile.png':
+                if user.profilePicture and user.profilePicture != 'profile-placeholder.jpg':
                     src = os.path.join(basedir, '..', 'uploads', 'profiles', user.profilePicture)
                     media_files.append((src, f'media/profiles/{user.profilePicture}'))
 

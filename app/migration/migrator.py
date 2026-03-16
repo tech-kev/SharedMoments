@@ -827,7 +827,7 @@ def _step_rename_admin_images(status, dry_run, prefix):
         ).all()
         for user in users:
             old_name = user.profilePicture
-            if not old_name or old_name == 'default-profile.png' or old_name.startswith('Profilbild_'):
+            if not old_name or old_name == 'profile-placeholder.jpg' or old_name.startswith('Profilbild_'):
                 continue
 
             old_path = _find_file(old_name, profiles_folder, static_images_folder)

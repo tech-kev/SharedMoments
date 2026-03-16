@@ -335,7 +335,7 @@ function showFailedUploadsDialog() {
          video.addEventListener('error', () => {
             const img = document.createElement('img');
             img.className = 'preview-image';
-            img.src = '/api/v2/media/static/filenotsupported.png';
+            img.src = '/api/v2/media/static/filenotsupported.jpg';
             container.appendChild(img);
          });
          video.load();
@@ -906,7 +906,7 @@ function createPreview(src, index, containerDiv, mode, filename) {
          video.addEventListener('error', () => {
             const img = document.createElement("img");
             img.className = "preview-image";
-            img.src = '/api/v2/media/static/filenotsupported.png';
+            img.src = '/api/v2/media/static/filenotsupported.jpg';
             img.dataset.index = index; // Speichere den Index des Bildes
             img.addEventListener("click", selectImage); // Füge einen Event-Listener hinzu, um das Bild auszuwählen
 
