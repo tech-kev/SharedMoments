@@ -31,9 +31,6 @@ app/uploads/
 # User-uploaded images (keep only app assets)
 app/static/images/20*
 
-# Translation exports
-app/translations/
-
 # Test artifacts
 .pytest_cache/
 
