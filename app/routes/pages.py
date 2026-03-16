@@ -421,14 +421,7 @@ def _translate_reminder_description(reminder):
         return reminder.description
 
     if reminder.auto_source and 'milestone_' in reminder.auto_source:
-        days = reminder.milestone_days
-        if days:
-            if reminder.auto_source.startswith('family_milestone_'):
-                return _('{n} days of shared memories!').format(n=days)
-            elif reminder.auto_source.startswith('friends_milestone_'):
-                return _('{n} days of friendship!').format(n=days)
-            else:
-                return _('{n} days together!').format(n=days)
+        return ''
 
     if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
         item_title = reminder.title

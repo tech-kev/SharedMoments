@@ -1561,14 +1561,6 @@
     },
     {
         "entityID": 0,
-        "fieldName": "{n} days together!",
-        "helpText": "",
-        "languageCode": "en",
-        "entityType": "ui",
-        "translatedText": "We have been together for {n} days!"
-    },
-    {
-        "entityID": 0,
         "fieldName": "Countdown: {title}",
         "helpText": "",
         "languageCode": "en",
@@ -3702,22 +3694,6 @@
         "languageCode": "en",
         "entityType": "static",
         "translatedText": "Invalid or corrupted ZIP file"
-    },
-    {
-        "entityID": 0,
-        "fieldName": "{n} days of shared memories!",
-        "helpText": "",
-        "languageCode": "en",
-        "entityType": "static",
-        "translatedText": "{n} days of shared memories!"
-    },
-    {
-        "entityID": 0,
-        "fieldName": "{n} days of friendship!",
-        "helpText": "",
-        "languageCode": "en",
-        "entityType": "static",
-        "translatedText": "{n} days of friendship!"
     },
     {
         "entityID": 0,

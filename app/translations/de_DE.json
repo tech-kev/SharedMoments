@@ -1549,7 +1549,7 @@
         "helpText": "",
         "languageCode": "de",
         "entityType": "ui",
-        "translatedText": "{n}-Jahres-Meilenstein"
+        "translatedText": "Meilenstein: {n} Jahr(e) zusammen!"
     },
     {
         "entityID": 0,
@@ -1557,15 +1557,7 @@
         "helpText": "",
         "languageCode": "de",
         "entityType": "ui",
-        "translatedText": "{n}-Tage-Meilenstein"
-    },
-    {
-        "entityID": 0,
-        "fieldName": "{n} days together!",
-        "helpText": "",
-        "languageCode": "de",
-        "entityType": "ui",
-        "translatedText": "{n} Tage zusammen!"
+        "translatedText": "Meilenstein: {n} Tag(e) zusammen!"
     },
     {
         "entityID": 0,
@@ -1581,7 +1573,7 @@
         "helpText": "",
         "languageCode": "de",
         "entityType": "ui",
-        "translatedText": "Countdown \"{title}\" erreicht!"
+        "translatedText": "Countdown \"{title}\" abgelaufen!"
     },
     {
         "entityID": 0,
@@ -3702,22 +3694,6 @@
         "languageCode": "de",
         "entityType": "static",
         "translatedText": "Ungültige oder beschädigte ZIP-Datei"
-    },
-    {
-        "entityID": 0,
-        "fieldName": "{n} days of shared memories!",
-        "helpText": "",
-        "languageCode": "de",
-        "entityType": "static",
-        "translatedText": "{n} Tage gemeinsamer Erinnerungen!"
-    },
-    {
-        "entityID": 0,
-        "fieldName": "{n} days of friendship!",
-        "helpText": "",
-        "languageCode": "de",
-        "entityType": "static",
-        "translatedText": "{n} Tage Freundschaft!"
     },
     {
         "entityID": 0,

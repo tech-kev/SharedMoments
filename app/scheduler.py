@@ -246,16 +246,8 @@ def _translate_reminder_description(reminder, lang):
     if not reminder.is_auto or not reminder.description:
         return reminder.description
 
-    # Milestone description (edition-dependent)
     if reminder.auto_source and 'milestone_' in reminder.auto_source:
-        days = reminder.milestone_days
-        if days:
-            if reminder.auto_source.startswith('family_milestone_'):
-                return _t('{n} days of shared memories!', lang).format(n=days)
-            elif reminder.auto_source.startswith('friends_milestone_'):
-                return _t('{n} days of friendship!', lang).format(n=days)
-            else:
-                return _t('{n} days together!', lang).format(n=days)
+        return ''
 
     # Countdown description
     if reminder.auto_source and reminder.auto_source.startswith('countdown_'):
@@ -310,7 +302,7 @@ def sync_auto_reminders():
             try:
                 d = datetime.strptime(setting.value, '%Y-%m-%d').date()
                 _ensure_auto_annual_reminder('family_founding_date', 'Family Day', d.month, d.day)
-                _ensure_milestone_reminders(d, prefix='family_milestone_', desc_template='{n} days of shared memories!')
+                _ensure_milestone_reminders(d, prefix='family_milestone_')
             except (ValueError, TypeError):
                 delete_auto_reminders_by_source('family_founding_date')
                 _cleanup_milestones_by_prefix('family_milestone_')
@@ -328,7 +320,7 @@ def sync_auto_reminders():
             try:
                 d = datetime.strptime(setting.value, '%Y-%m-%d').date()
                 _ensure_auto_annual_reminder('friend_group_founding_date', 'Friendship Day', d.month, d.day)
-                _ensure_milestone_reminders(d, prefix='friends_milestone_', desc_template='{n} days of friendship!')
+                _ensure_milestone_reminders(d, prefix='friends_milestone_')
             except (ValueError, TypeError):
                 delete_auto_reminders_by_source('friend_group_founding_date')
                 _cleanup_milestones_by_prefix('friends_milestone_')
@@ -386,7 +378,7 @@ def _ensure_auto_annual_reminder(auto_source, title, month, day):
         )
 
 
-def _ensure_milestone_reminders(start_date, prefix='milestone_', desc_template='{n} days together!'):
+def _ensure_milestone_reminders(start_date, prefix='milestone_'):
     """Create milestone reminders for a given start date."""
     today = date.today()
     for days in MILESTONE_DAYS:
@@ -399,17 +391,16 @@ def _ensure_milestone_reminders(start_date, prefix='milestone_', desc_template='
             label = f'{days // 365}-Year Milestone'
         else:
             label = f'{days}-Day Milestone'
-        desc = desc_template.format(n=days)
         existing = get_auto_reminder_by_source(source)
         if not existing:
             create_reminder(
-                title=label, description=desc,
+                title=label, description='',
                 reminder_type='milestone', created_by=1,
                 milestone_days=days, notify_days_before='0,1,7',
                 is_global=True, is_auto=True, auto_source=source
             )
-        elif existing.title != label or existing.description != desc:
-            update_reminder(existing.id, title=label, description=desc)
+        elif existing.title != label:
+            update_reminder(existing.id, title=label, description='')
 
 
 def _cleanup_milestones_by_prefix(prefix):
