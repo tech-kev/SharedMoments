@@ -99,7 +99,7 @@ def offline():
 def inject_static_text():
     translations_json = '{}'
     try:
-        lang = session.get('lang', os.environ.get('LANG', 'en'))
+        lang = session.get('lang', os.environ.get('LANG', 'en-US'))
         translations = get_translations_by_language(lang)
         translations_json = json.dumps({
             t.fieldName: {'translatedText': t.translatedText}

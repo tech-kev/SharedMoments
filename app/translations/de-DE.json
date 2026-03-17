@@ -3,7 +3,7 @@
         "entityID": 0,
         "fieldName": "Home",
         "helpText": null,
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Home"
     },
@@ -11,7 +11,7 @@
         "entityID": 0,
         "fieldName": "Moments",
         "helpText": null,
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Momente"
     },
@@ -19,7 +19,7 @@
         "entityID": 0,
         "fieldName": "Movie List",
         "helpText": null,
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Filmliste"
     },
@@ -27,7 +27,7 @@
         "entityID": 0,
         "fieldName": "Bucket List",
         "helpText": null,
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Bucketliste"
     },
@@ -35,7 +35,7 @@
         "entityID": 0,
         "fieldName": "Countdown",
         "helpText": null,
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Countdown"
     },
@@ -43,7 +43,7 @@
         "entityID": 1,
         "fieldName": "in a relationship",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "relationship_status",
         "translatedText": "In einer Beziehung"
     },
@@ -51,7 +51,7 @@
         "entityID": 2,
         "fieldName": "engaged",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "relationship_status",
         "translatedText": "Verlobt"
     },
@@ -59,7 +59,7 @@
         "entityID": 3,
         "fieldName": "married",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "relationship_status",
         "translatedText": "Verheiratet"
     },
@@ -67,7 +67,7 @@
         "entityID": 4,
         "fieldName": "in an open relationship",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "relationship_status",
         "translatedText": "In einer offenen Beziehung"
     },
@@ -75,7 +75,7 @@
         "entityID": 5,
         "fieldName": "in a complicated relationship",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "relationship_status",
         "translatedText": "In einer komplizierten Beziehung"
     },
@@ -83,7 +83,7 @@
         "entityID": 0,
         "fieldName": "banner_text_anniversary",
         "helpText": "Check the <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> for a detailed description of how to enter this translation.",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Wir sind seit {years_count}, {months_count} und {days_count} {relationship_status}. Das entspricht {diffInMonthsTotal} Monaten oder {diffInWeeksTotal} Wochen oder {diffInDays} Tagen."
     },
@@ -91,7 +91,7 @@
         "entityID": 0,
         "fieldName": "banner_text_engaged",
         "helpText": "Check the <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> for a detailed description of how to enter this translation.",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Wir sind seit {years_count}, {months_count} und {days_count} {relationship_status}. Das entspricht {diffInMonthsTotal} Monaten oder {diffInWeeksTotal} Wochen oder {diffInDays} Tagen. Wir sind zusammen seit dem {anniversary_date}."
     },
@@ -99,7 +99,7 @@
         "entityID": 0,
         "fieldName": "banner_text_wedding",
         "helpText": "Check the <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> for a detailed description of how to enter this translation.",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Wir sind seit {years_count}, {months_count} und {days_count} {relationship_status}. Das entspricht {diffInMonthsTotal} Monaten oder {diffInWeeksTotal} Wochen oder {diffInDays} Tagen."
     },
@@ -107,7 +107,7 @@
         "entityID": 0,
         "fieldName": "Year",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Jahr"
     },
@@ -115,7 +115,7 @@
         "entityID": 0,
         "fieldName": "Years",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Jahren"
     },
@@ -123,7 +123,7 @@
         "entityID": 0,
         "fieldName": "Month",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Monat"
     },
@@ -131,7 +131,7 @@
         "entityID": 0,
         "fieldName": "Months",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Monate"
     },
@@ -139,7 +139,7 @@
         "entityID": 0,
         "fieldName": "Day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Tag"
     },
@@ -147,7 +147,7 @@
         "entityID": 0,
         "fieldName": "Days",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Tage"
     },
@@ -155,7 +155,7 @@
         "entityID": 0,
         "fieldName": "You haven't created any entry yet",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Du hast noch keinen Eintrag erstellt"
     },
@@ -163,7 +163,7 @@
         "entityID": 0,
         "fieldName": "Click the button to create a new entry",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Klicke auf den Button, um einen neuen Eintrag zu erstellen"
     },
@@ -171,7 +171,7 @@
         "entityID": 0,
         "fieldName": "Create entry",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Eintrag erstellen"
     },
@@ -179,7 +179,7 @@
         "entityID": 0,
         "fieldName": "File",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Datei"
     },
@@ -187,7 +187,7 @@
         "entityID": 0,
         "fieldName": "of",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "von"
     },
@@ -195,7 +195,7 @@
         "entityID": 0,
         "fieldName": "Create new entry",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neuen Eintrag erstellen"
     },
@@ -203,7 +203,7 @@
         "entityID": 0,
         "fieldName": "Save",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Speichern"
     },
@@ -211,7 +211,7 @@
         "entityID": 0,
         "fieldName": "Title",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Titel"
     },
@@ -219,7 +219,7 @@
         "entityID": 0,
         "fieldName": "Description",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beschreibung"
     },
@@ -227,7 +227,7 @@
         "entityID": 0,
         "fieldName": "Creation Date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erstelldatum"
     },
@@ -235,7 +235,7 @@
         "entityID": 0,
         "fieldName": "optional",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "optional"
     },
@@ -243,7 +243,7 @@
         "entityID": 0,
         "fieldName": "Images or videos",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bilder oder Videos"
     },
@@ -251,7 +251,7 @@
         "entityID": 0,
         "fieldName": "Create new list",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Liste erstellen"
     },
@@ -259,7 +259,7 @@
         "entityID": 0,
         "fieldName": "Settings",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einstellungen"
     },
@@ -267,7 +267,7 @@
         "entityID": 0,
         "fieldName": "Change order",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Reihenfolge ändern"
     },
@@ -275,7 +275,7 @@
         "entityID": 0,
         "fieldName": "Change icon",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Icon ändern"
     },
@@ -283,7 +283,7 @@
         "entityID": 0,
         "fieldName": "Cancel",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Abbrechen"
     },
@@ -291,7 +291,7 @@
         "entityID": 0,
         "fieldName": "Create new list type",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neuen Listentyp erstellen"
     },
@@ -299,7 +299,7 @@
         "entityID": 0,
         "fieldName": "Path",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Pfad"
     },
@@ -307,7 +307,7 @@
         "entityID": 0,
         "fieldName": "Icon",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Icon"
     },
@@ -315,7 +315,7 @@
         "entityID": 0,
         "fieldName": "Error details",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Fehlerdetails"
     },
@@ -323,7 +323,7 @@
         "entityID": 0,
         "fieldName": "OK",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "OK"
     },
@@ -331,7 +331,7 @@
         "entityID": 0,
         "fieldName": "Currently available languages:",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Derzeit verfügbare Sprachen:"
     },
@@ -339,7 +339,7 @@
         "entityID": 0,
         "fieldName": "Language",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sprache"
     },
@@ -347,7 +347,7 @@
         "entityID": 0,
         "fieldName": "Status",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Status"
     },
@@ -355,7 +355,7 @@
         "entityID": 0,
         "fieldName": "Edit",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bearbeiten"
     },
@@ -363,7 +363,7 @@
         "entityID": 0,
         "fieldName": "Export",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Exportieren"
     },
@@ -371,7 +371,7 @@
         "entityID": 0,
         "fieldName": "Create new translation",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Übersetzung erstellen"
     },
@@ -379,7 +379,7 @@
         "entityID": 0,
         "fieldName": "Edit entry",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Eintrag bearbeiten"
     },
@@ -387,7 +387,7 @@
         "entityID": 0,
         "fieldName": "Our special moments",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Unsere besonderen Momente"
     },
@@ -395,7 +395,7 @@
         "entityID": 0,
         "fieldName": "Details",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Details"
     },
@@ -403,7 +403,7 @@
         "entityID": 0,
         "fieldName": "Close",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Schließen"
     },
@@ -411,7 +411,7 @@
         "entityID": 0,
         "fieldName": "Translation",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzung"
     },
@@ -419,7 +419,7 @@
         "entityID": 0,
         "fieldName": "User settings",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzereinstellungen"
     },
@@ -427,7 +427,7 @@
         "entityID": 0,
         "fieldName": "Logout",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Abmelden"
     },
@@ -435,7 +435,7 @@
         "entityID": 0,
         "fieldName": "Gallery",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Galerie"
     },
@@ -443,7 +443,7 @@
         "entityID": 0,
         "fieldName": "Create new moment",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neuen Moment erstellen"
     },
@@ -451,7 +451,7 @@
         "entityID": 0,
         "fieldName": "Translations",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzungen"
     },
@@ -459,7 +459,7 @@
         "entityID": 0,
         "fieldName": "Type",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Typ"
     },
@@ -467,7 +467,7 @@
         "entityID": 0,
         "fieldName": "Type ID",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Typ-ID"
     },
@@ -475,7 +475,7 @@
         "entityID": 0,
         "fieldName": "Fieldname",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Feldname"
     },
@@ -483,7 +483,7 @@
         "entityID": 0,
         "fieldName": "Translated Text",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzter Text"
     },
@@ -491,7 +491,7 @@
         "entityID": 0,
         "fieldName": "Back",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Zurück"
     },
@@ -499,7 +499,7 @@
         "entityID": 0,
         "fieldName": "Focus mode",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Fokusmodus"
     },
@@ -507,7 +507,7 @@
         "entityID": 0,
         "fieldName": "SharedMoments Setup",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "SharedMoments Setup"
     },
@@ -515,7 +515,7 @@
         "entityID": 0,
         "fieldName": "Select edition",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Edition auswählen"
     },
@@ -523,7 +523,7 @@
         "entityID": 0,
         "fieldName": "SharedMoments Couples is designed for couples who want to store their shared experiences and wish lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "SharedMoments Couples ist für Paare gedacht, die ihre gemeinsamen Erlebnisse und Wunschlisten speichern möchten"
     },
@@ -531,7 +531,7 @@
         "entityID": 0,
         "fieldName": "SharedMoments Family is designed for families who want to store their shared experiences and wish lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "SharedMoments Family ist für Familien gedacht, die ihre gemeinsamen Erlebnisse und Wunschlisten speichern möchten"
     },
@@ -539,7 +539,7 @@
         "entityID": 0,
         "fieldName": "SharedMoments Friends is designed for friend groups who want to store their shared experiences and wish lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "SharedMoments Friends ist für Freundesgruppen gedacht, die ihre gemeinsamen Erlebnisse und Wunschlisten speichern möchten"
     },
@@ -547,7 +547,7 @@
         "entityID": 0,
         "fieldName": "Please select an edition of SharedMoments to continue",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte wähle eine Edition von SharedMoments, um fortzufahren"
     },
@@ -555,7 +555,7 @@
         "entityID": 0,
         "fieldName": "Add user",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer hinzufügen"
     },
@@ -563,7 +563,7 @@
         "entityID": 0,
         "fieldName": "Add users who will use SharedMoments",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Füge Benutzer hinzu, die SharedMoments verwenden werden"
     },
@@ -571,7 +571,7 @@
         "entityID": 0,
         "fieldName": "Added users",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Hinzugefügte Benutzer"
     },
@@ -579,7 +579,7 @@
         "entityID": 0,
         "fieldName": "First name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vorname"
     },
@@ -587,7 +587,7 @@
         "entityID": 0,
         "fieldName": "Last name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nachname"
     },
@@ -595,7 +595,7 @@
         "entityID": 0,
         "fieldName": "Email address",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "E-Mail-Adresse"
     },
@@ -603,7 +603,7 @@
         "entityID": 0,
         "fieldName": "Birthdate",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Geburtsdatum"
     },
@@ -611,7 +611,7 @@
         "entityID": 0,
         "fieldName": "Password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort"
     },
@@ -619,7 +619,7 @@
         "entityID": 0,
         "fieldName": "Repeat password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort wiederholen"
     },
@@ -627,7 +627,7 @@
         "entityID": 0,
         "fieldName": "Profile picture",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Profilbild"
     },
@@ -635,7 +635,7 @@
         "entityID": 0,
         "fieldName": "Preview",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vorschau"
     },
@@ -643,7 +643,7 @@
         "entityID": 0,
         "fieldName": "User role",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzerrolle"
     },
@@ -651,7 +651,7 @@
         "entityID": 0,
         "fieldName": "Final touches",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Letzte Anpassungen"
     },
@@ -659,7 +659,7 @@
         "entityID": 0,
         "fieldName": "Now make the final adjustments to get started!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nimm jetzt die letzten Anpassungen vor, um zu starten!"
     },
@@ -667,7 +667,7 @@
         "entityID": 0,
         "fieldName": "Adjust settings",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einstellungen anpassen"
     },
@@ -675,7 +675,7 @@
         "entityID": 0,
         "fieldName": "Complete setup",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Setup abschließen"
     },
@@ -683,7 +683,7 @@
         "entityID": 0,
         "fieldName": "Family name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Familienname"
     },
@@ -691,7 +691,7 @@
         "entityID": 0,
         "fieldName": "Name of your friend group",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Name deiner Freundesgruppe"
     },
@@ -699,7 +699,7 @@
         "entityID": 0,
         "fieldName": "Relationship status",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beziehungsstatus"
     },
@@ -707,7 +707,7 @@
         "entityID": 0,
         "fieldName": "Anniversary",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Jahrestag"
     },
@@ -715,7 +715,7 @@
         "entityID": 0,
         "fieldName": "Engagement day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Verlobungstag"
     },
@@ -723,7 +723,7 @@
         "entityID": 0,
         "fieldName": "Wedding anniversary",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Hochzeitstag"
     },
@@ -731,7 +731,7 @@
         "entityID": 0,
         "fieldName": "Change",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ändern"
     },
@@ -739,7 +739,7 @@
         "entityID": 0,
         "fieldName": "About",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Über"
     },
@@ -747,7 +747,7 @@
         "entityID": 0,
         "fieldName": "General",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Allgemein"
     },
@@ -755,7 +755,7 @@
         "entityID": 0,
         "fieldName": "Devtools",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Entwicklertools"
     },
@@ -763,7 +763,7 @@
         "entityID": 0,
         "fieldName": "Load new translations from Code",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Übersetzungen aus dem Code laden"
     },
@@ -771,7 +771,7 @@
         "entityID": 0,
         "fieldName": "Approve new Translations to all Languages",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Übersetzungen für alle Sprachen übernehmen"
     },
@@ -779,7 +779,7 @@
         "entityID": 0,
         "fieldName": "Translation of language",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzung der Sprache"
     },
@@ -787,7 +787,7 @@
         "entityID": 0,
         "fieldName": "Source text",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Quelltext"
     },
@@ -795,7 +795,7 @@
         "entityID": 0,
         "fieldName": "Help Text",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Hilfetext"
     },
@@ -803,7 +803,7 @@
         "entityID": 0,
         "fieldName": "Set Help Text",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Hilfetext festlegen"
     },
@@ -811,7 +811,7 @@
         "entityID": 0,
         "fieldName": "Next",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Weiter"
     },
@@ -819,7 +819,7 @@
         "entityID": 0,
         "fieldName": "New language",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Sprache"
     },
@@ -827,7 +827,7 @@
         "entityID": 0,
         "fieldName": "Login",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Anmelden"
     },
@@ -835,7 +835,7 @@
         "entityID": 0,
         "fieldName": "E-Mail",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "E-Mail"
     },
@@ -843,7 +843,7 @@
         "entityID": 0,
         "fieldName": "required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "erforderlich"
     },
@@ -851,7 +851,7 @@
         "entityID": 0,
         "fieldName": "Please enter a valid email address.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib eine gültige E-Mail-Adresse ein."
     },
@@ -859,7 +859,7 @@
         "entityID": 0,
         "fieldName": "Item is not a gallery",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element ist keine Galerie"
     },
@@ -867,7 +867,7 @@
         "entityID": 0,
         "fieldName": "Setting updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einstellung erfolgreich aktualisiert"
     },
@@ -875,7 +875,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the setting.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren der Einstellung ist ein Fehler aufgetreten."
     },
@@ -883,7 +883,7 @@
         "entityID": 0,
         "fieldName": "User-Setting updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzereinstellung erfolgreich aktualisiert"
     },
@@ -891,7 +891,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the user-setting.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren der Benutzereinstellung ist ein Fehler aufgetreten."
     },
@@ -899,7 +899,7 @@
         "entityID": 0,
         "fieldName": "List type not found",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listentyp nicht gefunden"
     },
@@ -907,7 +907,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while completing the setup.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Abschließen der Einrichtung ist ein Fehler aufgetreten."
     },
@@ -915,7 +915,7 @@
         "entityID": 0,
         "fieldName": "File uploaded successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Datei erfolgreich hochgeladen"
     },
@@ -923,7 +923,7 @@
         "entityID": 0,
         "fieldName": "No file provided",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine Datei bereitgestellt"
     },
@@ -931,7 +931,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during file upload",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Hochladen der Datei ist ein Fehler aufgetreten"
     },
@@ -939,7 +939,7 @@
         "entityID": 0,
         "fieldName": "Item created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element erfolgreich erstellt"
     },
@@ -947,7 +947,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the item.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen des Elements ist ein Fehler aufgetreten."
     },
@@ -955,7 +955,7 @@
         "entityID": 0,
         "fieldName": "Item(s) deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element(e) erfolgreich gelöscht"
     },
@@ -963,7 +963,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while deleting the items.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Löschen der Elemente ist ein Fehler aufgetreten."
     },
@@ -971,7 +971,7 @@
         "entityID": 0,
         "fieldName": "Item(s) loaded successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element(e) erfolgreich geladen"
     },
@@ -979,7 +979,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading the item.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden des Elements ist ein Fehler aufgetreten."
     },
@@ -987,7 +987,7 @@
         "entityID": 0,
         "fieldName": "Item updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element erfolgreich aktualisiert"
     },
@@ -995,7 +995,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the item.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren des Elements ist ein Fehler aufgetreten."
     },
@@ -1003,7 +1003,7 @@
         "entityID": 0,
         "fieldName": "List type updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listentyp erfolgreich aktualisiert"
     },
@@ -1011,7 +1011,7 @@
         "entityID": 0,
         "fieldName": "List Name updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listenname erfolgreich aktualisiert"
     },
@@ -1019,7 +1019,7 @@
         "entityID": 0,
         "fieldName": "List Icon updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listenicon erfolgreich aktualisiert"
     },
@@ -1027,7 +1027,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the List type.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren des Listentyps ist ein Fehler aufgetreten."
     },
@@ -1035,7 +1035,7 @@
         "entityID": 0,
         "fieldName": "List type deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listentyp erfolgreich gelöscht"
     },
@@ -1043,7 +1043,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while deleting the List type.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Löschen des Listentyps ist ein Fehler aufgetreten."
     },
@@ -1051,7 +1051,7 @@
         "entityID": 0,
         "fieldName": "List type created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listentyp erfolgreich erstellt"
     },
@@ -1059,7 +1059,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the List type.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen des Listentyps ist ein Fehler aufgetreten."
     },
@@ -1067,7 +1067,7 @@
         "entityID": 0,
         "fieldName": "Languages loaded successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sprachen erfolgreich geladen"
     },
@@ -1075,7 +1075,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading the Languages.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden der Sprachen ist ein Fehler aufgetreten."
     },
@@ -1083,7 +1083,7 @@
         "entityID": 0,
         "fieldName": "No language code provided",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine Sprache angegeben"
     },
@@ -1091,7 +1091,7 @@
         "entityID": 0,
         "fieldName": "Language created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sprache erfolgreich erstellt"
     },
@@ -1099,7 +1099,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the Language.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen der Sprache ist ein Fehler aufgetreten."
     },
@@ -1107,7 +1107,7 @@
         "entityID": 0,
         "fieldName": "Translations loaded successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzungen erfolgreich geladen"
     },
@@ -1115,7 +1115,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading the Translations.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden der Übersetzungen ist ein Fehler aufgetreten."
     },
@@ -1123,7 +1123,7 @@
         "entityID": 0,
         "fieldName": "Translation updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzung erfolgreich aktualisiert"
     },
@@ -1131,7 +1131,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the Translation.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren der Übersetzung ist ein Fehler aufgetreten."
     },
@@ -1139,7 +1139,7 @@
         "entityID": 0,
         "fieldName": "Translations exported successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzungen erfolgreich exportiert"
     },
@@ -1147,7 +1147,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while exporting data.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Exportieren der Daten ist ein Fehler aufgetreten."
     },
@@ -1155,7 +1155,7 @@
         "entityID": 0,
         "fieldName": "sm_edition",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Edition"
     },
@@ -1163,7 +1163,7 @@
         "entityID": 0,
         "fieldName": "sm_version",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Version"
     },
@@ -1171,7 +1171,7 @@
         "entityID": 0,
         "fieldName": "setup_complete",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Setup abgeschlossen"
     },
@@ -1179,7 +1179,7 @@
         "entityID": 0,
         "fieldName": "title",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Titel"
     },
@@ -1187,7 +1187,7 @@
         "entityID": 0,
         "fieldName": "family_name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Familienname"
     },
@@ -1195,7 +1195,7 @@
         "entityID": 0,
         "fieldName": "friend_group_name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Name der Freundesgruppe"
     },
@@ -1203,7 +1203,7 @@
         "entityID": 0,
         "fieldName": "relationship_status",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Beziehungsstatus"
     },
@@ -1211,7 +1211,7 @@
         "entityID": 0,
         "fieldName": "anniversary_date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Jahrestag"
     },
@@ -1219,7 +1219,7 @@
         "entityID": 0,
         "fieldName": "engaged_date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Verlobungstag"
     },
@@ -1227,7 +1227,7 @@
         "entityID": 0,
         "fieldName": "wedding_date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Hochzeitstag"
     },
@@ -1235,7 +1235,7 @@
         "entityID": 0,
         "fieldName": "language",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Sprache"
     },
@@ -1243,7 +1243,7 @@
         "entityID": 0,
         "fieldName": "darkmode",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Dunkles Design"
     },
@@ -1251,7 +1251,7 @@
         "entityID": 0,
         "fieldName": "Reset all Translations",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle Übersetzungen zurücksetzen"
     },
@@ -1259,7 +1259,7 @@
         "entityID": 0,
         "fieldName": "Are you sure? This action cannot be undone!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bist du dir sicher? Diese Aktion kann nicht rückgängig gemacht werden!"
     },
@@ -1267,7 +1267,7 @@
         "entityID": 0,
         "fieldName": "A new version is available",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Eine neue Version ist verfügbar"
     },
@@ -1275,7 +1275,7 @@
         "entityID": 0,
         "fieldName": "Update",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Aktualisieren"
     },
@@ -1283,7 +1283,7 @@
         "entityID": 0,
         "fieldName": "Item unpinned from offline",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Offline-Speicherung aufgehoben"
     },
@@ -1291,7 +1291,7 @@
         "entityID": 0,
         "fieldName": "Downloading for offline use...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Wird für Offline-Nutzung heruntergeladen..."
     },
@@ -1299,7 +1299,7 @@
         "entityID": 0,
         "fieldName": "Download starts when online",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Download startet sobald online"
     },
@@ -1307,7 +1307,7 @@
         "entityID": 0,
         "fieldName": "Pending sync",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ausstehende Synchronisierung"
     },
@@ -1315,7 +1315,7 @@
         "entityID": 0,
         "fieldName": "Item synced",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element synchronisiert"
     },
@@ -1323,7 +1323,7 @@
         "entityID": 0,
         "fieldName": "All content cached for offline use",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle Inhalte für Offline-Nutzung gespeichert"
     },
@@ -1331,7 +1331,7 @@
         "entityID": 0,
         "fieldName": "Item saved for offline",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element für Offline gespeichert"
     },
@@ -1339,7 +1339,7 @@
         "entityID": 0,
         "fieldName": "You are offline",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Du bist offline"
     },
@@ -1347,7 +1347,7 @@
         "entityID": 0,
         "fieldName": "Items are being synced...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Elemente werden synchronisiert..."
     },
@@ -1355,7 +1355,7 @@
         "entityID": 0,
         "fieldName": "Sync failed. Try again later.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Synchronisierung fehlgeschlagen. Versuche es später erneut."
     },
@@ -1363,7 +1363,7 @@
         "entityID": 0,
         "fieldName": "This page is not available offline. Please check your internet connection and try again.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Diese Seite ist offline nicht verfügbar. Bitte überprüfe deine Internetverbindung und versuche es erneut."
     },
@@ -1371,7 +1371,7 @@
         "entityID": 0,
         "fieldName": "Retry",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erneut versuchen"
     },
@@ -1379,7 +1379,7 @@
         "entityID": 0,
         "fieldName": "Install App",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "App installieren"
     },
@@ -1387,7 +1387,7 @@
         "entityID": 0,
         "fieldName": "Offline & Storage",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Offline & Speicher"
     },
@@ -1395,7 +1395,7 @@
         "entityID": 0,
         "fieldName": "Storage used",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Speicherverbrauch"
     },
@@ -1403,7 +1403,7 @@
         "entityID": 0,
         "fieldName": "Check for PWA updates",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nach PWA Updates suchen"
     },
@@ -1411,7 +1411,7 @@
         "entityID": 0,
         "fieldName": "Force download latest version",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neueste Version herunterladen"
     },
@@ -1419,7 +1419,7 @@
         "entityID": 0,
         "fieldName": "Clear offline cache",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Offline-Cache leeren"
     },
@@ -1427,7 +1427,7 @@
         "entityID": 0,
         "fieldName": "Remove all cached content",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle gespeicherten Inhalte entfernen"
     },
@@ -1435,7 +1435,7 @@
         "entityID": 0,
         "fieldName": "Service Worker not supported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Service Worker wird nicht unterstützt"
     },
@@ -1443,7 +1443,7 @@
         "entityID": 0,
         "fieldName": "Checking for updates...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Suche nach Updates..."
     },
@@ -1451,7 +1451,7 @@
         "entityID": 0,
         "fieldName": "App is up to date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "App ist aktuell"
     },
@@ -1459,7 +1459,7 @@
         "entityID": 0,
         "fieldName": "Cache cleared",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Cache geleert"
     },
@@ -1467,7 +1467,7 @@
         "entityID": 0,
         "fieldName": "Not available",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nicht verfügbar"
     },
@@ -1475,7 +1475,7 @@
         "entityID": 0,
         "fieldName": "pwa_offline_all",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Alle Inhalte offline speichern"
     },
@@ -1483,7 +1483,7 @@
         "entityID": 0,
         "fieldName": "pwa_wifi_only_upload",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Nur über WLAN hochladen"
     },
@@ -1491,7 +1491,7 @@
         "entityID": 0,
         "fieldName": "pwa_preload_on_wifi",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Inhalte bei WLAN vorladen"
     },
@@ -1499,7 +1499,7 @@
         "entityID": 0,
         "fieldName": "pwa_auto_cache_count",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Anzahl der letzten Einträge zum Cachen"
     },
@@ -1507,7 +1507,7 @@
         "entityID": 0,
         "fieldName": "pwa_cache_expiry_days",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Cache-Ablauf (Tage)"
     },
@@ -1515,7 +1515,7 @@
         "entityID": 0,
         "fieldName": "Item saved offline. Will sync when online.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Eintrag offline gespeichert. Wird bei Verbindung synchronisiert."
     },
@@ -1523,7 +1523,7 @@
         "entityID": 0,
         "fieldName": "Wedding Day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Hochzeitstag"
     },
@@ -1531,7 +1531,7 @@
         "entityID": 0,
         "fieldName": "Engagement Day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Verlobungstag"
     },
@@ -1539,7 +1539,7 @@
         "entityID": 0,
         "fieldName": "Birthday of {name}",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Geburtstag von {name}"
     },
@@ -1547,7 +1547,7 @@
         "entityID": 0,
         "fieldName": "{n}-Year Milestone",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Meilenstein: {n} Jahr(e) zusammen!"
     },
@@ -1555,7 +1555,7 @@
         "entityID": 0,
         "fieldName": "{n}-Day Milestone",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Meilenstein: {n} Tag(e) zusammen!"
     },
@@ -1563,7 +1563,7 @@
         "entityID": 0,
         "fieldName": "Countdown: {title}",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Countdown: {title}"
     },
@@ -1571,7 +1571,7 @@
         "entityID": 0,
         "fieldName": "Countdown \"{title}\" reached!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Countdown \"{title}\" abgelaufen!"
     },
@@ -1579,7 +1579,7 @@
         "entityID": 0,
         "fieldName": "Today is {title}!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Heute ist {title}!"
     },
@@ -1587,7 +1587,7 @@
         "entityID": 0,
         "fieldName": "{title} in 1 day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "{title} in 1 Tag"
     },
@@ -1595,7 +1595,7 @@
         "entityID": 0,
         "fieldName": "{title} in {days} days",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "{title} in {days} Tagen"
     },
@@ -1603,7 +1603,7 @@
         "entityID": 0,
         "fieldName": "{title} is on {date}",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "{title} ist am {date}"
     },
@@ -1611,7 +1611,7 @@
         "entityID": 0,
         "fieldName": "Reminders",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerungen"
     },
@@ -1619,7 +1619,7 @@
         "entityID": 0,
         "fieldName": "Annual",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Jährlich"
     },
@@ -1627,7 +1627,7 @@
         "entityID": 0,
         "fieldName": "One-time",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Einmalig"
     },
@@ -1635,7 +1635,7 @@
         "entityID": 0,
         "fieldName": "Milestone",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Meilenstein"
     },
@@ -1643,7 +1643,7 @@
         "entityID": 0,
         "fieldName": "Auto",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Auto"
     },
@@ -1651,7 +1651,7 @@
         "entityID": 0,
         "fieldName": "On the day",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Am Tag"
     },
@@ -1659,7 +1659,7 @@
         "entityID": 0,
         "fieldName": "1 day before",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "1 Tag vorher"
     },
@@ -1667,7 +1667,7 @@
         "entityID": 0,
         "fieldName": "days before",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Tage vorher"
     },
@@ -1675,7 +1675,7 @@
         "entityID": 0,
         "fieldName": "No reminders yet",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Noch keine Erinnerungen"
     },
@@ -1683,7 +1683,7 @@
         "entityID": 0,
         "fieldName": "Unmute",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Stummschaltung aufheben"
     },
@@ -1691,7 +1691,7 @@
         "entityID": 0,
         "fieldName": "Mute",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Stummschalten"
     },
@@ -1699,7 +1699,7 @@
         "entityID": 0,
         "fieldName": "Create Reminder",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung erstellen"
     },
@@ -1707,7 +1707,7 @@
         "entityID": 0,
         "fieldName": "Edit Reminder",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung bearbeiten"
     },
@@ -1715,7 +1715,7 @@
         "entityID": 0,
         "fieldName": "Notify me",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Benachrichtigen"
     },
@@ -1723,7 +1723,7 @@
         "entityID": 0,
         "fieldName": "3 days before",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "3 Tage vorher"
     },
@@ -1731,7 +1731,7 @@
         "entityID": 0,
         "fieldName": "7 days before",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "7 Tage vorher"
     },
@@ -1739,7 +1739,7 @@
         "entityID": 0,
         "fieldName": "Reminder muted",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung stummgeschaltet"
     },
@@ -1747,7 +1747,7 @@
         "entityID": 0,
         "fieldName": "Reminder unmuted",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Stummschaltung aufgehoben"
     },
@@ -1755,7 +1755,7 @@
         "entityID": 0,
         "fieldName": "Reminder created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung erfolgreich erstellt"
     },
@@ -1763,7 +1763,7 @@
         "entityID": 0,
         "fieldName": "Reminder updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung erfolgreich aktualisiert"
     },
@@ -1771,7 +1771,7 @@
         "entityID": 0,
         "fieldName": "Reminder deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung erfolgreich gelöscht"
     },
@@ -1779,7 +1779,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while muting the reminder.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Beim Stummschalten der Erinnerung ist ein Fehler aufgetreten."
     },
@@ -1787,7 +1787,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while unmuting the reminder.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Beim Aufheben der Stummschaltung ist ein Fehler aufgetreten."
     },
@@ -1795,7 +1795,7 @@
         "entityID": 0,
         "fieldName": "notification_push_enabled",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Push-Benachrichtigungen"
     },
@@ -1803,7 +1803,7 @@
         "entityID": 0,
         "fieldName": "notification_email_enabled",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "E-Mail-Benachrichtigungen"
     },
@@ -1811,7 +1811,7 @@
         "entityID": 0,
         "fieldName": "notification_telegram_enabled",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Telegram-Benachrichtigungen"
     },
@@ -1819,7 +1819,7 @@
         "entityID": 0,
         "fieldName": "notification_telegram_chat_id",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Telegram Chat-ID"
     },
@@ -1827,7 +1827,7 @@
         "entityID": 0,
         "fieldName": "Please set your anniversary date in the settings.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte setzt euer Jahrestagsdatum in den Einstellungen."
     },
@@ -1835,7 +1835,7 @@
         "entityID": 0,
         "fieldName": "Please set your engagement date in the settings.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte setzt euer Verlobungsdatum in den Einstellungen."
     },
@@ -1843,7 +1843,7 @@
         "entityID": 0,
         "fieldName": "Please set your wedding date in the settings.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte setzt euer Hochzeitsdatum in den Einstellungen."
     },
@@ -1851,7 +1851,7 @@
         "entityID": 0,
         "fieldName": "Insufficient permissions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Unzureichende Berechtigungen"
     },
@@ -1859,7 +1859,7 @@
         "entityID": 0,
         "fieldName": "An error occurred",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ein Fehler ist aufgetreten"
     },
@@ -1867,7 +1867,7 @@
         "entityID": 0,
         "fieldName": "Delete this reminder?",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Diese Erinnerung löschen?"
     },
@@ -1875,7 +1875,7 @@
         "entityID": 0,
         "fieldName": "Please enter some text first",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib zuerst einen Text ein"
     },
@@ -1883,7 +1883,7 @@
         "entityID": 0,
         "fieldName": "Server not reachable",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Server nicht erreichbar"
     },
@@ -1891,7 +1891,7 @@
         "entityID": 0,
         "fieldName": "Upload Files...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dateien hochladen..."
     },
@@ -1899,7 +1899,7 @@
         "entityID": 0,
         "fieldName": "Delete selected items?",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ausgewählte Elemente löschen?"
     },
@@ -1907,7 +1907,7 @@
         "entityID": 0,
         "fieldName": "Render preview images...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vorschaubilder werden gerendert..."
     },
@@ -1915,7 +1915,7 @@
         "entityID": 0,
         "fieldName": "Click images to change the order",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bilder anklicken, um die Reihenfolge zu ändern"
     },
@@ -1923,7 +1923,7 @@
         "entityID": 0,
         "fieldName": "Your browser does not support this video format. You can still upload it, but it will only play on supported devices.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dein Browser unterstützt dieses Videoformat nicht. Du kannst es trotzdem hochladen, aber es wird nur auf unterstützten Geräten abgespielt."
     },
@@ -1931,7 +1931,7 @@
         "entityID": 0,
         "fieldName": "Filetype",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dateityp"
     },
@@ -1939,7 +1939,7 @@
         "entityID": 0,
         "fieldName": "is not supported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "wird nicht unterstützt"
     },
@@ -1947,7 +1947,7 @@
         "entityID": 0,
         "fieldName": "remaining",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "verbleibend"
     },
@@ -1955,7 +1955,7 @@
         "entityID": 0,
         "fieldName": "Please select exactly one item to share",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte wähle nur ein Element zum Teilen aus"
     },
@@ -1963,7 +1963,7 @@
         "entityID": 0,
         "fieldName": "Expiration date must be in the future",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Das Ablaufdatum muss in der Zukunft liegen"
     },
@@ -1971,7 +1971,7 @@
         "entityID": 0,
         "fieldName": "Link copied to clipboard",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Link in die Zwischenablage kopiert"
     },
@@ -1979,7 +1979,7 @@
         "entityID": 0,
         "fieldName": "Error code",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Fehlercode"
     },
@@ -1987,7 +1987,7 @@
         "entityID": 0,
         "fieldName": "Error message",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Fehlermeldung"
     },
@@ -1995,7 +1995,7 @@
         "entityID": 0,
         "fieldName": "Please fill in all fields",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte fülle alle Felder aus"
     },
@@ -2003,7 +2003,7 @@
         "entityID": 0,
         "fieldName": "Only lowercase letters, numbers and hyphens",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nur Kleinbuchstaben, Zahlen und Bindestriche"
     },
@@ -2011,7 +2011,7 @@
         "entityID": 0,
         "fieldName": "Edit list",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Liste bearbeiten"
     },
@@ -2019,7 +2019,7 @@
         "entityID": 0,
         "fieldName": "This path is reserved and cannot be used",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dieser Pfad ist reserviert und kann nicht verwendet werden"
     },
@@ -2027,7 +2027,7 @@
         "entityID": 0,
         "fieldName": "Please enter a sidebar name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib einen Seitenleistennamen ein"
     },
@@ -2035,7 +2035,7 @@
         "entityID": 0,
         "fieldName": "Please enter a valid path",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib einen gültigen Pfad ein"
     },
@@ -2043,7 +2043,7 @@
         "entityID": 0,
         "fieldName": "Please select an icon",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte wähle ein Icon aus"
     },
@@ -2051,7 +2051,7 @@
         "entityID": 0,
         "fieldName": "Do you really want to delete this entry? All associated entries will also be deleted.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Möchtest du diesen Eintrag wirklich löschen? Alle zugehörigen Einträge werden ebenfalls gelöscht."
     },
@@ -2059,7 +2059,7 @@
         "entityID": 0,
         "fieldName": "Save order",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Reihenfolge speichern"
     },
@@ -2067,7 +2067,7 @@
         "entityID": 0,
         "fieldName": "Create user",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer erstellen"
     },
@@ -2075,7 +2075,7 @@
         "entityID": 0,
         "fieldName": "New password (leave empty to keep)",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neues Passwort (leer lassen zum Beibehalten)"
     },
@@ -2083,7 +2083,7 @@
         "entityID": 0,
         "fieldName": "Edit user",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer bearbeiten"
     },
@@ -2091,7 +2091,7 @@
         "entityID": 0,
         "fieldName": "First name and e-mail are required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vorname und E-Mail sind erforderlich"
     },
@@ -2099,7 +2099,7 @@
         "entityID": 0,
         "fieldName": "Password is required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort ist erforderlich"
     },
@@ -2107,7 +2107,7 @@
         "entityID": 0,
         "fieldName": "Passwords do not match.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwörter stimmen nicht überein."
     },
@@ -2115,7 +2115,7 @@
         "entityID": 0,
         "fieldName": "User must have at least one role",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer muss mindestens eine Rolle haben"
     },
@@ -2123,7 +2123,7 @@
         "entityID": 0,
         "fieldName": "Lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listen"
     },
@@ -2131,7 +2131,7 @@
         "entityID": 0,
         "fieldName": "Special",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Speziell"
     },
@@ -2139,7 +2139,7 @@
         "entityID": 0,
         "fieldName": "Role name is required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rollenname ist erforderlich"
     },
@@ -2147,7 +2147,7 @@
         "entityID": 0,
         "fieldName": "Revoke this share link?",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Diesen Freigabelink löschen?"
     },
@@ -2155,7 +2155,7 @@
         "entityID": 0,
         "fieldName": "Please add at least one user.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte füge mindestens einen Benutzer hinzu."
     },
@@ -2163,7 +2163,7 @@
         "entityID": 0,
         "fieldName": "Please save the settings first.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte speichere zuerst die Einstellungen."
     },
@@ -2171,7 +2171,7 @@
         "entityID": 0,
         "fieldName": "Please fill in all date fields.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte fülle alle Datumsfelder aus."
     },
@@ -2179,7 +2179,7 @@
         "entityID": 0,
         "fieldName": "Do you want to complete the setup?",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Möchtest du das Setup abschließen?"
     },
@@ -2187,7 +2187,7 @@
         "entityID": 0,
         "fieldName": "Please enter your First name.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib deinen Vornamen ein."
     },
@@ -2195,7 +2195,7 @@
         "entityID": 0,
         "fieldName": "Please enter your Last name.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib deinen Nachnamen ein."
     },
@@ -2203,7 +2203,7 @@
         "entityID": 0,
         "fieldName": "Please enter your Birthdate.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib dein Geburtsdatum ein."
     },
@@ -2211,7 +2211,7 @@
         "entityID": 0,
         "fieldName": "Please enter your Password.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib dein Passwort ein."
     },
@@ -2219,7 +2219,7 @@
         "entityID": 0,
         "fieldName": "Please repeat your Password.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte wiederhole dein Passwort."
     },
@@ -2227,7 +2227,7 @@
         "entityID": 0,
         "fieldName": "E-Mail already in use. Please choose a different one.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "E-Mail wird bereits verwendet. Bitte wähle eine andere."
     },
@@ -2235,7 +2235,7 @@
         "entityID": 0,
         "fieldName": "Please enter a date.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bitte gib ein Datum ein."
     },
@@ -2243,7 +2243,7 @@
         "entityID": 0,
         "fieldName": "This date is required for your relationship status.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dieses Datum ist für deinen Beziehungsstatus erforderlich."
     },
@@ -2251,7 +2251,7 @@
         "entityID": 0,
         "fieldName": "No image",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Kein Bild"
     },
@@ -2259,7 +2259,7 @@
         "entityID": 0,
         "fieldName": "No song",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Kein Lied"
     },
@@ -2267,7 +2267,7 @@
         "entityID": 0,
         "fieldName": "Not configured",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nicht konfiguriert"
     },
@@ -2275,7 +2275,7 @@
         "entityID": 0,
         "fieldName": "Telegram Chat-ID saved",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Telegram Chat-ID gespeichert"
     },
@@ -2283,7 +2283,7 @@
         "entityID": 0,
         "fieldName": "Failed to get push key from server",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Push-Key konnte nicht vom Server abgerufen werden"
     },
@@ -2291,7 +2291,7 @@
         "entityID": 0,
         "fieldName": "Push notifications enabled",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Push-Benachrichtigungen aktiviert"
     },
@@ -2299,7 +2299,7 @@
         "entityID": 0,
         "fieldName": "Push subscription failed",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Push-Abonnement fehlgeschlagen"
     },
@@ -2307,7 +2307,7 @@
         "entityID": 0,
         "fieldName": "Not supported by browser",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vom Browser nicht unterstützt"
     },
@@ -2315,7 +2315,7 @@
         "entityID": 0,
         "fieldName": "Active",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Aktiv"
     },
@@ -2323,7 +2323,7 @@
         "entityID": 0,
         "fieldName": "Blocked by browser",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vom Browser blockiert"
     },
@@ -2331,7 +2331,7 @@
         "entityID": 0,
         "fieldName": "Permission required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Berechtigung erforderlich"
     },
@@ -2339,7 +2339,7 @@
         "entityID": 0,
         "fieldName": "No active shares",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine aktiven Freigaben"
     },
@@ -2347,7 +2347,7 @@
         "entityID": 0,
         "fieldName": "Share links will appear here once created.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigabelinks werden hier angezeigt, sobald sie erstellt wurden."
     },
@@ -2355,7 +2355,7 @@
         "entityID": 0,
         "fieldName": "Created by",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erstellt von"
     },
@@ -2363,7 +2363,7 @@
         "entityID": 0,
         "fieldName": "Expired",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Abgelaufen"
     },
@@ -2371,7 +2371,7 @@
         "entityID": 0,
         "fieldName": "Hours",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Stunden"
     },
@@ -2379,7 +2379,7 @@
         "entityID": 0,
         "fieldName": "Minutes",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Minuten"
     },
@@ -2387,7 +2387,7 @@
         "entityID": 0,
         "fieldName": "Seconds",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sekunden"
     },
@@ -2395,7 +2395,7 @@
         "entityID": 0,
         "fieldName": "No countdowns yet",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Noch keine Countdowns"
     },
@@ -2403,7 +2403,7 @@
         "entityID": 0,
         "fieldName": "Create countdown",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Countdown erstellen"
     },
@@ -2411,7 +2411,7 @@
         "entityID": 0,
         "fieldName": "Target date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Zieldatum"
     },
@@ -2419,7 +2419,7 @@
         "entityID": 0,
         "fieldName": "Edit countdown",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Countdown bearbeiten"
     },
@@ -2427,7 +2427,7 @@
         "entityID": 0,
         "fieldName": "Delete",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Löschen"
     },
@@ -2435,7 +2435,7 @@
         "entityID": 0,
         "fieldName": "Edit moment",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Moment bearbeiten"
     },
@@ -2443,7 +2443,7 @@
         "entityID": 0,
         "fieldName": "Enhance with AI",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Mit KI verbessern"
     },
@@ -2451,7 +2451,7 @@
         "entityID": 0,
         "fieldName": "Undo AI",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rückgängig"
     },
@@ -2459,7 +2459,7 @@
         "entityID": 0,
         "fieldName": "Regenerate",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neu generieren"
     },
@@ -2467,7 +2467,7 @@
         "entityID": 0,
         "fieldName": "Show in all editions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "In allen Editionen anzeigen"
     },
@@ -2475,7 +2475,7 @@
         "entityID": 0,
         "fieldName": "permissions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Berechtigungen"
     },
@@ -2483,7 +2483,7 @@
         "entityID": 0,
         "fieldName": "Done",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erledigt"
     },
@@ -2491,7 +2491,7 @@
         "entityID": 0,
         "fieldName": "Manage lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Listen verwalten"
     },
@@ -2499,7 +2499,7 @@
         "entityID": 0,
         "fieldName": "Admin",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Admin"
     },
@@ -2507,7 +2507,7 @@
         "entityID": 0,
         "fieldName": "Sidebar name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Seitenleistenname"
     },
@@ -2515,7 +2515,7 @@
         "entityID": 0,
         "fieldName": "Page title",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Seitentitel"
     },
@@ -2523,7 +2523,7 @@
         "entityID": 0,
         "fieldName": "Share item",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element teilen"
     },
@@ -2531,7 +2531,7 @@
         "entityID": 0,
         "fieldName": "Expires at",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Läuft ab am"
     },
@@ -2539,7 +2539,7 @@
         "entityID": 0,
         "fieldName": "Share link",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigabelink"
     },
@@ -2547,7 +2547,7 @@
         "entityID": 0,
         "fieldName": "Copy link",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Link kopieren"
     },
@@ -2555,7 +2555,7 @@
         "entityID": 0,
         "fieldName": "Create link",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Link erstellen"
     },
@@ -2563,7 +2563,7 @@
         "entityID": 0,
         "fieldName": "Users",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer"
     },
@@ -2571,7 +2571,7 @@
         "entityID": 0,
         "fieldName": "Roles & Permissions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rollen & Berechtigungen"
     },
@@ -2579,7 +2579,7 @@
         "entityID": 0,
         "fieldName": "Shares",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigaben"
     },
@@ -2587,7 +2587,7 @@
         "entityID": 0,
         "fieldName": "Birth date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Geburtsdatum"
     },
@@ -2595,7 +2595,7 @@
         "entityID": 0,
         "fieldName": "Roles",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rollen"
     },
@@ -2603,7 +2603,7 @@
         "entityID": 0,
         "fieldName": "Edit user roles",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzerrollen bearbeiten"
     },
@@ -2611,7 +2611,7 @@
         "entityID": 0,
         "fieldName": "Edit permissions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Berechtigungen bearbeiten"
     },
@@ -2619,7 +2619,7 @@
         "entityID": 0,
         "fieldName": "Create new role",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neue Rolle erstellen"
     },
@@ -2627,7 +2627,7 @@
         "entityID": 0,
         "fieldName": "Role name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rollenname"
     },
@@ -2635,7 +2635,7 @@
         "entityID": 0,
         "fieldName": "Translation management",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersetzungsverwaltung"
     },
@@ -2643,7 +2643,7 @@
         "entityID": 0,
         "fieldName": "Stay logged in",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Angemeldet bleiben"
     },
@@ -2651,7 +2651,7 @@
         "entityID": 0,
         "fieldName": "Login with passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Mit Passkey anmelden"
     },
@@ -2659,7 +2659,7 @@
         "entityID": 0,
         "fieldName": "Date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Datum"
     },
@@ -2667,7 +2667,7 @@
         "entityID": 0,
         "fieldName": "Notifications",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benachrichtigungen"
     },
@@ -2675,7 +2675,7 @@
         "entityID": 0,
         "fieldName": "Browser Push",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Browser-Push"
     },
@@ -2683,7 +2683,7 @@
         "entityID": 0,
         "fieldName": "Allow Notifications",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benachrichtigungen erlauben"
     },
@@ -2691,7 +2691,7 @@
         "entityID": 0,
         "fieldName": "Send test notification",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Testbenachrichtigung senden"
     },
@@ -2699,7 +2699,7 @@
         "entityID": 0,
         "fieldName": "No email address",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine E-Mail-Adresse"
     },
@@ -2707,7 +2707,7 @@
         "entityID": 0,
         "fieldName": "Send test email",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Test-E-Mail senden"
     },
@@ -2715,7 +2715,7 @@
         "entityID": 0,
         "fieldName": "Send /start to the bot, then enter your Chat-ID here.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sende /start an den Bot und gib dann hier deine Chat-ID ein."
     },
@@ -2723,7 +2723,7 @@
         "entityID": 0,
         "fieldName": "Test",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Test"
     },
@@ -2731,7 +2731,7 @@
         "entityID": 0,
         "fieldName": "Change edition",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Edition wechseln"
     },
@@ -2739,7 +2739,7 @@
         "entityID": 0,
         "fieldName": "No data will be lost when switching editions.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Wechsel der Edition gehen keine Daten verloren."
     },
@@ -2747,7 +2747,7 @@
         "entityID": 0,
         "fieldName": "Only content for the new edition and cross-edition content will be shown.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Es werden nur Inhalte der neuen Edition und editionsübergreifende Inhalte angezeigt."
     },
@@ -2755,7 +2755,7 @@
         "entityID": 0,
         "fieldName": "You can switch back at any time and all previous content will be available again.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Du kannst jederzeit zurückwechseln und alle bisherigen Inhalte sind wieder verfügbar."
     },
@@ -2763,7 +2763,7 @@
         "entityID": 0,
         "fieldName": "Create a passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey erstellen"
     },
@@ -2771,7 +2771,7 @@
         "entityID": 0,
         "fieldName": "Only use passwordless login",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nur passwortlose Anmeldung verwenden"
     },
@@ -2779,7 +2779,7 @@
         "entityID": 0,
         "fieldName": "Adult",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erwachsener"
     },
@@ -2787,7 +2787,7 @@
         "entityID": 0,
         "fieldName": "Child",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Kind"
     },
@@ -2795,7 +2795,7 @@
         "entityID": 0,
         "fieldName": "Login successful",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Anmeldung erfolgreich"
     },
@@ -2803,7 +2803,7 @@
         "entityID": 0,
         "fieldName": "E-Mail or password cannot be empty",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "E-Mail oder Passwort darf nicht leer sein"
     },
@@ -2811,7 +2811,7 @@
         "entityID": 0,
         "fieldName": "E-Mail or password incorrect",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "E-Mail oder Passwort falsch"
     },
@@ -2819,7 +2819,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while fetching user details.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Abrufen der Benutzerdetails ist ein Fehler aufgetreten."
     },
@@ -2827,7 +2827,7 @@
         "entityID": 0,
         "fieldName": "Registration challenge created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Registrierungs-Challenge erfolgreich erstellt"
     },
@@ -2835,7 +2835,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during registration",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bei der Registrierung ist ein Fehler aufgetreten"
     },
@@ -2843,7 +2843,7 @@
         "entityID": 0,
         "fieldName": "Passkey registered successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey erfolgreich registriert"
     },
@@ -2851,7 +2851,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during registration verification",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bei der Verifizierung der Registrierung ist ein Fehler aufgetreten"
     },
@@ -2859,7 +2859,7 @@
         "entityID": 0,
         "fieldName": "Authentication challenge created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Authentifizierungs-Challenge erfolgreich erstellt"
     },
@@ -2867,7 +2867,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during authentication",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bei der Authentifizierung ist ein Fehler aufgetreten"
     },
@@ -2875,7 +2875,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during authentication verification",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Bei der Authentifizierungsverifizierung ist ein Fehler aufgetreten"
     },
@@ -2883,7 +2883,7 @@
         "entityID": 0,
         "fieldName": "Security Key",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Sicherheitsschlüssel"
     },
@@ -2891,7 +2891,7 @@
         "entityID": 0,
         "fieldName": "Setup successful",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Setup erfolgreich"
     },
@@ -2899,7 +2899,7 @@
         "entityID": 0,
         "fieldName": "Only image files are allowed for the banner.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nur Bilddateien sind für das Banner erlaubt."
     },
@@ -2907,7 +2907,7 @@
         "entityID": 0,
         "fieldName": "Only MP3 files are allowed for the banner song.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nur MP3-Dateien sind für den Bannersong erlaubt."
     },
@@ -2915,7 +2915,7 @@
         "entityID": 0,
         "fieldName": "Profile picture updated",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Profilbild aktualisiert"
     },
@@ -2923,7 +2923,7 @@
         "entityID": 0,
         "fieldName": "Invalid filename",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ungültiger Dateiname"
     },
@@ -2931,7 +2931,7 @@
         "entityID": 0,
         "fieldName": "File type not allowed. Allowed types:",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dateityp nicht erlaubt. Erlaubte Typen:"
     },
@@ -2939,7 +2939,7 @@
         "entityID": 0,
         "fieldName": "File too large. Maximum size:",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Datei zu groß. Maximale Größe:"
     },
@@ -2947,7 +2947,7 @@
         "entityID": 0,
         "fieldName": "Item not found",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Element nicht gefunden"
     },
@@ -2955,7 +2955,7 @@
         "entityID": 0,
         "fieldName": "Share link created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigabelink erfolgreich erstellt"
     },
@@ -2963,7 +2963,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the share link.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen des Freigabelinks ist ein Fehler aufgetreten."
     },
@@ -2971,7 +2971,7 @@
         "entityID": 0,
         "fieldName": "Shares loaded successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigaben erfolgreich geladen"
     },
@@ -2979,7 +2979,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading shares.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden der Freigaben ist ein Fehler aufgetreten."
     },
@@ -2987,7 +2987,7 @@
         "entityID": 0,
         "fieldName": "Share link revoked successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freigabelink erfolgreich widerrufen"
     },
@@ -2995,7 +2995,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while revoking the share link.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Löschen des Freigabelinks ist ein Fehler aufgetreten."
     },
@@ -3003,7 +3003,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading reminders.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden der Erinnerungen ist ein Fehler aufgetreten."
     },
@@ -3011,7 +3011,7 @@
         "entityID": 0,
         "fieldName": "Title and type are required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Titel und Typ sind erforderlich"
     },
@@ -3019,7 +3019,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the reminder.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen der Erinnerung ist ein Fehler aufgetreten."
     },
@@ -3027,7 +3027,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while updating the reminder.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Aktualisieren der Erinnerung ist ein Fehler aufgetreten."
     },
@@ -3035,7 +3035,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while deleting the reminder.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Löschen der Erinnerung ist ein Fehler aufgetreten."
     },
@@ -3043,7 +3043,7 @@
         "entityID": 0,
         "fieldName": "No push subscription found. Please allow notifications first.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Kein Push-Abonnement gefunden. Bitte erlaube zuerst Benachrichtigungen."
     },
@@ -3051,7 +3051,7 @@
         "entityID": 0,
         "fieldName": "This is a test notification!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dies ist eine Testbenachrichtigung!"
     },
@@ -3059,7 +3059,7 @@
         "entityID": 0,
         "fieldName": "No email address in your profile",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine E-Mail-Adresse in deinem Profil"
     },
@@ -3067,7 +3067,7 @@
         "entityID": 0,
         "fieldName": "SMTP server not configured",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "SMTP-Server nicht konfiguriert"
     },
@@ -3075,7 +3075,7 @@
         "entityID": 0,
         "fieldName": "No Telegram Chat-ID configured",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine Telegram Chat-ID konfiguriert"
     },
@@ -3083,7 +3083,7 @@
         "entityID": 0,
         "fieldName": "Telegram bot not configured",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Telegram-Bot nicht konfiguriert"
     },
@@ -3091,7 +3091,7 @@
         "entityID": 0,
         "fieldName": "Test notification sent!",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Testbenachrichtigung gesendet!"
     },
@@ -3099,7 +3099,7 @@
         "entityID": 0,
         "fieldName": "Failed to send test notification. Check configuration.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Testbenachrichtigung konnte nicht gesendet werden. Überprüfe die Konfiguration."
     },
@@ -3107,7 +3107,7 @@
         "entityID": 0,
         "fieldName": "Role already exists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rolle existiert bereits"
     },
@@ -3115,7 +3115,7 @@
         "entityID": 0,
         "fieldName": "Role created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rolle erfolgreich erstellt"
     },
@@ -3123,7 +3123,7 @@
         "entityID": 0,
         "fieldName": "Role not found",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rolle nicht gefunden"
     },
@@ -3131,7 +3131,7 @@
         "entityID": 0,
         "fieldName": "Role updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rolle erfolgreich aktualisiert"
     },
@@ -3139,7 +3139,7 @@
         "entityID": 0,
         "fieldName": "Built-in roles cannot be deleted",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Systemrollen können nicht gelöscht werden"
     },
@@ -3147,7 +3147,7 @@
         "entityID": 0,
         "fieldName": "Role deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Rolle erfolgreich gelöscht"
     },
@@ -3155,7 +3155,7 @@
         "entityID": 0,
         "fieldName": "Admin role must keep \"Access Admin Panel\" permission",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Die Admin-Rolle muss die Berechtigung \"Adminbereich aufrufen\" behalten"
     },
@@ -3163,7 +3163,7 @@
         "entityID": 0,
         "fieldName": "Permissions updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Berechtigungen erfolgreich aktualisiert"
     },
@@ -3171,7 +3171,7 @@
         "entityID": 0,
         "fieldName": "There must be at least one admin",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Es muss mindestens einen Admin geben"
     },
@@ -3179,7 +3179,7 @@
         "entityID": 0,
         "fieldName": "User roles updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzerrollen erfolgreich aktualisiert"
     },
@@ -3187,7 +3187,7 @@
         "entityID": 0,
         "fieldName": "First name, e-mail and password are required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Vorname, E-Mail und Passwort sind erforderlich"
     },
@@ -3195,7 +3195,7 @@
         "entityID": 0,
         "fieldName": "User created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer erfolgreich erstellt"
     },
@@ -3203,7 +3203,7 @@
         "entityID": 0,
         "fieldName": "User not found",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer nicht gefunden"
     },
@@ -3211,7 +3211,7 @@
         "entityID": 0,
         "fieldName": "User updated successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer erfolgreich aktualisiert"
     },
@@ -3219,7 +3219,7 @@
         "entityID": 0,
         "fieldName": "You cannot delete your own account",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Du kannst dein eigenes Konto nicht löschen"
     },
@@ -3227,7 +3227,7 @@
         "entityID": 0,
         "fieldName": "User deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer erfolgreich gelöscht"
     },
@@ -3235,7 +3235,7 @@
         "entityID": 0,
         "fieldName": "share_tracking",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Geteilte Links tracken"
     },
@@ -3243,7 +3243,7 @@
         "entityID": 0,
         "fieldName": "banner_image",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Bannerbild"
     },
@@ -3251,7 +3251,7 @@
         "entityID": 0,
         "fieldName": "banner_song",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Bannersong"
     },
@@ -3259,7 +3259,7 @@
         "entityID": 0,
         "fieldName": "migration_review_complete",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Migrationsüberprüfung abgeschlossen"
     },
@@ -3267,7 +3267,7 @@
         "entityID": 0,
         "fieldName": "vapid_private_key",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "VAPID Private Key"
     },
@@ -3275,7 +3275,7 @@
         "entityID": 0,
         "fieldName": "vapid_public_key",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "VAPID Public Key"
     },
@@ -3283,7 +3283,7 @@
         "entityID": 0,
         "fieldName": "banner_text_family",
         "helpText": "Check the <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> for a detailed description of how to enter this translation.",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Unsere Familie — {years_count}, {months_count} und {days_count} voller gemeinsamer Erinnerungen. Das sind {diffInMonthsTotal} Monate, {diffInWeeksTotal} Wochen oder {diffInDays} Tage, die wir zusammen gewachsen sind."
     },
@@ -3291,7 +3291,7 @@
         "entityID": 0,
         "fieldName": "banner_text_friends",
         "helpText": "Check the <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> for a detailed description of how to enter this translation.",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Freunde seit {years_count}, {months_count} und {days_count}. Das sind {diffInMonthsTotal} Monate, {diffInWeeksTotal} Wochen oder {diffInDays} Tage voller unvergesslicher Momente."
     },
@@ -3299,7 +3299,7 @@
         "entityID": 0,
         "fieldName": "Uploading...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Wird hochgeladen..."
     },
@@ -3307,7 +3307,7 @@
         "entityID": 0,
         "fieldName": "Extracting ZIP...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "ZIP wird entpackt..."
     },
@@ -3315,7 +3315,7 @@
         "entityID": 0,
         "fieldName": "Importing items...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einträge werden importiert..."
     },
@@ -3323,7 +3323,7 @@
         "entityID": 0,
         "fieldName": "Copying media files...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Mediendateien werden kopiert..."
     },
@@ -3331,7 +3331,7 @@
         "entityID": 0,
         "fieldName": "Import completed successfully! Redirecting...",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Import erfolgreich abgeschlossen! Weiterleitung..."
     },
@@ -3339,7 +3339,7 @@
         "entityID": 0,
         "fieldName": "Import failed",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Import fehlgeschlagen"
     },
@@ -3347,7 +3347,7 @@
         "entityID": 0,
         "fieldName": "Passwords do not match",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwörter stimmen nicht überein"
     },
@@ -3355,7 +3355,7 @@
         "entityID": 0,
         "fieldName": "Password must be at least 6 characters",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort muss mindestens 6 Zeichen lang sein"
     },
@@ -3363,7 +3363,7 @@
         "entityID": 0,
         "fieldName": "Invalid color code",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ungültiger Farbcode"
     },
@@ -3371,7 +3371,7 @@
         "entityID": 0,
         "fieldName": "Export completed",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Export abgeschlossen"
     },
@@ -3379,7 +3379,7 @@
         "entityID": 0,
         "fieldName": "Export failed",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Export fehlgeschlagen"
     },
@@ -3387,7 +3387,7 @@
         "entityID": 0,
         "fieldName": "Items imported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einträge importiert"
     },
@@ -3395,7 +3395,7 @@
         "entityID": 0,
         "fieldName": "Skipped (duplicate)",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersprungen (Duplikat)"
     },
@@ -3403,7 +3403,7 @@
         "entityID": 0,
         "fieldName": "Skipped (error)",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Übersprungen (Fehler)"
     },
@@ -3411,7 +3411,7 @@
         "entityID": 0,
         "fieldName": "Users imported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzer importiert"
     },
@@ -3419,7 +3419,7 @@
         "entityID": 0,
         "fieldName": "User settings imported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Benutzereinstellungen importiert"
     },
@@ -3427,7 +3427,7 @@
         "entityID": 0,
         "fieldName": "Reminders imported",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erinnerungen importiert"
     },
@@ -3435,7 +3435,7 @@
         "entityID": 0,
         "fieldName": "Media files copied",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Mediendateien kopiert"
     },
@@ -3443,7 +3443,7 @@
         "entityID": 0,
         "fieldName": "Settings updated",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einstellungen aktualisiert"
     },
@@ -3451,7 +3451,7 @@
         "entityID": 0,
         "fieldName": "Not synced",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Nicht synchronisiert"
     },
@@ -3459,7 +3459,7 @@
         "entityID": 0,
         "fieldName": "Sync now",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Jetzt synchronisieren"
     },
@@ -3467,7 +3467,7 @@
         "entityID": 0,
         "fieldName": "All pending posts deleted",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle ausstehenden Beiträge gelöscht"
     },
@@ -3475,7 +3475,7 @@
         "entityID": 0,
         "fieldName": "Post deleted",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beitrag gelöscht"
     },
@@ -3483,7 +3483,7 @@
         "entityID": 0,
         "fieldName": "No pending posts",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine ausstehenden Beiträge"
     },
@@ -3491,7 +3491,7 @@
         "entityID": 0,
         "fieldName": "Delete post",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beitrag löschen"
     },
@@ -3499,7 +3499,7 @@
         "entityID": 0,
         "fieldName": "This post has not been synced yet. Delete? The data will be lost.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dieser Beitrag wurde noch nicht synchronisiert. Löschen? Die Daten gehen verloren."
     },
@@ -3507,7 +3507,7 @@
         "entityID": 0,
         "fieldName": "All editions",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle Editionen"
     },
@@ -3515,7 +3515,7 @@
         "entityID": 0,
         "fieldName": "Edition",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Edition"
     },
@@ -3523,7 +3523,7 @@
         "entityID": 0,
         "fieldName": "Data Management",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Datenverwaltung"
     },
@@ -3531,7 +3531,7 @@
         "entityID": 0,
         "fieldName": "Export data",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Daten exportieren"
     },
@@ -3539,7 +3539,7 @@
         "entityID": 0,
         "fieldName": "Download all items and media as ZIP",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle Einträge und Medien als ZIP herunterladen"
     },
@@ -3547,7 +3547,7 @@
         "entityID": 0,
         "fieldName": "Download",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Herunterladen"
     },
@@ -3555,7 +3555,7 @@
         "entityID": 0,
         "fieldName": "Import data",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Daten importieren"
     },
@@ -3563,7 +3563,7 @@
         "entityID": 0,
         "fieldName": "Import items and media from ZIP (v2 only)",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Einträge und Medien aus ZIP importieren (nur v2)"
     },
@@ -3571,7 +3571,7 @@
         "entityID": 0,
         "fieldName": "Import Summary",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Import-Zusammenfassung"
     },
@@ -3579,7 +3579,7 @@
         "entityID": 0,
         "fieldName": "Change password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort ändern"
     },
@@ -3587,7 +3587,7 @@
         "entityID": 0,
         "fieldName": "Update your password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Aktualisiere dein Passwort"
     },
@@ -3595,7 +3595,7 @@
         "entityID": 0,
         "fieldName": "Appearance",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Darstellung"
     },
@@ -3603,7 +3603,7 @@
         "entityID": 0,
         "fieldName": "Accent color",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Akzentfarbe"
     },
@@ -3611,7 +3611,7 @@
         "entityID": 0,
         "fieldName": "Delete all pending posts",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle ausstehenden Beiträge löschen"
     },
@@ -3619,7 +3619,7 @@
         "entityID": 0,
         "fieldName": "Remove all offline posts that have not been synced yet",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle Offline-Beiträge entfernen, die noch nicht synchronisiert wurden"
     },
@@ -3627,7 +3627,7 @@
         "entityID": 0,
         "fieldName": "Current password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Aktuelles Passwort"
     },
@@ -3635,7 +3635,7 @@
         "entityID": 0,
         "fieldName": "New password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Neues Passwort"
     },
@@ -3643,7 +3643,7 @@
         "entityID": 0,
         "fieldName": "Confirm password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort bestätigen"
     },
@@ -3651,7 +3651,7 @@
         "entityID": 0,
         "fieldName": "Or import data from a previous v2 instance",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Oder Daten aus einer vorherigen v2-Instanz importieren"
     },
@@ -3659,7 +3659,7 @@
         "entityID": 0,
         "fieldName": "Family founding date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Familiengründungsdatum"
     },
@@ -3667,7 +3667,7 @@
         "entityID": 0,
         "fieldName": "Founding date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Gründungsdatum"
     },
@@ -3675,7 +3675,7 @@
         "entityID": 0,
         "fieldName": "Incorrect password",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Falsches Passwort"
     },
@@ -3683,7 +3683,7 @@
         "entityID": 0,
         "fieldName": "Password updated",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passwort aktualisiert"
     },
@@ -3691,7 +3691,7 @@
         "entityID": 0,
         "fieldName": "An error occurred during import.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Import ist ein Fehler aufgetreten."
     },
@@ -3699,7 +3699,7 @@
         "entityID": 0,
         "fieldName": "Invalid or corrupted ZIP file",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Ungültige oder beschädigte ZIP-Datei"
     },
@@ -3707,7 +3707,7 @@
         "entityID": 0,
         "fieldName": "family_founding_date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Familiengründungsdatum"
     },
@@ -3715,7 +3715,7 @@
         "entityID": 0,
         "fieldName": "friend_group_founding_date",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Gründungsdatum der Freundesgruppe"
     },
@@ -3723,7 +3723,7 @@
         "entityID": 0,
         "fieldName": "family_banner_image",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Familien-Bannerbild"
     },
@@ -3731,7 +3731,7 @@
         "entityID": 0,
         "fieldName": "friends_banner_image",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "setting",
         "translatedText": "Freunde-Bannerbild"
     },
@@ -3739,7 +3739,7 @@
         "entityID": 0,
         "fieldName": "accent_color",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "user_setting",
         "translatedText": "Akzentfarbe"
     },
@@ -3747,7 +3747,7 @@
         "entityID": 0,
         "fieldName": "Delete passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey löschen"
     },
@@ -3755,7 +3755,7 @@
         "entityID": 0,
         "fieldName": "Passkeys are not available via IP address",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkeys sind über IP-Adressen nicht verfügbar"
     },
@@ -3763,7 +3763,7 @@
         "entityID": 0,
         "fieldName": "WebAuthn is not supported in this browser",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "WebAuthn wird in diesem Browser nicht unterstützt"
     },
@@ -3771,7 +3771,7 @@
         "entityID": 0,
         "fieldName": "Name for this passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Name für diesen Passkey"
     },
@@ -3779,7 +3779,7 @@
         "entityID": 0,
         "fieldName": "My Passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Mein Passkey"
     },
@@ -3787,7 +3787,7 @@
         "entityID": 0,
         "fieldName": "Passkey login is not available when accessing via IP address. Use localhost or a domain name.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey-Anmeldung ist über IP-Adressen nicht verfügbar. Verwende localhost oder einen Domainnamen."
     },
@@ -3795,7 +3795,7 @@
         "entityID": 0,
         "fieldName": "Passkey login failed.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey-Anmeldung fehlgeschlagen."
     },
@@ -3803,7 +3803,7 @@
         "entityID": 0,
         "fieldName": "Passkeys",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkeys"
     },
@@ -3811,7 +3811,7 @@
         "entityID": 0,
         "fieldName": "Created",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Erstellt"
     },
@@ -3819,7 +3819,7 @@
         "entityID": 0,
         "fieldName": "No passkeys configured",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine Passkeys konfiguriert"
     },
@@ -3827,7 +3827,7 @@
         "entityID": 0,
         "fieldName": "Add passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey hinzufügen"
     },
@@ -3835,7 +3835,7 @@
         "entityID": 0,
         "fieldName": "Rename passkey",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey umbenennen"
     },
@@ -3843,7 +3843,7 @@
         "entityID": 0,
         "fieldName": "Name",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Name"
     },
@@ -3851,7 +3851,7 @@
         "entityID": 0,
         "fieldName": "Passkey not recognized. It may have been deleted.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey nicht erkannt. Er wurde möglicherweise gelöscht."
     },
@@ -3859,7 +3859,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while loading passkeys.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Laden der Passkeys ist ein Fehler aufgetreten."
     },
@@ -3867,7 +3867,7 @@
         "entityID": 0,
         "fieldName": "Name is required",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Name ist erforderlich"
     },
@@ -3875,7 +3875,7 @@
         "entityID": 0,
         "fieldName": "No passkey registration data found. Please register a passkey first.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Keine Passkey-Registrierungsdaten gefunden. Bitte registriere zuerst einen Passkey."
     },
@@ -3883,7 +3883,7 @@
         "entityID": 0,
         "fieldName": "Passkey created successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey erfolgreich erstellt"
     },
@@ -3891,7 +3891,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while creating the passkey.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Erstellen des Passkeys ist ein Fehler aufgetreten."
     },
@@ -3899,7 +3899,7 @@
         "entityID": 0,
         "fieldName": "Passkey renamed successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey erfolgreich umbenannt"
     },
@@ -3907,7 +3907,7 @@
         "entityID": 0,
         "fieldName": "Passkey not found",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey nicht gefunden"
     },
@@ -3915,7 +3915,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while renaming the passkey.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Umbenennen des Passkeys ist ein Fehler aufgetreten."
     },
@@ -3923,7 +3923,7 @@
         "entityID": 0,
         "fieldName": "Cannot delete the last passkey when no password is set.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Der letzte Passkey kann nicht gelöscht werden, wenn kein Passwort gesetzt ist."
     },
@@ -3931,7 +3931,7 @@
         "entityID": 0,
         "fieldName": "Passkey deleted successfully",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Passkey erfolgreich gelöscht"
     },
@@ -3939,7 +3939,7 @@
         "entityID": 0,
         "fieldName": "An error occurred while deleting the passkey.",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Beim Löschen des Passkeys ist ein Fehler aufgetreten."
     },
@@ -3947,7 +3947,7 @@
         "entityID": 0,
         "fieldName": "System",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "System"
     },
@@ -3955,7 +3955,7 @@
         "entityID": 0,
         "fieldName": "Setting",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Einstellung"
     },
@@ -3963,7 +3963,7 @@
         "entityID": 0,
         "fieldName": "Reminder",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerung"
     },
@@ -3971,7 +3971,7 @@
         "entityID": 0,
         "fieldName": "Manage Lists",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Listen verwalten"
     },
@@ -3979,7 +3979,7 @@
         "entityID": 0,
         "fieldName": "Manage Translations",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Übersetzungen verwalten"
     },
@@ -3987,7 +3987,7 @@
         "entityID": 0,
         "fieldName": "Access Admin Panel",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Admin-Bereich"
     },
@@ -3995,7 +3995,7 @@
         "entityID": 0,
         "fieldName": "Share Items",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Elemente teilen"
     },
@@ -4003,7 +4003,7 @@
         "entityID": 0,
         "fieldName": "View",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Ansehen"
     },
@@ -4011,7 +4011,7 @@
         "entityID": 0,
         "fieldName": "Create",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erstellen"
     },
@@ -4019,7 +4019,7 @@
         "entityID": 0,
         "fieldName": "View Reminders",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Erinnerungen ansehen"
     },
@@ -4027,7 +4027,7 @@
         "entityID": 0,
         "fieldName": "Upload failed",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Upload fehlgeschlagen"
     },
@@ -4035,7 +4035,7 @@
         "entityID": 0,
         "fieldName": "file(s) could not be uploaded:",
         "helpText": "",
-        "languageCode": "de",
+        "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Datei(en) konnten nicht hochgeladen werden:"
     }

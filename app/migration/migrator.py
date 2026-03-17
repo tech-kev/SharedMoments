@@ -532,7 +532,7 @@ def _step_migrate_users(status, dry_run, prefix):
                 session.add(UserRole(userID=new_user.id, roleID=role.id))
 
             from app.models import UserSetting
-            session.add(UserSetting(userID=new_user.id, name='language', value='en', icon='language', edition='all', category='about', type='text'))
+            session.add(UserSetting(userID=new_user.id, name='language', value='en-US', icon='language', edition='all', category='about', type='text'))
             session.add(UserSetting(userID=new_user.id, name='darkmode', value='FALSE', icon='dark_mode', edition='all', category='about', type='text'))
 
             users_created.append(user_key)

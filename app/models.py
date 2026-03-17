@@ -188,7 +188,7 @@ class Translation(Base):
     id = Column(Integer, primary_key=True)
     entityType = Column(String(50), nullable=False)  # Z.B. 'Role', 'Article'
     entityID = Column(Integer, nullable=False)       # ID der zugehörigen Entität
-    languageCode = Column(String(2), nullable=False) # 'en', 'de', etc.
+    languageCode = Column(String(5), nullable=False) # 'en-US', 'de-DE', etc.
     fieldName = Column(String(50), nullable=False)   # Z.B. 'description', 'title'
     translatedText = Column(Text, nullable=False)            # Der übersetzte Text
     helpText = Column(Text)

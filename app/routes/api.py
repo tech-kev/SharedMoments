@@ -1930,7 +1930,7 @@ def migration_set_language():
         if not review_setting or review_setting.value != 'False':
             return jsonify({'status': 'error', 'message': 'Migration review is not active'}), 403
 
-        language = request.form.get('language', 'en').strip()
+        language = request.form.get('language', 'en-US').strip()
         users = db_session.query(User).filter(User.id > 1).all()
         for user in users:
             lang_setting = db_session.query(UserSetting).filter(
@@ -1983,7 +1983,7 @@ def migration_review_complete():
         for user in users:
             for setting_name, default_value, icon in [
                 ('darkmode', 'FALSE', 'dark_mode'),
-                ('language', os.environ.get('LANG', 'en'), 'language'),
+                ('language', os.environ.get('LANG', 'en-US'), 'language'),
             ]:
                 existing = db_session.query(UserSetting).filter(
                     UserSetting.userID == user.id, UserSetting.name == setting_name

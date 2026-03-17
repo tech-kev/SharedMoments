@@ -20,9 +20,9 @@ def _get_user_lang(user_id):
     """Get the language setting for a user, defaulting to 'en'."""
     try:
         setting = get_user_setting(user_id, 'language')
-        return setting.value if setting else 'en'
+        return setting.value if setting else 'en-US'
     except Exception:
-        return 'en'
+        return 'en-US'
 
 _scheduler = None
 

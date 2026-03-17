@@ -76,7 +76,7 @@ def _generate_banner_text_couples():
     # Schreibe den ersten Buchstaben klein, damit das in den Text passt
     relationship_status = relationship_status[0].lower() + relationship_status[1:]
 
-    if relationship_status_id == 1 and os.environ['LANG'] == 'de': # zusammen klingt im Text besser
+    if relationship_status_id == 1 and os.environ['LANG'].startswith('de'): # zusammen klingt im Text besser
         relationship_status = 'zusammen'
 
     if relationship_status_id == 1 or relationship_status_id == 4 or relationship_status_id == 5: # in einer Beziehung, in einer offenen Beziehung, in einer komplizierten Beziehung
@@ -271,7 +271,7 @@ def get_texts_for_translations():
 
 def find_unmatched_translations():
     texts_for_translations = get_texts_for_translations()
-    all_translations = get_translations_by_language('en') # Lade alle Standardübersetzungen
+    all_translations = get_translations_by_language('en-US') # Lade alle Standardübersetzungen
 
     # Erstelle ein Set für die Kombination aus entityType und fieldName für all_translations
     translations_set = set((item.entityType, item.fieldName) for item in all_translations)

@@ -12,7 +12,7 @@ app.config.from_object('config.Config')
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 # Konfiguration der Sprache
-app.config['DEFAULT_LOCALE'] = 'en'
+app.config['DEFAULT_LOCALE'] = 'en-US'
 app.config['SUPPORTED_LOCALES'] = get_supported_languages() # Lade die unterstützten Sprachen aus der Datenbank
 
 bcrypt = Bcrypt(app)

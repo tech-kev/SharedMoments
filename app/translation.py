@@ -39,7 +39,7 @@ def set_locale(userID=None):
             locale = get_user_setting(userID, 'language').value
 
         if locale is None:
-            locale = 'en'
+            locale = 'en-US'
 
         session['lang'] = locale
         os.environ['LANG'] = locale

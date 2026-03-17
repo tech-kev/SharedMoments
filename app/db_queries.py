@@ -142,15 +142,15 @@ def init_db():
 
 
         # Default user setting
-        session.add(UserSetting(userID=system_user.id, name='language', value='en'))
+        session.add(UserSetting(userID=system_user.id, name='language', value='en-US'))
 
         # Seed translations for list type titles
         list_type_translations = {
-            'Home':        {'en': 'Home',        'de': 'Home'},
-            'Moments':     {'en': 'Moments',     'de': 'Momente'},
-            'Movie List':  {'en': 'Movie List',  'de': 'Filmliste'},
-            'Bucket List': {'en': 'Bucket List', 'de': 'Bucketliste'},
-            'Countdown':   {'en': 'Countdown',   'de': 'Countdown'},
+            'Home':        {'en-US': 'Home',        'de-DE': 'Home'},
+            'Moments':     {'en-US': 'Moments',     'de-DE': 'Momente'},
+            'Movie List':  {'en-US': 'Movie List',  'de-DE': 'Filmliste'},
+            'Bucket List': {'en-US': 'Bucket List', 'de-DE': 'Bucketliste'},
+            'Countdown':   {'en-US': 'Countdown',   'de-DE': 'Countdown'},
         }
         for field_name, langs in list_type_translations.items():
             for lang_code, text in langs.items():
@@ -1059,7 +1059,7 @@ def ensure_countdown_list_type():
             if admin_role:
                 session.add(RolePermission(roleID=admin_role.id, permissionID=perm.id))
         # Seed translations
-        for lang_code, text in [('en', 'Countdown'), ('de', 'Countdown')]:
+        for lang_code, text in [('en-US', 'Countdown'), ('de-DE', 'Countdown')]:
             exists = session.query(Translation).filter(
                 Translation.entityType == 'ui', Translation.entityID == 0,
                 Translation.languageCode == lang_code, Translation.fieldName == 'Countdown'
@@ -1183,14 +1183,14 @@ def get_translation(fieldName, languageCode):
 def get_translation_for_entity(entityType, entityID, languageCode):
     session = SessionLocal()
     try:
-        # Normalize language code (e.g. "en_US.UTF-8" -> "en")
-        lang = languageCode.split('_')[0].split('.')[0] if languageCode else 'en'
+        # Normalize language code (e.g. "en_US.UTF-8" -> "en_US")
+        lang = languageCode.split('.')[0] if languageCode else 'en-US'
         translation = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == lang).first()
         if translation:
             return translation.translatedText
         # Fallback to English
-        if lang != 'en':
-            translation = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == 'en').first()
+        if lang != 'en-US':
+            translation = session.query(Translation).filter(Translation.entityType == entityType, Translation.entityID == entityID, Translation.languageCode == 'en-US').first()
             if translation:
                 return translation.translatedText
         return f'{entityType}_{entityID}'
@@ -1213,14 +1213,14 @@ def create_new_translations(new_translations_array):
             existing = session.query(Translation).filter(
                 Translation.entityType == translation['entityType'],
                 Translation.entityID == 0,
-                Translation.languageCode == 'en',
+                Translation.languageCode == 'en-US',
                 Translation.fieldName == translation['fieldName']
             ).first()
             if not existing:
                 new_translation = Translation(
                     entityType=translation['entityType'],
                     entityID=0,
-                    languageCode='en',
+                    languageCode='en-US',
                     fieldName=translation['fieldName'],
                     translatedText="",
                     helpText=""
@@ -1235,7 +1235,7 @@ def create_new_translations(new_translations_array):
 def create_new_language(languageCode):
     session = SessionLocal()
     try:
-        fields = session.query(Translation).filter(Translation.languageCode == 'en').all()
+        fields = session.query(Translation).filter(Translation.languageCode == 'en-US').all()
         for field in fields:
             new_translation = Translation(
                 entityType=field.entityType,
@@ -1667,8 +1667,8 @@ def log_notification(notification_key, reminder_id=None):
 def approve_new_translations_to_all_languages():
     session = SessionLocal()
     try:
-        all_translations = session.query(Translation).filter(Translation.languageCode == 'en').all()
-        all_languages = [lang[0] for lang in session.query(Translation.languageCode).filter(Translation.languageCode != 'en').distinct().all()]
+        all_translations = session.query(Translation).filter(Translation.languageCode == 'en-US').all()
+        all_languages = [lang[0] for lang in session.query(Translation.languageCode).filter(Translation.languageCode != 'en-US').distinct().all()]
 
         for translation in all_translations:
             for lang_code in all_languages:
