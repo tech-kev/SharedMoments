@@ -207,7 +207,7 @@ function getFileContentType (dataUrl=null, filename=null) {
          return 'unknown';
       }
    } else {
-      console.log('Keine Daten oder Dateinamen übergeben');
+      // no data or filename provided
       return
    }
    
@@ -716,6 +716,7 @@ function openCreateDialog() {
    document.getElementById("div-create-home-item-date-created").value = "";
    document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
    document.getElementById("file-input-create-home-item").value = "";
+   document.getElementById("div-toggle-select-create").style.display = "none";
    window.uploadedUrls = "";
    callUi('#dialog-create-new-home-item');
 }
@@ -826,6 +827,13 @@ async function generatePreviewForFileInput(event, mode) {
       hint.style.cssText = 'text-align: center; opacity: 0.7; margin-top: 8px; grid-column: 1 / -1;';
       hint.innerHTML = '<i style="font-size: 14px; vertical-align: middle;">touch_app</i> ' + _('Click images to change the order');
       previewGrid.appendChild(hint);
+   }
+
+   // Toggle-Button anzeigen wenn mehr als 1 Bild
+   if (files.length > 1) {
+      const toggleId = mode === "edit" ? 'div-toggle-select-edit' : 'div-toggle-select-create';
+      const toggleDiv = document.getElementById(toggleId);
+      if (toggleDiv) toggleDiv.style.display = '';
    }
 
    if (mode === "create") {
@@ -949,6 +957,33 @@ function findContainerByIndex(previewGrid, imgIndex) {
    return previewGrid.querySelector(`.preview-image-container[data-index="${imgIndex}"]`);
 }
 
+function toggleSelectAllImages(btn) {
+   const containers = document.querySelectorAll('.preview-image-container');
+   if (selectedImages.length > 0) {
+      // Deselect all
+      containers.forEach(container => {
+         const chip = container.querySelector('.image-chip');
+         const img = container.querySelector('.preview-image');
+         if (chip) { chip.style.display = 'none'; chip.textContent = ''; }
+         if (img) img.style.border = '1px solid var(--outline)';
+      });
+      selectedImages = [];
+      btn.innerHTML = '<i style="font-size: 14px; vertical-align: middle;">select_all</i> ' + _('Select all');
+   } else {
+      // Select all
+      selectedImages = [];
+      containers.forEach(container => {
+         const idx = parseInt(container.dataset.index, 10);
+         selectedImages.push(idx);
+         const chip = container.querySelector('.image-chip');
+         const img = container.querySelector('.preview-image');
+         if (chip) { chip.textContent = selectedImages.length; chip.style.display = ''; }
+         if (img) img.style.border = '2px solid var(--primary)';
+      });
+      btn.innerHTML = '<i style="font-size: 14px; vertical-align: middle;">deselect</i> ' + _('Deselect all');
+   }
+}
+
 // Auswahl eines Preview-Bildes handeln
 function selectImage(event) {
    const img = event.target;
@@ -958,8 +993,6 @@ function selectImage(event) {
 
    // Finde das übergeordnete Preview-Grid, um nur Container innerhalb desselben Dialogs zu suchen
    const previewGrid = container.closest('[id$="preview-grid"]');
-
-   console.log(`Bild mit Index ${index} ausgewählt`);
 
    const existingIndex = selectedImages.indexOf(index);
    if (existingIndex === -1) {
@@ -972,7 +1005,6 @@ function selectImage(event) {
       chip.style.display = "none";
       img.style.border = "1px solid var(--outline)";
 
-      // Aktualisiere die Reihenfolge der Chips — suche Container per data-index
       selectedImages.forEach((imgIndex, newIndex) => {
          const targetContainer = findContainerByIndex(previewGrid, imgIndex);
          if (targetContainer) {
@@ -980,6 +1012,15 @@ function selectImage(event) {
             if (currentChip) currentChip.textContent = newIndex + 1;
          }
       });
+   }
+
+   // Toggle-Button Text synchronisieren
+   const toggleId = previewGrid.id.includes('edit') ? 'div-toggle-select-edit' : 'div-toggle-select-create';
+   const toggleBtn = document.getElementById(toggleId)?.querySelector('button');
+   if (toggleBtn) {
+      toggleBtn.innerHTML = selectedImages.length > 0
+         ? '<i style="font-size: 14px; vertical-align: middle;">deselect</i> ' + _('Deselect all')
+         : '<i style="font-size: 14px; vertical-align: middle;">select_all</i> ' + _('Select all');
    }
 }
 
@@ -1056,17 +1097,13 @@ async function uploadImages(mode) {
    let existingImages = []; // Liste zum Speichern der bereits vorhandenen Bilder
    let fileInputId, hiddenInputId; // Variablen zum Speichern der IDs der File-Inputs
 
-   console.log(`Upload gestartet im ${mode}-Modus`);
 
    if (mode === "create") { 
        fileInputId = "file-input-create-home-item";
-       console.log("Modus ist 'create'. Verwende file-input-create-home-item");
    } else if (mode === "edit") {
        fileInputId = "file-input-edit-home-item";
        hiddenInputId = "input-hidden-edit-item-contentURLs";
        existingImages = document.getElementById(hiddenInputId).value.split(";").filter(Boolean);
-       console.log("Modus ist 'edit'. Verwende file-input-edit-home-item und input-hidden-edit-item-contentURLs");
-       console.log(`Vorhandene Bilder: ${existingImages}`);
    }
 
    const fileInput = document.getElementById(fileInputId); // Hole das File-Input-Element
@@ -1074,7 +1111,6 @@ async function uploadImages(mode) {
    const previewGridId = mode === "create" ? "div-create-home-item-preview-grid" : "div-edit-home-item-preview-grid";
    const previewGridEl = document.getElementById(previewGridId);
 
-   console.log(`Anzahl ausgewählter Bilder: ${selectedImages.length}`);
 
    // Calculate total size of all files to upload
    let totalBytes = 0;
@@ -1099,7 +1135,6 @@ async function uploadImages(mode) {
       const imgElement = targetContainer ? targetContainer.querySelector("img") : null; // Hole das Bild-Element
       const file = fileInput.files[index]; // Hole die Datei aus dem File-Input
 
-      console.log(`Verarbeite Bild mit Index ${index}`);
 
       if (mode === "create") {
 
@@ -1127,7 +1162,6 @@ async function uploadImages(mode) {
 
             if (result.status === "success") {
                uploadedImages.push(result.data.filename);
-               console.log(`Bild mit Index ${index} hochgeladen`);
             } else {
                showSnackbar('home', true, 'error', result.message, result, true);
                errorOnUpload = true;
@@ -1172,8 +1206,7 @@ async function uploadImages(mode) {
 
                if (result.status === "success") {
                   uploadedImages.push(result.data.filename);
-                  console.log(`Bild mit Index ${index} hochgeladen`);
-               } else {
+                  } else {
                   showSnackbar('home', true, 'error', result.message, result, true);
                   errorOnUpload = true;
                   failedUploadFiles.push(file);
@@ -1190,7 +1223,6 @@ async function uploadImages(mode) {
    // URLs durch Semikolons getrennt speichern
    const finalImageURLs = uploadedImages.join(";");
 
-   console.log(`Finale Bild-URLs: ${finalImageURLs}`);
 
    // Speichern der URLs in den Hidden-Input
    window.uploadedUrls = finalImageURLs;
@@ -1213,6 +1245,8 @@ function selectItemsStarted(event) {
          handleLongPress(id); // Behandle das lange Drücken
          const createFab = document.getElementById("div-fab-create-new-home-item");
          if (createFab) createFab.style.display = "none"; // Verstecke den FAB
+         const bttBtn = document.getElementById("btn-back-to-top");
+         if (bttBtn) bttBtn.style.display = "none";
          document.getElementById("footer-bottom-bar-home-items").style.display = ""; // Zeige die Auswahlleiste
       }, 500); // Warte 500ms, bevor das lange Drücken erkannt wird
    } else {
@@ -1230,6 +1264,8 @@ function selectItemsStopped(event) {
       document.getElementById("footer-bottom-bar-home-items").style.display = "none"; // Verstecke die Auswahlleiste
       const createFab = document.getElementById("div-fab-create-new-home-item");
       if (createFab) createFab.style.display = ""; // Zeige den FAB
+      const bttBtn = document.getElementById("btn-back-to-top");
+      if (bttBtn) bttBtn.style.display = "";
    }
 }
 

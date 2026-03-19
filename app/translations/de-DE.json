@@ -4046,5 +4046,21 @@
         "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Dieses Video kann in deinem Browser nicht abgespielt werden (nicht unterstützter Codec). Versuche es in einem anderen Browser zu öffnen oder lade es herunter."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Deselect all",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "static",
+        "translatedText": "Alle abwählen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Select all",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "static",
+        "translatedText": "Alle auswählen"
     }
 ]

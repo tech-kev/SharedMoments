@@ -4046,5 +4046,21 @@
         "languageCode": "en-US",
         "entityType": "static",
         "translatedText": "This video cannot be played in your browser (unsupported codec). Try opening it in a different browser or download it."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Deselect all",
+        "helpText": "",
+        "languageCode": "en-US",
+        "entityType": "static",
+        "translatedText": "Deselect all"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Select all",
+        "helpText": "",
+        "languageCode": "en-US",
+        "entityType": "static",
+        "translatedText": "Select all"
     }
 ]

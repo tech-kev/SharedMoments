@@ -42,15 +42,20 @@
                 <label>{{ _('Images or videos') }}</label>
             </div>
         </div>
-        <div class="s12">
-            <label class="checkbox">
-                <input type="checkbox" id="checkbox-edit-home-item-all-editions" {{ 'checked' if item.edition == 'all' or not item.edition }}>
-                <span>{{ _('Show in all editions') }}</span>
-            </label>
-        </div>
     </div>
     <input type="hidden" id="input-hidden-edit-item-contentURLs" value="{{ item.contentURL }}">
+    <div class="right-align" id="div-toggle-select-edit" style="display:none; padding: 0 16px;">
+       <button class="chip no-border small round" onclick="toggleSelectAllImages(this)">
+          <i style="font-size: 14px; vertical-align: middle;">deselect</i> {{ _('Deselect all') }}
+       </button>
+    </div>
     <div class="grid center-align" id="div-edit-home-item-preview-grid">
         <!-- Hier kommen die Vorschaubilder dynamisch hin -->
+    </div>
+    <div class="padding">
+        <label class="checkbox">
+            <input type="checkbox" id="checkbox-edit-home-item-all-editions" {{ 'checked' if item.edition == 'all' or not item.edition }}>
+            <span>{{ _('Show in all editions') }}</span>
+        </label>
     </div>
 </dialog>
