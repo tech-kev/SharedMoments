@@ -253,7 +253,7 @@
 
    <!-- FAB um neuen Eintrag zu erstellen -->
    {% if has_list_permission('Create', list_type_title) %}
-   <div id="div-fab-create-new-home-item" class="fixed bottom right" style="margin-right: 8px;margin-bottom: 16px;" onclick="callUi('#dialog-create-new-home-item')">
+   <div id="div-fab-create-new-home-item" class="fixed bottom right" style="margin-right: 8px;margin-bottom: 16px;z-index: 2;" onclick="openCreateDialog()">
       <button class="square round extra" style="box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);">
       <i>add</i>
       </button>

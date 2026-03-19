@@ -1921,11 +1921,11 @@
     },
     {
         "entityID": 0,
-        "fieldName": "Your browser does not support this video format. You can still upload it, but it will only play on supported devices.",
+        "fieldName": "Your browser does not support this video format (e.g. HEVC/H.265 codec). You can still upload it, but it will only play on supported devices.",
         "helpText": "",
         "languageCode": "de-DE",
         "entityType": "static",
-        "translatedText": "Dein Browser unterstützt dieses Videoformat nicht. Du kannst es trotzdem hochladen, aber es wird nur auf unterstützten Geräten abgespielt."
+        "translatedText": "Dein Browser unterstützt dieses Videoformat nicht (z.B. HEVC/H.265 Codec). Du kannst es trotzdem hochladen, aber es wird nur auf unterstützten Geräten abgespielt."
     },
     {
         "entityID": 0,
@@ -4038,5 +4038,13 @@
         "languageCode": "de-DE",
         "entityType": "ui",
         "translatedText": "Datei(en) konnten nicht hochgeladen werden:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This video cannot be played in your browser (unsupported codec). Try opening it in a different browser or download it.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "static",
+        "translatedText": "Dieses Video kann in deinem Browser nicht abgespielt werden (nicht unterstützter Codec). Versuche es in einem anderen Browser zu öffnen oder lade es herunter."
     }
 ]

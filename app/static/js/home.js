@@ -194,7 +194,7 @@ function getFileContentType (dataUrl=null, filename=null) {
          return mimeType;
       }
    } else if (filename) {
-      const extension = filename.split('.').pop();
+      const extension = filename.split('.').pop().toLowerCase();
       if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
          return 'image';
       } else if (['mp4', 'webm', 'mov'].includes(extension)) {
@@ -682,6 +682,8 @@ function getHomeItem(selectedArticles) {
             const result = await response.json();
             btnReset(btn);
             if (result.status === "success") {
+               selectedImages = [];
+               selectedFileBuffers = [];
                document.getElementById("div-render-edit-home-items").innerHTML = result.data.renderd_item; // Edit-dialog mit dem Item füllen
                generatePreviewForFileInput(null, "edit"); // Vorschau für die Bilder generieren
                callUi("#dialog-edit-home-item"); // Edit-dialog anzeigen
@@ -705,6 +707,18 @@ function getHomeItem(selectedArticles) {
 // Globale Variable für die Reihenfolge der ausgewählten Bilder
 let selectedImages = [];
 let selectedFileBuffers = []; // Pre-read file data for offline support
+
+function openCreateDialog() {
+   selectedImages = [];
+   selectedFileBuffers = [];
+   document.getElementById("div-create-home-item-title").value = "";
+   document.getElementById("textarea-create-home-item-content").value = "";
+   document.getElementById("div-create-home-item-date-created").value = "";
+   document.getElementById("div-create-home-item-preview-grid").innerHTML = "";
+   document.getElementById("file-input-create-home-item").value = "";
+   window.uploadedUrls = "";
+   callUi('#dialog-create-new-home-item');
+}
 
 // Funktion zum Generieren der Vorschau für das File-Input
 async function generatePreviewForFileInput(event, mode) {
@@ -754,10 +768,11 @@ async function generatePreviewForFileInput(event, mode) {
       selectedFileBuffers = [];
    }
 
+   const renderPromises = [];
    for (let i = 0; i < files.length; i++) {
       const newIndex = existingImagesCount + i;
       if (mode === "create" && event) {
-         renderFile(files[i], newIndex, containerDiv);
+         renderPromises.push(renderFile(files[i], newIndex, containerDiv));
          // File sofort lesen damit die Referenz nicht verloren geht (Mobile)
          try {
             const buffer = await files[i].arrayBuffer();
@@ -769,12 +784,12 @@ async function generatePreviewForFileInput(event, mode) {
          document.getElementById('span-progress-file-new-home-item').textContent = i + 1;
          document.getElementById('span-progress-file-new-home-item-count').textContent = files.length;
       } else if (mode === "edit" && event) {
-         renderFile(files[i], newIndex, containerDiv);
+         renderPromises.push(renderFile(files[i], newIndex, containerDiv));
          document.getElementById('progress-edit-home-item').value = i / files.length * 100;
          document.getElementById('span-progress-file-edit-home-item').textContent = i + 1;
          document.getElementById('span-progress-file-edit-home-item-count').textContent = files.length;
       } else if (mode === "edit") {
-         renderImageFromURL(files[i], containerDiv);
+         renderPromises.push(renderImageFromURL(files[i], containerDiv));
          document.getElementById('progress-edit-home-item').value = i / files.length * 100;
          document.getElementById('span-progress-file-edit-home-item').textContent = i + 1;
          document.getElementById('span-progress-file-edit-home-item-count').textContent = files.length;
@@ -786,8 +801,8 @@ async function generatePreviewForFileInput(event, mode) {
       await new Promise(r => requestAnimationFrame(r)); // Warte auf nächsten Frame für UI-Update
    }
 
-   // Nach dem Rendern: Chips und Styles für auto-selektierte Bilder setzen
-   await new Promise(r => setTimeout(r, 100)); // Kurz warten damit alle async Previews (Videos) geladen sind
+   // Warte bis alle Previews (inkl. async Video-Thumbnails) fertig sind
+   await Promise.all(renderPromises);
    selectedImages.forEach((imgIndex, position) => {
       const targetContainer = findContainerByIndex(previewGrid, imgIndex);
       if (targetContainer) {
@@ -808,7 +823,7 @@ async function generatePreviewForFileInput(event, mode) {
    if (files.length > 1 && !hint) {
       hint = document.createElement('p');
       hint.className = 'reorder-hint small-text';
-      hint.style.cssText = 'text-align: center; opacity: 0.7; margin-top: 8px;';
+      hint.style.cssText = 'text-align: center; opacity: 0.7; margin-top: 8px; grid-column: 1 / -1;';
       hint.innerHTML = '<i style="font-size: 14px; vertical-align: middle;">touch_app</i> ' + _('Click images to change the order');
       previewGrid.appendChild(hint);
    }
@@ -828,16 +843,16 @@ async function generatePreviewForFileInput(event, mode) {
 // Funktion zum Rendern eines Bildes aus einer Datei
 function renderFile(file, index, containerDiv) {
    const url = URL.createObjectURL(file);
-   createPreview(url, index, containerDiv, 'create', file.name);
+   return createPreview(url, index, containerDiv, 'create', file.name);
 }
 
 // Funktion zum Rendern eines Bildes aus einer URL
 function renderImageFromURL(fileObj, containerDiv) {
    const apiUrl = "/api/v2/media/"
-   createPreview(apiUrl+fileObj.url, fileObj.index, containerDiv, 'edit');
+   return createPreview(apiUrl+fileObj.url, fileObj.index, containerDiv, 'edit');
 }
 
-// Funktion zum Erstellen der Bildvorschau
+// Funktion zum Erstellen der Bildvorschau (gibt Promise zurück)
 function createPreview(src, index, containerDiv, mode, filename) {
    // Erstelle einen Container für das Bild/Video-Thumbnail und den Chip
    const container = document.createElement("div");
@@ -856,78 +871,76 @@ function createPreview(src, index, containerDiv, mode, filename) {
       var fileType = getFileContentType(null, src);
    }
 
+   let readyPromise;
+
    if (fileType === "image") {
+       readyPromise = Promise.resolve();
        // Erstelle das Bild
        const img = document.createElement("img");
        img.className = "preview-image";
        img.src = src;
-       img.dataset.index = index; // Speichere den Index des Bildes
-       img.addEventListener("click", selectImage); // Füge einen Event-Listener hinzu, um das Bild auszuwählen
+       img.dataset.index = index;
+       img.addEventListener("click", selectImage);
 
        // Füge das Bild und den Chip dem Container hinzu
        container.appendChild(img);
        container.appendChild(chip);
    } else if (fileType === "video" || fileType === "video-mov") {
-       // Erstelle das unsichtbare Video-Element nur zur Thumbnail-Erstellung
-       const video = document.createElement("video");
-       video.src = src;
-       video.style.display = "none"; // Verstecke das Video-Element
+       readyPromise = new Promise((resolve) => {
+           const video = document.createElement("video");
+           video.src = src;
+           video.style.display = "none";
 
-       // Erstelle das Canvas für das Thumbnail
-       const canvas = document.createElement("canvas");
-       canvas.className = "video-thumbnail";
+           const canvas = document.createElement("canvas");
+           canvas.className = "video-thumbnail";
 
-       // Warte, bis das Video geladen ist
-       video.addEventListener('loadeddata', () => {
-           // Setze das Video auf 5 Sekunden (oder eine beliebige Zeit)
-           video.currentTime = 5;
+           video.addEventListener('loadeddata', () => {
+               video.currentTime = 5;
+           });
+
+           video.addEventListener('seeked', () => {
+               const context = canvas.getContext('2d');
+               canvas.width = video.videoWidth;
+               canvas.height = video.videoHeight;
+               context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+               const thumbnailImg = document.createElement('img');
+               thumbnailImg.src = canvas.toDataURL();
+               thumbnailImg.className = 'preview-image';
+               thumbnailImg.dataset.index = index;
+               thumbnailImg.addEventListener("click", selectImage);
+               container.appendChild(thumbnailImg);
+               container.appendChild(chip);
+               resolve();
+           });
+
+           video.addEventListener('error', () => {
+               const img = document.createElement("img");
+               img.className = "preview-image";
+               img.src = '/api/v2/media/static/filenotsupported.jpg';
+               img.dataset.index = index;
+               img.addEventListener("click", selectImage);
+
+               const tooltip = document.createElement("div");
+               tooltip.className = "tooltip max";
+               tooltip.textContent = _('Your browser does not support this video format (e.g. HEVC/H.265 codec). You can still upload it, but it will only play on supported devices.');
+
+               container.appendChild(img);
+               container.appendChild(tooltip);
+               container.appendChild(chip);
+               resolve();
+           });
+
+           video.load();
        });
-
-       // Wenn das Video die gewählte Zeit erreicht hat, erstelle das Thumbnail
-       video.addEventListener('seeked', () => {
-           const context = canvas.getContext('2d');
-           canvas.width = video.videoWidth;
-           canvas.height = video.videoHeight;
-
-           // Zeichne den aktuellen Frame auf das Canvas
-           context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-           // Erstelle ein Bild-Element mit dem generierten Thumbnail
-           const thumbnailImg = document.createElement('img');
-           thumbnailImg.src = canvas.toDataURL(); // Data URL des Thumbnails
-           thumbnailImg.className = 'preview-image';
-           thumbnailImg.dataset.index = index; // Speichere den Index des Bildes
-           thumbnailImg.addEventListener("click", selectImage); // Füge einen Event-Listener hinzu, um das Bild auszuwählen
-           container.appendChild(thumbnailImg); // Füge das Thumbnail hinzu
-           container.appendChild(chip);
-       });
-
-       // Fehlerbehandlung, falls das Video nicht geladen werden kann (MOV-Videos)
-         video.addEventListener('error', () => {
-            const img = document.createElement("img");
-            img.className = "preview-image";
-            img.src = '/api/v2/media/static/filenotsupported.jpg';
-            img.dataset.index = index; // Speichere den Index des Bildes
-            img.addEventListener("click", selectImage); // Füge einen Event-Listener hinzu, um das Bild auszuwählen
-
-            const tooltip = document.createElement("div");
-            tooltip.className = "tooltip max";
-            tooltip.textContent = _('Your browser does not support this video format. You can still upload it, but it will only play on supported devices.');
-
-            // Füge das Bild und den Chip dem Container hinzu
-            container.appendChild(img);
-            container.appendChild(tooltip);
-            container.appendChild(chip);
-            });
-
-       // Lade das Video, aber füge es nicht dem DOM hinzu
-       video.load();
    } else {
+      readyPromise = Promise.resolve();
       showSnackbar('home', true, 'error', _('Filetype') + ' ' + fileType + ' ' + _('is not supported'), null, false);
    }
 
    // Füge den Container dem div hinzu
    containerDiv.appendChild(container);
+   return readyPromise;
 }
 
 

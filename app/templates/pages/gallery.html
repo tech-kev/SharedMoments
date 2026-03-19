@@ -117,7 +117,7 @@
 <script>
   (function() {
     if (typeof lightGallery === 'function') {
-      lightGallery(document.getElementById('lightgallery'), {
+      const lg = lightGallery(document.getElementById('lightgallery'), {
         plugins: [lgThumbnail, lgVideo, lgAutoplay],
         speed: 500,
         thumbnail: true,
@@ -129,6 +129,18 @@
         mobileSettings: { download: true },
         autoplay: true
       });
+
+      document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'VIDEO' || (e.target.tagName === 'SOURCE' && e.target.parentElement?.tagName === 'VIDEO')) {
+          const outer = e.target.closest('.lg-outer');
+          if (!outer || outer.querySelector('.video-error-notice')) return;
+          const notice = document.createElement('div');
+          notice.className = 'video-error-notice';
+          notice.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.85);color:white;padding:16px 24px;border-radius:12px;text-align:center;max-width:85%;z-index:10000;font-size:15px;';
+          notice.textContent = _('This video cannot be played in your browser (unsupported codec). Try opening it in a different browser or download it.');
+          outer.appendChild(notice);
+        }
+      }, true);
     }
   })();
 </script>
