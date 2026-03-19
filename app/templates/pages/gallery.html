@@ -10,14 +10,21 @@
 <style>
    #lightgallery {
      display: grid;
-     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ensures all images have the same width */
-     grid-gap: 10px; /* Adds space between images */
-   } /* TODO: Make the Size perfect */
- 
+     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+     grid-gap: 10px;
+   }
+
+   #lightgallery a {
+     aspect-ratio: 1 / 1;
+     overflow: hidden;
+     background: var(--surface-variant);
+     border-radius: 0.5rem;
+   }
+
    #lightgallery a img {
-     width: 100%; /* All images will take up 100% of the width of their container */
-     height: auto; /* Height will automatically adjust based on the image's aspect ratio */
-     object-fit: cover; /* Ensures the image covers the container proportionally */
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
    }
  </style>
  
@@ -44,7 +51,7 @@
          <div class="padding">
             <h5><button class="circle transparent" onclick="window.history.back()"><i>arrow_back</i></button> {{ _('Gallery') }}</h5>
             <p>{{ item.content }}</p>
-            <div id="lightgallery"> <!-- TODO: Buttons werden nicht korrekt dargestellt -->
+            <div id="lightgallery">
                {% for url in item.contentURL.split(';') %}
                    {% set video_extensions = ['.mp4', '.mov', '.avi', '.mkv'] %}
                    {% set lower_url = url|lower %}
