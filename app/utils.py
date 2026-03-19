@@ -105,7 +105,7 @@ def _generate_banner_text_couples():
         diffInMonthsTotal=diffInMonthsTotal,
         diffInWeeksTotal=diffInWeeksTotal,
         diffInDays=diffInDays,
-        anniversary_date=datetime.strptime(anniversary_date, "%Y-%m-%d").strftime("%d.%m.%Y") #TODO: Andere Sprache hat anders format! Ganzen Code betrachten
+        anniversary_date=datetime.strptime(anniversary_date, "%Y-%m-%d").strftime("%d.%m.%Y")
     )
 
     elif relationship_status_id == 3:

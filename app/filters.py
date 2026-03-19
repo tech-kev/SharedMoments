@@ -4,6 +4,9 @@ import os
 from app import app
 from datetime import datetime
 from markupsafe import Markup, escape
+import re as _re
+from babel.dates import format_date as babel_format_date, get_date_format
+from flask import session
 
 _static_hash_cache = {}
 
@@ -19,11 +22,22 @@ def static_versioned(path):
             _static_hash_cache[path] = '0'
     return f'/static/{path}?v={_static_hash_cache[path]}'
 
+def _get_babel_locale():
+    lang = session.get('lang', 'en-US')
+    return lang.replace('-', '_')
+
+def _get_full_date_pattern(locale):
+    pattern = get_date_format('short', locale=locale).pattern
+    pattern = _re.sub(r'y+', 'yyyy', pattern)
+    pattern = _re.sub(r'M+', 'MM', pattern)
+    pattern = _re.sub(r'd+', 'dd', pattern)
+    return pattern
+
 @app.template_filter('format_date_dmy')
-def format_date_dmy(value, format="%d.%m.%y"):
+def format_date_dmy(value):
     if value is None:
         return ""
-    return value.strftime(format)
+    return babel_format_date(value, format='short', locale=_get_babel_locale())
 
 @app.template_filter('format_date_ymd')
 def format_date_ymd(value, format="%Y-%m-%d"):
@@ -32,10 +46,12 @@ def format_date_ymd(value, format="%Y-%m-%d"):
     return value.strftime(format)
 
 @app.template_filter('format_string_date_dmy')
-def format_string_date_dmy(value, format="%d.%m.%Y"):
+def format_string_date_dmy(value):
     if not value:
         return ""
-    return datetime.strptime(value, "%Y-%m-%d").strftime(format)
+    dt = datetime.strptime(value, "%Y-%m-%d").date()
+    locale = _get_babel_locale()
+    return babel_format_date(dt, format=_get_full_date_pattern(locale), locale=locale)
 
 @app.template_filter('nl2br')
 def nl2br(value):

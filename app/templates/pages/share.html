@@ -93,7 +93,7 @@
                <nav class="right-align">
                   <div class="max"></div>
                   <a class="chip no-border secondary small round">
-                     <span>{{ item.dateCreated.strftime('%d.%m.%Y') }}</span>
+                     <span>{{ item.dateCreated|format_date_ymd|format_string_date_dmy }}</span>
                   </a>
                </nav>
             </div>

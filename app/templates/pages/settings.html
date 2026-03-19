@@ -111,7 +111,7 @@
                     {% endfor %}
                   </div>
                   {% elif setting.type == 'date' %}
-                  <div id="{{setting.name}}-value">{{ setting.value | format_string_date_dmy if setting.value else '-' }}</div>
+                  <div id="{{setting.name}}-value" data-value="{{ setting.value or '' }}">{{ setting.value | format_string_date_dmy if setting.value else '-' }}</div>
                   {% else %}
                   <div id="{{setting.name}}-value">{{ setting.value }}</div>
                   {% endif %}
@@ -257,7 +257,7 @@
                 <i>passkey</i>
                 <div class="max">
                   <h6 class="small">{{ passkey.name }}</h6>
-                  <div>{{ _('Created') }}: {{ passkey.dateCreated.strftime('%d.%m.%Y') if passkey.dateCreated else '-' }}</div>
+                  <div>{{ _('Created') }}: {{ passkey.dateCreated|format_date_ymd|format_string_date_dmy if passkey.dateCreated else '-' }}</div>
                 </div>
                 <button class="transparent circle" onclick="event.stopPropagation(); deletePasskey({{ passkey.id }}, '{{ passkey.name|e }}')">
                   <i>delete</i>
@@ -654,6 +654,7 @@
     ];
     const currentEdition = '{{ settings.sm_edition.value }}';
     const settingsType = '{{ settings_type }}';
+    const appLocale = '{{ session.get("lang", "en-US") }}';
     {% if settings_type == 'user-settings' %}
     {% set push_val = 'True' %}
     {% for s in user_settings if s.name == 'notification_push_enabled' %}{% set push_val = s.value %}{% endfor %}

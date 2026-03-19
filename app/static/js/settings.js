@@ -1,6 +1,20 @@
 // --- State ---
 // These are set from inline <script> in settings.html:
-// relationshipStatuses, supportedLanguages, editions, currentEdition, settingsType
+// relationshipStatuses, supportedLanguages, editions, currentEdition, settingsType, appLocale
+
+function isIsoDate(str) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(str);
+}
+
+function formatDateLocale(isoStr) {
+    if (!isoStr) return '-';
+    const parts = isoStr.split('-');
+    if (parts.length !== 3) return isoStr;
+    const [y, m, d] = parts;
+    const date = new Date(+y, +m - 1, +d);
+    const locale = (typeof appLocale !== 'undefined') ? appLocale : 'en-US';
+    return new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+}
 
 let requiredDateMode = false;
 let pendingRequiredDates = [];
@@ -172,16 +186,7 @@ function editSetting(setting, type) {
         document.getElementById('save-setting').setAttribute('onclick', `saveSettingSelect('${setting}')`);
 
     } else if (type === 'date') {
-        const currentValue = document.getElementById(setting + '-value').textContent.trim();
-        let dateValue = '';
-        if (currentValue && currentValue !== '-') {
-            const parts = currentValue.split('.');
-            if (parts.length === 3) {
-                dateValue = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            } else {
-                dateValue = currentValue;
-            }
-        }
+        const dateValue = document.getElementById(setting + '-value').getAttribute('data-value') || '';
         document.getElementById('input-edit-setting-date').value = dateValue;
         document.getElementById('label-edit-setting-date').textContent = labelName;
         document.getElementById('edit-field-date').style.display = '';
@@ -264,7 +269,13 @@ function sendSettingUpdate(setting, value) {
                         const headerTitle = document.querySelector('header nav a h6');
                         if (headerTitle) headerTitle.textContent = result.data.value;
                     } else {
-                        document.getElementById(setting + '-value').textContent = result.data.value;
+                        const el = document.getElementById(setting + '-value');
+                        if (isIsoDate(result.data.value)) {
+                            el.setAttribute('data-value', result.data.value);
+                            el.textContent = formatDateLocale(result.data.value);
+                        } else {
+                            el.textContent = result.data.value;
+                        }
                     }
 
                     showSnackbar('settings', true, 'green', result.message, null, false);
@@ -311,7 +322,13 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
                 if (result.status === "success") {
                     callUi('#dialog-edit-settings');
                     document.getElementById('save-setting').removeAttribute('onclick');
-                    document.getElementById(setting + '-value').textContent = result.data.value;
+                    const cbEl = document.getElementById(setting + '-value');
+                    if (isIsoDate(result.data.value)) {
+                        cbEl.setAttribute('data-value', result.data.value);
+                        cbEl.textContent = formatDateLocale(result.data.value);
+                    } else {
+                        cbEl.textContent = result.data.value;
+                    }
                     showSnackbar('settings', true, 'green', result.message, null, false);
                     if (callback) callback();
                 } else {
