@@ -1242,7 +1242,7 @@ function handleLongPress(id) {
    if (existingIndex === -1) {
       // Artikel ist noch nicht ausgewählt
       selectedArticles.push(articleId); // Füge die Artikel-ID hinzu
-      article.style.border = "2px solid #007bff"; // Setze den Rahmen des Artikels auf blau //TODO: Farbe in CSS-Klasse auslagern, bzw. von BeerCSS nehmen
+      article.classList.add("item-selected");
 
       const editFab = document.getElementById("fab-edit-home-item");
       const shareFab = document.getElementById("btn-share-home-item");
@@ -1253,7 +1253,7 @@ function handleLongPress(id) {
    } else {
       // Artikel ist bereits ausgewählt, entferne ihn aus der Auswahl
       selectedArticles.splice(existingIndex, 1); // Entferne die Artikel-ID aus der Liste
-      article.style.border = "none"; // Entferne den Rahmen des Artikels //TODO: Farbe in CSS-Klasse auslagern, bzw. von BeerCSS nehmen und gleichsetzen mit der obigen Auswahl
+      article.classList.remove("item-selected");
    }
 
    if (selectedArticles.length === 0) { // Wenn keine Artikel ausgewählt sind
