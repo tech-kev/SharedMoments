@@ -62,6 +62,10 @@ def inject_ai_enabled():
     return dict(ai_enabled=bool(get_active_provider()))
 
 @app.context_processor
+def inject_demo_mode():
+    return dict(demo_mode=app.config.get('DEMO_MODE', False))
+
+@app.context_processor
 def inject_accent_color():
     accent_color = '#6750A4'
     try:

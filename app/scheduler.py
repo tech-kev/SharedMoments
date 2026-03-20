@@ -1,4 +1,5 @@
 from datetime import date, timedelta, datetime
+from config import Config
 from app.logger import log
 from app.db_queries import (
     get_all_reminders, get_setting_by_name, get_auto_reminder_by_source,
@@ -65,6 +66,13 @@ def start_scheduler(app):
             'date', run_date=datetime.now() + timedelta(seconds=10),
             id='sync_auto_reminders_startup'
         )
+
+        if app.config.get('DEMO_MODE'):
+            from app.demo import cleanup_demo_sessions
+            _scheduler.add_job(
+                lambda: _run_with_app_context(app, cleanup_demo_sessions),
+                'interval', minutes=Config.DEMO_SESSION_TIMEOUT, id='cleanup_demo_sessions'
+            )
 
         _scheduler.start()
         log('info', 'Scheduler started')

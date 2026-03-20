@@ -255,15 +255,30 @@ class NotificationLog(Base):
 
 
 # Database connection
-engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+_default_engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
-@event.listens_for(engine, 'connect')
+@event.listens_for(_default_engine, 'connect')
 def _set_sqlite_pragma(dbapi_conn, connection_record):
     cursor = dbapi_conn.cursor()
     cursor.execute('PRAGMA busy_timeout=5000')
     cursor.close()
 
-Base.metadata.create_all(engine)
+Base.metadata.create_all(_default_engine)
 
-# Session creation
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+_DefaultSessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=_default_engine)
+
+
+class _DemoAwareSession:
+    """Transparent wrapper — nutzt Demo-Engine wenn im Demo-Kontext."""
+    def __call__(self):
+        try:
+            from flask import has_request_context, g
+            if has_request_context() and hasattr(g, '_demo_session_factory'):
+                return g._demo_session_factory()
+        except (RuntimeError, ImportError):
+            pass
+        return _DefaultSessionFactory()
+
+
+SessionLocal = _DemoAwareSession()
+engine = _default_engine  # Backward-compat für run.py

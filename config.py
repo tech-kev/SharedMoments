@@ -25,3 +25,7 @@ class Config:
     OLLAMA_BASE_URL = os.environ.get('OLLAMA_BASE_URL')
     OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'llama3.2')
     AI_SYSTEM_PROMPT = os.environ.get('AI_SYSTEM_PROMPT')
+
+    # Demo Mode
+    DEMO_MODE = os.environ.get('DEMO_MODE', 'false').lower() == 'true'
+    DEMO_SESSION_TIMEOUT = int(os.environ.get('DEMO_SESSION_TIMEOUT', 30))  # Minuten

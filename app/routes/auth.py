@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Blueprint, g, make_response, request, jsonify, redirect, url_for, session
+from flask import Blueprint, abort, g, make_response, request, jsonify, redirect, url_for, session
 from app.db_queries import get_user_by_credential_id, get_user_by_email, get_setting_by_name, get_user_by_id, update_passkey_sign_count, ensure_pwa_settings, ensure_notification_settings
 from app.permissions import load_user_permissions
 from datetime import datetime, timedelta
@@ -7,6 +7,8 @@ from app.logger import log
 import json, jwt
 from app.models import Passkey, SessionLocal
 from app.translation import _, set_locale
+from config import Config
+import os
 from webauthn import generate_authentication_options, generate_registration_options, options_to_json, verify_authentication_response, verify_registration_response
 from webauthn.helpers import base64url_to_bytes, bytes_to_base64url
 from webauthn.helpers.structs import (
@@ -108,6 +110,31 @@ def login_jwt(user, remember_me=False):
 
 @auth_bp.before_app_request
 def before_request():
+    # --- Demo Mode ---
+    if Config.DEMO_MODE and not request.path.startswith('/static/'):
+        from app.demo import create_demo_session, bind_demo_session, DEMO_DB_DIR
+
+        demo_id = request.cookies.get('demo_session_id')
+
+        # Prüfe ob Demo-DB noch existiert
+        if demo_id:
+            db_path = os.path.join(DEMO_DB_DIR, f'demo_{demo_id}.db')
+            if not os.path.exists(db_path):
+                demo_id = None
+
+        # Neue Demo-Session erstellen (nur für navigierende Requests)
+        if not demo_id:
+            if request.path.startswith('/api/') or request.path.startswith('/sw') or request.path.endswith('.json'):
+                abort(401)
+            demo_id = create_demo_session()
+            response = make_response(redirect(url_for('auth.login')))
+            response.set_cookie('demo_session_id', demo_id, httponly=True, samesite='Lax')
+            return response
+
+        # Engine für diesen Request binden
+        bind_demo_session(demo_id)
+
+    # --- Rest des bestehenden before_request ---
     if request.path.startswith('/s/') or request.path.startswith('/api/v2/data/import/status/') or request.path.startswith('/api/v2/data/export/status/'):
         return
     token = request.cookies.get('jwt_token')
@@ -117,7 +144,7 @@ def before_request():
             user_id = decoded_token.get('user_id')
             setup_complete = get_setting_by_name('setup_complete').value
 
-            if user_id != 1 and setup_complete == 'False' and request.endpoint != 'pages.setup':
+            if not Config.DEMO_MODE and user_id != 1 and setup_complete == 'False' and request.endpoint != 'pages.setup':
                 if not request.path.startswith(('/migration-progress', '/migration-complete', '/api/v2/migration/')):
                     return redirect(url_for('pages.setup'))
 

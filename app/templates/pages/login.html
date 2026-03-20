@@ -14,6 +14,17 @@
     </header>
 
     <main class="responsive">
+        {% if demo_mode %}
+        <article class="secondary-container no-padding">
+            <div class="padding">
+                <p><h3>Demo Mode</h3></p>
+                <p><b>Admin-User:</b> lukas.bader@demo.com</p>
+                <p><b>Adult-User:</b> anna.klein@demo.com</p>
+                <p><b>Password:</b> demo</p>
+            </div>
+        </article>
+        <div class="space"></div>
+        {% endif %}
         <article class="no-padding primary-container">
             <div class="padding">
                 <h6>{{ _('Login') }}</h6>

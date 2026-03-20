@@ -55,6 +55,10 @@ services:
 
       # Optional: Make a dry run without any changes to your system
       #- MIGRATION_DRY_RUN=true
+
+      # Optional: Demo Mode
+      #- DEMO_MODE=true
+      #- DEMO_SESSION_TIMEOUT=30
     #depends_on:
     #  - db
 
