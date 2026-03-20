@@ -16,7 +16,7 @@
             {% endif %}
         </div>
     </div>
-    <button class="circle transparent" onclick="editUser({{ user.id }}, '{{ user.firstName }}', '{{ user.lastName }}', '{{ user.email }}', '{{ user.birthDate if user.birthDate else '' }}')">
+    <button class="circle transparent" onclick="editUser({{ user.id }}, '{{ user.firstName }}', '{{ user.lastName }}', '{{ user.email }}', '{{ user.birthDate if user.birthDate else '' }}', '{{ user.profilePicture or '' }}')">
         <i>edit</i>
     </button>
 </article>

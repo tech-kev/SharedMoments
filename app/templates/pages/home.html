@@ -61,7 +61,7 @@
    <!-- Timeline Details Dialog -->
    <dialog class="modal" id="dialog-details-timeline-item">
      <nav>
-        <h5 id="timeline-detail-title" class="max" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></h5>
+        <h5 id="timeline-detail-title" class="max"></h5>
         {% if has_list_permission('Delete', moments_title) %}
         <button class="circle transparent" onclick="deleteTimelineItem(this)"><i>delete</i></button>
         {% endif %}
@@ -80,8 +80,7 @@
    <dialog class="bottom" id="dialog-edit-timeline-item">
      <nav>
        <button class="circle transparent" onclick="callUi('#dialog-edit-timeline-item')"><i>close</i></button>
-       <h5>{{ _('Edit moment') }}</h5>
-       <div class="max"></div>
+       <h5 class="max">{{ _('Edit moment') }}</h5>
        <a onclick="saveEditedTimelineItem(this)">{{ _('Save') }}</a>
      </nav>
      <div class="grid">
@@ -115,8 +114,7 @@
    <dialog class="bottom" id="dialog-create-countdown">
       <nav>
          <button class="circle transparent" onclick="callUi('#dialog-create-countdown')"><i>close</i></button>
-         <h5>{{ _('Create countdown') }}</h5>
-         <div class="max"></div>
+         <h5 class="max">{{ _('Create countdown') }}</h5>
          <a onclick="saveNewCountdown(this)">{{ _('Save') }}</a>
       </nav>
       <div class="grid">
@@ -139,8 +137,7 @@
    <dialog class="bottom" id="dialog-edit-countdown">
       <nav>
          <button class="circle transparent" onclick="callUi('#dialog-edit-countdown')"><i>close</i></button>
-         <h5>{{ _('Edit countdown') }}</h5>
-         <div class="max"></div>
+         <h5 class="max">{{ _('Edit countdown') }}</h5>
          <a onclick="saveEditedCountdown(this)">{{ _('Save') }}</a>
       </nav>
       <div class="grid">

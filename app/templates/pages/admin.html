@@ -63,10 +63,9 @@
     <dialog class="max" id="dialog-edit-user">
         <nav>
             <button class="circle transparent" onclick="callUi('#dialog-edit-user')"><i>close</i></button>
-            <h5 id="edit-user-title">{{ _('Edit user') }}</h5>
-            <div class="max"></div>
+            <h5 class="max" id="edit-user-title">{{ _('Edit user') }}</h5>
             <button class="transparent link" id="btn-delete-user" onclick="deleteUser()" style="display:none;"><i>delete</i></button>
-            <button class="transparent link" onclick="saveUser(this)">{{ _('Save') }}</button>
+            <a onclick="saveUser(this)">{{ _('Save') }}</a>
         </nav>
         <div class="padding">
             <input type="hidden" id="edit-user-id">
@@ -95,13 +94,13 @@
                         <label>{{ _('Birth date') }}</label>
                     </div>
                 </div>
-                <div class="s6">
+                <div class="s12 m6">
                     <div class="field label border">
                         <input type="password" id="edit-user-password" autocomplete="new-password">
                         <label id="edit-user-password-label">{{ _('Password') }}</label>
                     </div>
                 </div>
-                <div class="s6">
+                <div class="s12 m6">
                     <div class="field label border" id="edit-user-password-confirm-field">
                         <input type="password" id="edit-user-passwordConfirm" autocomplete="new-password">
                         <label>{{ _('Repeat password') }}</label>
@@ -142,8 +141,7 @@
     <dialog class="max" id="dialog-edit-role-permissions">
         <nav>
             <button class="circle transparent" onclick="callUi('#dialog-edit-role-permissions')"><i>close</i></button>
-            <h5 id="edit-role-permissions-title">{{ _('Edit permissions') }}</h5>
-            <div class="max"></div>
+            <h5 class="max" id="edit-role-permissions-title">{{ _('Edit permissions') }}</h5>
         </nav>
         <div id="edit-role-permissions-checkboxes" class="padding" style="overflow-x: auto;"></div>
         <input type="hidden" id="edit-role-permissions-role-id">

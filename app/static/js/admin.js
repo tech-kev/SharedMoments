@@ -32,7 +32,7 @@ function openCreateUser() {
     callUi('#dialog-edit-user');
 }
 
-function editUser(userId, firstName, lastName, email, birthDate) {
+function editUser(userId, firstName, lastName, email, birthDate, profilePicture) {
     document.getElementById('edit-user-id').value = userId;
     document.getElementById('edit-user-firstName').value = firstName;
     document.getElementById('edit-user-lastName').value = lastName;
@@ -43,7 +43,13 @@ function editUser(userId, firstName, lastName, email, birthDate) {
     document.getElementById('edit-user-password-label').textContent = _('New password (leave empty to keep)');
     document.getElementById('edit-user-password-confirm-field').style.display = '';
     document.getElementById('edit-user-profilePicture').value = '';
-    document.getElementById('edit-user-profilePicture-preview').style.display = 'none';
+    const preview = document.getElementById('edit-user-profilePicture-preview');
+    if (profilePicture) {
+        preview.src = '/api/v2/media/static/' + profilePicture;
+        preview.style.display = '';
+    } else {
+        preview.style.display = 'none';
+    }
     document.getElementById('edit-user-title').textContent = _('Edit user');
     document.getElementById('btn-delete-user').style.display = '';
 

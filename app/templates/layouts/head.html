@@ -132,6 +132,13 @@ if ('serviceWorker' in navigator) {
    .outbox-ghost-card, .outbox-ghost-item {
       border-left: 3px solid var(--tertiary);
    }
+   /* Dialog nav: allow h5.max title to shrink so buttons stay visible */
+   dialog nav h5.max {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+   }
    /* Long Press Feedback */
    .home-item.long-press-active {
       transform: scale(0.97);
