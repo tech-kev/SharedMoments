@@ -32,10 +32,9 @@ function previousSetupTab() {
         activeTab.classList.remove('active');
         previousTab.classList.add('active');
         document.getElementById('button-next-setting-tab').style.display = '';
-    }
-
-    if (!previousTab.previousElementSibling) {
-        document.getElementById('button-previous-setting-tab').style.display = 'none';
+        if (!previousTab.previousElementSibling) {
+            document.getElementById('button-previous-setting-tab').style.display = 'none';
+        }
     }
 }
 

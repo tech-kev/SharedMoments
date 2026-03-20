@@ -1283,7 +1283,7 @@ function deselectAllItems() {
 
 // Behandlung des langen Drückens
 function handleLongPress(id) {
-   article = document.getElementById(id); // Hole das Artikel-Element
+   const article = document.getElementById(id); // Hole das Artikel-Element
    const articleId = id;
 
    // Überprüfen, ob der Artikel bereits ausgewählt ist

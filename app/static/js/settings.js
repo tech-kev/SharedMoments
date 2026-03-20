@@ -1057,7 +1057,8 @@ function saveNotificationSetting(name, value) {
     const formData = new FormData();
     formData.append('setting', name);
     formData.append('value', value);
-    fetch('/api/v2/user-settings', { method: 'PUT', body: formData });
+    fetch('/api/v2/user-settings', { method: 'PUT', body: formData })
+        .catch(() => showSnackbar('settings', true, 'error', _('Server not reachable'), null, false));
 }
 
 function urlBase64ToUint8Array(base64String) {
