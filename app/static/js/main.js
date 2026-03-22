@@ -12,10 +12,26 @@ function base64urlToUint8Array(base64urlString) {
    return outputArray;
 }
 
+// Back-Button soll offene Modals schließen statt die Seite zu wechseln
+let _closingFromPopstate = false;
+
+window.addEventListener('popstate', function() {
+   const activeDialogs = document.querySelectorAll('dialog.active');
+   const activeDialog = activeDialogs.length ? activeDialogs[activeDialogs.length - 1] : null;
+   if (activeDialog) {
+      _closingFromPopstate = true;
+      callUi('#' + activeDialog.id);
+      _closingFromPopstate = false;
+   }
+});
+
 // Umschalten zwischen Modal anzeigen und verstecken
 function callUi(id) {
    if (document.querySelector(id).classList.contains("active")) { // Wenn Modal angezeigt wird
       document.querySelector(id).classList.remove("active"); // Modal verstecken
+      if (!_closingFromPopstate) {
+         history.back();
+      }
       // Zugehäöriges Overlay verstecken
       if (id == "#dialog-nav-drawer") {
          document.getElementById("div-overlay-nav-drawer").classList.remove("active");
@@ -105,6 +121,7 @@ function callUi(id) {
          document.getElementById("div-overlay-share-item").classList.add("active");
       }
       document.body.style.overflow = "hidden"; // Scrollen verhindern
+      history.pushState({modal: id}, '');
    }
 }
 
