@@ -4062,5 +4062,141 @@
         "languageCode": "de-DE",
         "entityType": "static",
         "translatedText": "Alle auswählen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Forgot password?",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Passwort vergessen?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Send reset link",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Link senden"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reset password",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Passwort zurücksetzen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Set new password",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Neues Passwort setzen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Back to login",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Zurück zum Login"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Your password has been changed successfully.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Dein Passwort wurde erfolgreich geändert."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This reset link has expired. Please request a new one.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Dieser Link ist abgelaufen. Bitte fordere einen neuen an."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This reset link is invalid.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Dieser Link ist ungültig."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a password.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Bitte gib ein Passwort ein."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "If an account with this e-mail exists, a reset link has been sent.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link gesendet."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your e-mail address.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Bitte gib deine E-Mail-Adresse ein."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password Reset",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Passwort zurücksetzen"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Hello",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Hallo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "A password reset was requested for your account.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Für dein Konto wurde eine Passwort-Zurücksetzung angefordert."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Click the following link to set a new password:",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Klicke auf den folgenden Link, um ein neues Passwort zu setzen:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This link is valid for 1 hour.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Dieser Link ist 1 Stunde gültig."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "If you did not request this, you can ignore this e-mail.",
+        "helpText": "",
+        "languageCode": "de-DE",
+        "entityType": "ui",
+        "translatedText": "Falls du dies nicht angefordert hast, kannst du diese E-Mail ignorieren."
     }
 ]

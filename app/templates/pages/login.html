@@ -51,6 +51,20 @@
                     <i>home</i>
                     <span>{{ _('Login with passkey') }}</span>
                 </button>
+                {% if smtp_configured %}
+                <div class="space"></div>
+                <a class="link" style="cursor:pointer;" onclick="var s=document.getElementById('forgot-password-section').style; s.display=s.display==='none'?'block':'none';">{{ _('Forgot password?') }}</a>
+                <div id="forgot-password-section" style="display:none; margin-top:1rem;">
+                    <div class="field label border">
+                        <input type="email" id="forgot-email">
+                        <label>{{ _('E-Mail') }}</label>
+                    </div>
+                    <button onclick="requestPasswordReset()" id="btn-forgot">
+                        <i>mail</i>
+                        <span>{{ _('Send reset link') }}</span>
+                    </button>
+                </div>
+                {% endif %}
                 <div class="space"></div>
                 <button class="pwa-install-btn transparent border" style="display:none;" onclick="installPWA()">
                     <i>install_mobile</i>
@@ -100,6 +114,27 @@
                 showSnackbar('setup', true, 'error', error, null, false);
             }
         });
+
+        async function requestPasswordReset() {
+            const email = document.getElementById('forgot-email').value;
+            if (!email) {
+                showSnackbar('setup', true, 'error', "{{ _('Please enter your e-mail address.') }}", null, false);
+                return;
+            }
+            const btn = document.getElementById('btn-forgot');
+            btn.disabled = true;
+            try {
+                const formData = new FormData();
+                formData.append('email', email);
+                const response = await fetch('/forgot-password', { method: 'POST', body: formData });
+                const result = await response.json();
+                showSnackbar('setup', true, result.status === 'success' ? 'helper' : 'error', result.message, null, false);
+            } catch (error) {
+                showSnackbar('setup', true, 'error', "{{ _('Server not reachable') }}", null, false);
+            } finally {
+                btn.disabled = false;
+            }
+        }
 
         function emailVerification() {
             var email = document.getElementById("email").value;

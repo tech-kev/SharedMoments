@@ -225,11 +225,94 @@ def login():
 
         if request.method == 'GET':
             try:
+                smtp_configured = bool(os.environ.get('SMTP_HOST') and os.environ.get('SMTP_USER'))
                 sm_edition = get_setting_by_name('sm_edition')
-                return render_template('pages/login.html', sm_edition=sm_edition)
+                return render_template('pages/login.html', sm_edition=sm_edition, smtp_configured=smtp_configured)
             except Exception as e:
                 log('error', f'Error while rendering the pages/login.html-Template: {e}')
                 return "An error occurred while rendering the page, please see the Server-Logs for more informations.", 500
+
+
+@auth_bp.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    email = request.form.get('email', '').strip()
+    if not email:
+        return jsonify({'status': 'error', 'message': _('Please enter your e-mail address.')}), 400
+
+    log('info', f'Password reset requested for email: {email}')
+
+    # Always return success to avoid leaking whether an email exists
+    user = get_user_by_email(email)
+    if not user or not user.email:
+        log('warning', f'Password reset requested for unknown or empty email: {email}')
+    if user and user.email:
+        smtp_host = os.environ.get('SMTP_HOST', '')
+        smtp_user = os.environ.get('SMTP_USER', '')
+        if smtp_host and smtp_user:
+            # Generate a short-lived JWT token for password reset
+            token = jwt.encode({
+                'user_id': user.id,
+                'purpose': 'password_reset',
+                'exp': datetime.utcnow() + timedelta(hours=1)
+            }, get_secret_key(), algorithm='HS256')
+
+            reset_url = f"{request.scheme}://{request.host}/reset-password/{token}"
+
+            from app.notifications import send_email_notification
+            subject = _('Password Reset') + ' — SharedMoments'
+            body = (
+                f"{_('Hello')} {user.firstName or ''},\n\n"
+                f"{_('A password reset was requested for your account.')}\n"
+                f"{_('Click the following link to set a new password:')}\n\n"
+                f"{reset_url}\n\n"
+                f"{_('This link is valid for 1 hour.')}\n"
+                f"{_('If you did not request this, you can ignore this e-mail.')}\n\n"
+                f"SharedMoments"
+            )
+            send_email_notification(user.email, subject, body)
+            log('info', f'Password reset email sent to {user.email}')
+
+    return jsonify({'status': 'success', 'message': _('If an account with this e-mail exists, a reset link has been sent.')})
+
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    from flask import render_template
+    from app.db_queries import update_user_password
+
+    # Validate token
+    try:
+        decoded = jwt.decode(token, get_secret_key(), algorithms=['HS256'])
+        if decoded.get('purpose') != 'password_reset':
+            raise jwt.InvalidTokenError('Invalid token purpose')
+        user_id = decoded.get('user_id')
+    except jwt.ExpiredSignatureError:
+        return render_template('pages/reset-password.html', error=_('This reset link has expired. Please request a new one.'))
+    except jwt.InvalidTokenError:
+        return render_template('pages/reset-password.html', error=_('This reset link is invalid.'))
+
+    user = get_user_by_id(user_id)
+    if not user:
+        return render_template('pages/reset-password.html', error=_('This reset link is invalid.'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+
+        if not new_password:
+            return render_template('pages/reset-password.html', token=token,
+                                   error=_('Please enter a password.'))
+
+        if new_password != confirm_password:
+            return render_template('pages/reset-password.html', token=token,
+                                   error=_('Passwords do not match.'))
+
+        password_hash, password_salt = user.hash_password(new_password)
+        update_user_password(user.id, password_hash, password_salt)
+        log('info', f'Password reset completed for user {user.id} ({user.email})')
+        return render_template('pages/reset-password.html', success=True)
+
+    return render_template('pages/reset-password.html', token=token)
 
 
 @auth_bp.route('/logout')
