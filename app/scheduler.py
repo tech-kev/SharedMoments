@@ -60,13 +60,6 @@ def start_scheduler(app):
             'cron', hour=2, minute=0, id='sync_auto_reminders'
         )
 
-        # Also sync on startup after a short delay
-        _scheduler.add_job(
-            lambda: _run_with_app_context(app, sync_auto_reminders),
-            'date', run_date=datetime.now() + timedelta(seconds=10),
-            id='sync_auto_reminders_startup'
-        )
-
         if app.config.get('DEMO_MODE'):
             from app.demo import cleanup_demo_sessions
             _scheduler.add_job(
