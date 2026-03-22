@@ -99,7 +99,7 @@
 
    <!-- FAB: Create Reminder -->
    {% if has_permission('Create Reminder') %}
-   <button class="circle extra large-elevate fixed bottom right" style="margin: 1.5rem;" onclick="callUi('#dialog-create-reminder')">
+   <button class="circle extra large-elevate fixed bottom right" style="margin: 1.5rem;z-index: 90;" onclick="callUi('#dialog-create-reminder')">
       <i>add</i>
    </button>
    {% endif %}

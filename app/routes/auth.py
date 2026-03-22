@@ -138,6 +138,12 @@ def before_request():
     if request.path.startswith('/s/') or request.path.startswith('/api/v2/data/import/status/') or request.path.startswith('/api/v2/data/export/status/'):
         return
     token = request.cookies.get('jwt_token')
+    if not token:
+        # Set locale from browser language for non-authenticated pages (login, reset-password)
+        try:
+            set_locale()
+        except Exception:
+            pass
     if token:
         try:
             decoded_token = jwt.decode(token, get_secret_key(), algorithms=['HS256'])

@@ -2,14 +2,14 @@
 <html>
 
 <head>
-    <title>SharedMoments {{ sm_edition.value }} {{ _('Login') }}</title>
+    <title>SharedMoments {{ sm_edition.value | capitalize }} {{ _('Login') }}</title>
     {% include 'layouts/head.html' %}
 </head>
 
 <body>
     <header>
         <nav>
-            <h6 class="max center-align">SharedMoments {{ sm_edition.value }}</h6>
+            <h6 class="max center-align">SharedMoments {{ sm_edition.value | capitalize }}</h6>
         </nav>
     </header>
 
