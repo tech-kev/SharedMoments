@@ -70,7 +70,7 @@
                 <i>{{ setting.icon }}</i>
                 <div class="max">
                   <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
-                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                  <div id="{{setting.name}}-value">{{ setting.value | capitalize }}</div>
                 </div>
               </a>
               {% else %}
