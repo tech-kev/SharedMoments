@@ -200,26 +200,49 @@ ask "Git Branch" "main" GIT_BRANCH
 
 GIT_BRANCH="v2.0-rebuild"
 
-echo ""
-info "Optional: Configure notification channels (press Enter to skip)"
-ask "SMTP Host (for email notifications)" "" SMTP_HOST
+# Notifications
+SMTP_HOST=""
 SMTP_PORT=""
 SMTP_USER=""
 SMTP_PASS=""
 SMTP_FROM=""
-if [[ -n "$SMTP_HOST" ]]; then
+TELEGRAM_BOT_TOKEN=""
+
+echo ""
+echo -ne "  ${BOLD}Configure email notifications (SMTP)? [y/N]${NC}: "
+read -r cfg_smtp < /dev/tty
+if [[ "${cfg_smtp,,}" == "y" ]]; then
+    ask "SMTP Host" "" SMTP_HOST
     ask "SMTP Port" "587" SMTP_PORT
     ask "SMTP User" "" SMTP_USER
     ask_secret "SMTP Password" SMTP_PASS
     ask "SMTP From address" "$SMTP_USER" SMTP_FROM
 fi
 
-ask "Telegram Bot Token (for Telegram notifications)" "" TELEGRAM_BOT_TOKEN
+echo -ne "  ${BOLD}Configure Telegram notifications? [y/N]${NC}: "
+read -r cfg_telegram < /dev/tty
+if [[ "${cfg_telegram,,}" == "y" ]]; then
+    ask "Telegram Bot Token" "" TELEGRAM_BOT_TOKEN
+fi
+
+# AI
+OPENAI_API_KEY=""
+ANTHROPIC_API_KEY=""
+OLLAMA_BASE_URL=""
+OLLAMA_MODEL=""
 
 echo ""
-info "Optional: Configure AI features (press Enter to skip)"
-ask "OpenAI API Key" "" OPENAI_API_KEY
-ask "Anthropic API Key" "" ANTHROPIC_API_KEY
+echo -ne "  ${BOLD}Configure AI writing assistant? [y/N]${NC}: "
+read -r cfg_ai < /dev/tty
+if [[ "${cfg_ai,,}" == "y" ]]; then
+    info "Configure one or more AI providers (press Enter to skip)"
+    ask "OpenAI API Key" "" OPENAI_API_KEY
+    ask "Anthropic API Key" "" ANTHROPIC_API_KEY
+    ask "Ollama Base URL (e.g. http://localhost:11434)" "" OLLAMA_BASE_URL
+    if [[ -n "$OLLAMA_BASE_URL" ]]; then
+        ask "Ollama Model" "llama3.2" OLLAMA_MODEL
+    fi
+fi
 
 # Generate secret key
 SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))" 2>/dev/null || openssl rand -hex 32)
@@ -242,7 +265,7 @@ echo -e "  ${DIM}│${NC}  Directory:    ${BOLD}${INSTALL_DIR}${NC}"
 echo -e "  ${DIM}│${NC}  Domain:       ${BOLD}${DOMAIN}:${PORT}${NC}"
 echo -e "  ${DIM}│${NC}  Branch:       ${BOLD}${GIT_BRANCH}${NC}"
 echo -e "  ${DIM}│${NC}  Notifications:${BOLD}$([ -n "$SMTP_HOST" ] && echo " Email")$([ -n "$TELEGRAM_BOT_TOKEN" ] && echo " Telegram")$([ -z "$SMTP_HOST" ] && [ -z "$TELEGRAM_BOT_TOKEN" ] && echo " None")${NC}"
-echo -e "  ${DIM}│${NC}  AI:           ${BOLD}$([ -n "$OPENAI_API_KEY" ] && echo " OpenAI")$([ -n "$ANTHROPIC_API_KEY" ] && echo " Anthropic")$([ -z "$OPENAI_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ] && echo " None")${NC}"
+echo -e "  ${DIM}│${NC}  AI:           ${BOLD}$([ -n "$OPENAI_API_KEY" ] && echo " OpenAI")$([ -n "$ANTHROPIC_API_KEY" ] && echo " Anthropic")$([ -n "$OLLAMA_BASE_URL" ] && echo " Ollama")$([ -z "$OPENAI_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$OLLAMA_BASE_URL" ] && echo " None")${NC}"
 echo -e "  ${DIM}└─────────────────────────────────────────────────────┘${NC}"
 echo ""
 echo -ne "  ${BOLD}Proceed with installation? [Y/n]${NC}: "
@@ -397,6 +420,8 @@ OPENAI_API_KEY=${OPENAI_API_KEY}
 OPENAI_MODEL=gpt-4o-mini
 ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
 ANTHROPIC_MODEL=claude-haiku-4-5
+OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+OLLAMA_MODEL=${OLLAMA_MODEL}
 ENVEOF
 
 chown sharedmoments:sharedmoments "$INSTALL_DIR/.env"
