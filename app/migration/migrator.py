@@ -7,7 +7,7 @@ from datetime import datetime
 
 from app.migration.migration_logger import migration_log as log, get_log_file_path
 from app.migration.status import (
-    STEPS, load_status, create_status, update_step,
+    STEPS, load_status, save_status, create_status, update_step,
     is_step_completed, mark_migration_complete, is_migration_complete,
 )
 from app.utils import generate_admin_filename
@@ -166,26 +166,41 @@ def _run_migration(lock_fd):
 
     log('info', f'{prefix} v1 MySQL env vars detected, starting migration...')
 
-    if not test_connection():
-        log('error', f'{prefix} Cannot connect to v1 MySQL — aborting migration')
-        return
-
-    # Discover and log v1 schema
-    schema = discover_schema()
-    log('info', f'{prefix} v1 database schema:')
-    for table, info in schema.items():
-        cols = ', '.join(f'{c[0]} ({c[1]})' for c in info['columns'])
-        log('info', f'{prefix}   {table} ({info["row_count"]} rows): {cols}')
-
     # Load or create migration status
     # Dry-runs always start fresh; real runs ignore previous dry-run status
     status = load_status()
     if status is None or dry_run or status.get('dry_run', False):
         status = create_status(dry_run=dry_run)
 
-    # Dry-run: write report file
-    if dry_run:
-        _write_dry_run_report(schema, prefix)
+    # Steps that require a MySQL connection
+    MYSQL_STEPS = {
+        'backup_db', 'migrate_users', 'migrate_settings',
+        'migrate_feed_items', 'migrate_bucketlist', 'migrate_filmlist',
+        'migrate_moments', 'migrate_countdown',
+    }
+    remaining_steps = [s for s in STEPS if not is_step_completed(status, s)]
+    needs_mysql = any(s in MYSQL_STEPS for s in remaining_steps)
+
+    if needs_mysql:
+        if not test_connection():
+            msg = 'Cannot connect to v1 MySQL database. Check MIGRATION_V1_MYSQL_* environment variables and ensure the database is running.'
+            log('error', f'{prefix} {msg}')
+            status['error'] = msg
+            save_status(status)
+            return
+
+        # Discover and log v1 schema
+        schema = discover_schema()
+        log('info', f'{prefix} v1 database schema:')
+        for table, info in schema.items():
+            cols = ', '.join(f'{c[0]} ({c[1]})' for c in info['columns'])
+            log('info', f'{prefix}   {table} ({info["row_count"]} rows): {cols}')
+
+        # Dry-run: write report file
+        if dry_run:
+            _write_dry_run_report(schema, prefix)
+    else:
+        log('info', f'{prefix} Remaining steps do not require MySQL, skipping connection check')
 
     # Run each step
     step_functions = {

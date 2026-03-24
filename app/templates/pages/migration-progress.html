@@ -34,6 +34,16 @@
                     The migration was simulated without making any changes.<br>
                     Set <code>MIGRATION_DRY_RUN=false</code> and restart to run the real migration.
                 </p>
+                {% elif error %}
+                <nav class="center-align">
+                    <i class="extra" style="color: var(--error);">error</i>
+                </nav>
+                <div class="space"></div>
+                <h4 class="center-align">Migration Error</h4>
+                <p class="center-align">
+                    The migration could not continue due to an error.<br>
+                    Fix the issue and restart the container.
+                </p>
                 {% else %}
                 <nav class="center-align">
                     <progress class="circle large"></progress>
@@ -91,14 +101,44 @@
         </div>
     </main>
 
-    {% if not dry_run or not (status and status.completed_at) %}
+    {% if not error and (not dry_run or not (status and status.completed_at)) %}
     <script>
     const STEP_ORDER = {{ steps_ordered | map('first') | list | tojson }};
+    let pollInterval;
+
+    function showError(message) {
+        // Replace header with error state
+        const header = document.querySelector('.migration-card article nav');
+        if (header) header.innerHTML = '<i class="extra" style="color: var(--error);">error</i>';
+        const title = document.querySelector('.migration-card article h4');
+        if (title) title.textContent = 'Migration Error';
+        const desc = document.querySelector('.migration-card article > p');
+        if (desc) desc.innerHTML = 'The migration could not continue due to an error.<br>Fix the issue and restart the container.';
+
+        // Show error box
+        let errorBox = document.getElementById('error-box');
+        if (!errorBox) {
+            const card = document.querySelector('.migration-card');
+            errorBox = document.createElement('article');
+            errorBox.id = 'error-box';
+            errorBox.className = 'primary-container';
+            card.appendChild(errorBox);
+        }
+        errorBox.innerHTML = '<h6>Error</h6><p class="small" style="color: var(--error);">' + message + '</p>';
+
+        // Stop polling
+        if (pollInterval) clearInterval(pollInterval);
+    }
 
     async function pollStatus() {
         try {
             const res = await fetch('/api/v2/migration/status');
             const data = await res.json();
+
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
 
             if (data.redirect) {
                 window.location.href = data.redirect;
@@ -113,6 +153,7 @@
             if (data.steps) {
                 const container = document.getElementById('steps-container');
                 let html = '';
+                let hasFailed = false;
                 for (const name of STEP_ORDER) {
                     const info = data.steps[name] || {status: 'pending'};
                     let icon = '';
@@ -120,6 +161,7 @@
                         icon = '<i class="step-icon-ok">check_circle</i>';
                     } else if (info.status === 'failed') {
                         icon = '<i class="step-icon-fail">error</i>';
+                        hasFailed = true;
                     } else if (info.status === 'in_progress') {
                         icon = '<i class="step-icon-running">pending</i>';
                     } else {
@@ -127,6 +169,10 @@
                     }
                     const label = name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                     html += '<div class="step-row">' + icon + '<span>' + label + '</span></div>';
+
+                    if (info.status === 'failed' && info.error) {
+                        showError(info.error);
+                    }
                 }
                 container.innerHTML = html;
             }
@@ -135,7 +181,7 @@
         }
     }
 
-    setInterval(pollStatus, 2000);
+    pollInterval = setInterval(pollStatus, 2000);
     </script>
     {% endif %}
    </body>

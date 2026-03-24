@@ -19,10 +19,14 @@ load_translation_in_cache()
 from app.notifications import _ensure_vapid_keys
 _ensure_vapid_keys()
 
-# v1 → v2 Migration (runs only when MIGRATION_V1_MYSQL_HOST is set)
+# v1 → v2 Migration (runs in background thread so the server can serve
+# the migration-progress page while the migration is running)
 try:
     from app.migration import check_and_run_migration
-    check_and_run_migration()
+    from app.migration.v1_reader import v1_configured
+    if v1_configured():
+        import threading
+        threading.Thread(target=check_and_run_migration, daemon=True).start()
 except ImportError:
     pass
 

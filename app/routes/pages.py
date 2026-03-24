@@ -302,10 +302,14 @@ def migration_progress():
 
     error = None
     if status:
-        for step_info in status.get('steps', {}).values():
-            if step_info.get('status') == 'failed' and step_info.get('error'):
-                error = step_info['error']
-                break
+        # Top-level error (e.g. MySQL connection failure)
+        if status.get('error'):
+            error = status['error']
+        else:
+            for step_info in status.get('steps', {}).values():
+                if step_info.get('status') == 'failed' and step_info.get('error'):
+                    error = step_info['error']
+                    break
 
     # Build ordered steps list
     steps_ordered = []
@@ -372,7 +376,7 @@ def migration_complete():
         db_session.close()
 
     languages = get_supported_languages()
-    role_names = [r.roleName for r in roles]
+    role_names = [r.roleName for r in roles if r.roleName != 'System']
 
     return render_template('pages/migration-complete.html',
         status=status, users=user_data, has_placeholder=has_placeholder, summary=summary,

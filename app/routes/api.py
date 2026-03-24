@@ -1857,6 +1857,7 @@ def migration_status():
         'started_at': status.get('started_at'),
         'completed_at': status.get('completed_at'),
         'dry_run': status.get('dry_run', False),
+        'error': status.get('error'),
     }), 200
 
 
