@@ -7,15 +7,15 @@
         <h6>{{ title.value }}</h6>
         </a>
         <span style="position:relative;">
-            <button class="circle transparent">
-                <img class="responsive" id="header-profile-picture"
+            <button class="circle transparent" id="header-profile-btn" data-ui="#header-user-menu">
+                <img class="responsive" id="header-profile-picture" style="pointer-events:none;"
                     src="/api/v2/media/static/{{ user_data.profilePicture or 'profile-placeholder.jpg' }}">
-                <!-- Usermenü -->
-                <menu class="left no-wrap">
-                    <a href="/user-settings">{{ _('User settings') }}</a>
-                    <a href="/logout">{{ _('Logout') }}</a>
-                </menu>
             </button>
+            <!-- Usermenü -->
+            <menu class="left no-wrap" id="header-user-menu">
+                <a href="/user-settings">{{ _('User settings') }}</a>
+                <a href="/logout">{{ _('Logout') }}</a>
+            </menu>
             <span id="pwa-outbox-badge" onclick="forceSync()" style="display:none; position:absolute; top:2px; right:2px; background:var(--tertiary); color:var(--on-tertiary); font-size:11px; min-width:18px; height:18px; border-radius:9px; align-items:center; justify-content:center; padding:0 4px; font-weight:bold; cursor:pointer;"></span>
             <span id="pwa-offline-indicator" style="display:none; position:absolute; bottom:2px; right:2px; background:var(--error); color:var(--on-error); width:18px; height:18px; border-radius:9px; align-items:center; justify-content:center;">
                 <i style="font-size:11px;">cloud_off</i>
