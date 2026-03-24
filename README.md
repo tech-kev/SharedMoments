@@ -1,5 +1,5 @@
 <h1>
-<img src="./app/static/pwa/sm-icon-512.png" height="100" style="border-radius: 50%;">
+<img src="./app/static/pwa/sm-icon-512-round.png" height="100">
 <p>SharedMoments</p>
 </h1>
 
@@ -92,7 +92,7 @@ You can switch editions at any time without losing data.
 - **Install as Progressive Web App** — Add SharedMoments to your home screen on any device, with offline support
 - **Dark Mode** — Per user setting
 - **Accent Color** — Customize the look & feel per user
-- **Multilingual** — German & English included, add more languages in the built-in translation manager (See Wiki for more Details)
+- **Multilingual** — German & English included, add more languages in the built-in [translation manager (See [Wiki](https://github.com/tech-kev/SharedMoments/wiki/Translation) for more Details)
 - **Video Thumbnails** — Automatically generated
 - **Data Export & Import** — Full backup and restore of all data and media as ZIP
 
@@ -134,7 +134,7 @@ python3 -c "import secrets; print(secrets.token_hex(32))"
 docker compose up -d
 ```
 
-4. Open `http://your-ip:5001` and complete the setup wizard.
+4. Open `http://your-ip:5001` and complete the [setup wizard](https://github.com/tech-kev/SharedMoments/wiki/Setup-Wizard).
 
 > See the full [`docker-compose.yml`](docker-compose.yml) in this repo for all available options (AI, notifications, migration, etc.)
 
