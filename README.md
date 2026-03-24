@@ -146,6 +146,15 @@ Supported on Debian/Ubuntu, Fedora/Rocky, CentOS:
 curl -fsSL https://raw.githubusercontent.com/tech-kev/SharedMoments/main/install.sh | sudo bash
 ```
 
+## 🔄 Updating
+
+For Docker, pull and restart. For native installations, use the built-in update script:
+
+```bash
+sudo bash /opt/sharedmoments/update.sh
+```
+
+The script backs up your data, pulls the latest code, updates dependencies, and restarts the service. See the [wiki](https://github.com/tech-kev/SharedMoments/wiki/Installation) for details.
 
 ## ⚙️ Configuration
 
