@@ -1,0 +1,167 @@
+<dialog class="left scroll {% if render_after_change == true %}active{% endif %}" id="dialog-nav-drawer">
+    <nav class="drawer">
+       <header>
+          <nav>
+             <img class="circle"
+                src="/api/v2/media/static/setup-{{ nav_edition }}.jpg">
+             <h8>SharedMoments {{ nav_edition|capitalize }}</h8>
+          </nav>
+       </header>
+
+       <!-- Listenelemente -->
+       {% for list_type in list_types %}
+       {% if list_type.navbar == 1 and has_list_permission('View', list_type.title) and (list_type.edition == 'all' or list_type.edition == nav_edition) %}
+       <a id="nav-{{ list_type.navbarOrder }}" href="/{{ list_type.contentURL }}">
+       <i>{{ list_type.icon }}</i>
+       <span>{{ _(list_type.title) }}</span>
+       </a>
+       {% endif %}
+       {% endfor %}
+
+       {% if has_permission('Manage Lists') %}
+       <a onclick="callUi('#dialog-manage-list-types')">
+       <i>tune</i>
+       <span>{{ _('Manage lists') }}</span>
+       </a>
+       {% endif %}
+
+       {% if has_permission('View Reminders') %}
+       <a href="/reminders">
+       <i>notifications</i>
+       <span>{{ _('Reminders') }}</span>
+       </a>
+       {% endif %}
+
+       <hr>
+
+       {% if has_permission('Manage Translations') %}
+       <a href="/manage-translations">
+       <i>translate</i>
+       <span>{{ _('Translations') }}</span>
+       </a>
+       {% endif %}
+
+       {% if has_permission('Access Admin Panel') %}
+       <a href="/admin">
+       <i>admin_panel_settings</i>
+       <span>{{ _('Admin') }}</span>
+       </a>
+       {% endif %}
+
+       {% if has_permission('Read Setting') %}
+       <a id="settings" href="/settings">
+       <i>settings</i>
+       <span>{{ _('Settings') }}</span>
+       </a>
+       {% endif %}
+
+       <a class="pwa-install-btn" style="display:none;" onclick="installPWA()">
+       <i>install_mobile</i>
+       <span>{{ _('Install App') }}</span>
+       </a>
+
+       <!-- hr-Tag vor den Setting-Elementen einblenden -->
+       <script>
+          const anchors = document.querySelectorAll('a');
+          for (let i = 0; i < anchors.length; i++) {
+              const anchor = anchors[i];
+              const id = parseInt(anchor.id.replace('nav-', ''));
+              if (id > 990) {
+                  anchor.insertAdjacentHTML('beforebegin', '<hr>');
+                  break;
+              }
+          }
+       </script>
+    </nav>
+ </dialog>
+ <!-- Manage List Types Dialog -->
+ <dialog class="max {% if render_after_change == true %}active{% endif %}" id="dialog-manage-list-types">
+    <nav>
+       <button class="circle transparent" onclick="callUi('#dialog-manage-list-types')"><i>close</i></button>
+       <h5 class="max">{{ _('Manage lists') }}</h5>
+       <a onclick="openCreateListType()">{{ _('Create new list') }}</a>
+    </nav>
+    <br>
+    <div class="s12">
+    <div class="right-align">
+       <a id="a-change-nav-order" onclick="changeNavOrder('edit')">{{ _('Change order') }}</a>
+    </div>
+    <div id="div-nav-sortable">
+    {% for list_type in list_types %}
+    {% if list_type.navbar == 1 %}
+    <div class="s12" id="div-nav-{{ list_type.id }}">
+       <a class="row padding surface-container" data-id="{{ list_type.id }}" data-title="{{ list_type.title }}" data-maintitle="{{ list_type.mainTitle }}" data-contenturl="{{ list_type.contentURL }}" data-icon="{{ list_type.icon }}" data-edition="{{ list_type.edition }}">
+          <i>{{ list_type.icon }}</i>
+          <div class="max">
+             <h6 class="small">{{ _(list_type.title) }}</h6>
+          </div>
+          <i class="check" onclick="openEditListTypeFromElement(this.closest('a'))">edit</i>
+       </a>
+       <hr>
+    </div>
+    {% endif %}
+    {% endfor %}
+    </div>
+ </dialog>
+
+ <!-- Overlay for Manage List Type Dialog -->
+ <div class="overlay" id="div-overlay-manage-list-type" onclick="callUi('#dialog-manage-list-type')"></div>
+
+ <!-- Modal for Create/Edit List Type -->
+ <dialog class="modal" id="dialog-manage-list-type">
+    <h5 id="manage-list-type-dialog-title">{{ _('Create new list') }}</h5>
+    <input type="hidden" id="manage-list-type-id" value="">
+    <div class="field label border">
+       <input type="text" id="manage-list-type-title" oninput="onListTypeTitleInput(this.value)">
+       <label>{{ _('Sidebar name') }}</label>
+    </div>
+    <div class="field label border">
+       <input type="text" id="manage-list-type-main-title">
+       <label>{{ _('Page title') }}</label>
+    </div>
+    <div class="field label border">
+       <input type="text" id="manage-list-type-path" oninput="onListTypePathInput(this.value)">
+       <label>{{ _('Path') }}</label>
+       <span class="helper" id="manage-list-type-path-helper">{{ _('Only lowercase letters, numbers and hyphens') }}</span>
+    </div>
+    <div class="field label border prefix" style="position: relative;">
+       <i id="manage-list-type-icon-preview">home</i>
+       <input type="text" id="manage-list-type-icon" oninput="onListTypeIconInput(this.value)" onfocus="showIconSuggestions(this.value)" autocomplete="off">
+       <label>{{ _('Icon') }}</label>
+       <div class="icon-suggestions" id="manage-list-type-icon-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 10; max-height: 200px; overflow-y: auto; background: var(--surface-container); border-radius: 0 0 8px 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); padding: 8px;">
+       </div>
+    </div>
+    <div class="field label border suffix">
+       <select id="manage-list-type-edition">
+          <option value="all">{{ _('All editions') }}</option>
+          <option value="couples">Couples</option>
+          <option value="family">Family</option>
+          <option value="friends">Friends</option>
+       </select>
+       <label>{{ _('Edition') }}</label>
+       <i>arrow_drop_down</i>
+    </div>
+    <nav class="right-align no-space">
+       <button class="transparent link" id="manage-list-type-delete-btn" onclick="deleteListTypeFromDialog()" style="display: none; margin-right: auto;"><i>delete</i></button>
+       <button class="transparent link" onclick="callUi('#dialog-manage-list-type');">{{ _('Cancel') }}</button>
+       <button class="transparent link" onclick="saveListType(this)">{{ _('Save') }}</button>
+    </nav>
+ </dialog>
+
+ <div class="snackbar" id="navbar-snackbar">
+   <div class="max" id="navbar-snackbar-text" onclick="document.getElementById('navbar-snackbar').classList.remove('active');"></div>
+   <a id="navbar-snackbar-more-link"></a>
+</div>
+
+<div class="overlay" id="div-overlay-navbar-error">
+</div>
+
+<dialog id="navbar-error-more-details">
+<h5>{{ _('Error details') }}</h5>
+<div id="navbar-error-more-details-text"></div>
+<nav class="right-align no-space">
+   <button class="transparent link" onclick="showMoreInfo('navbar', null,'close')">{{ _('OK') }}</button>
+</nav>
+</dialog>
+
+<script src="{{ static_versioned('js/nav-drawer.js') }}"></script>

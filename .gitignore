@@ -1,17 +1,45 @@
-/logs
+__pycache__/
 
-/tests
+.vscode/
+.claude/
 
-/data_transfer
+venv/
+.venv/
 
-/upload
-
-/venv
-
-/keys
-
-__pycache__
-
+# Environment
+.env
 my.env
 
-.vscode
+# OS
+.DS_Store
+
+# Logs
+logs/
+
+# Database
+app/database/
+*.db-journal
+
+# Session files
+*.session.sql
+
+# Exports
+app/export/
+
+# Uploads (user data)
+app/uploads/
+
+# Migration data (status, backups, logs)
+app/migration_data/
+
+# Update backups
+backups/
+
+# Gunicorn
+gunicorn.ctl
+
+# Test artifacts
+.pytest_cache/
+
+# Flask instance folder
+instance/

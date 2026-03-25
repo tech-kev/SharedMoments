@@ -1,0 +1,58 @@
+{% if countdowns %}
+<article class="no-padding primary-container">
+   <div class="padding">
+      {% for countdown, user in countdowns %}
+      {% if not loop.first %}
+      <div class="divider"></div>
+      {% endif %}
+      <div class="countdown-entry" style="margin-bottom: 0.5rem;">
+         <nav>
+            <div class="max">
+               <h6 class="small" style="margin-bottom: 0;">{{ countdown.title }}</h6>
+               <p class="small" style="margin-top: 0;">{{ countdown.dateCreated|format_date_dmy }}</p>
+            </div>
+            {% if has_list_permission('Update', countdown_title) %}
+            <button class="circle transparent small"
+               data-id="{{ countdown.id }}"
+               data-title="{{ countdown.title }}"
+               data-date="{{ countdown.dateCreated|format_date_ymd }}"
+               onclick="editCountdown(this)">
+               <i>edit</i>
+            </button>
+            {% endif %}
+         </nav>
+         <div class="countdown-timer grid" data-target="{{ countdown.dateCreated.strftime('%Y-%m-%dT%H:%M:%S') }}">
+            <div class="s3 center-align">
+               <div class="countdown-value" data-unit="days" style="font-size: 1.5rem; font-weight: bold;">--</div>
+               <div class="small">{{ _('Days') }}</div>
+            </div>
+            <div class="s3 center-align">
+               <div class="countdown-value" data-unit="hours" style="font-size: 1.5rem; font-weight: bold;">--</div>
+               <div class="small">{{ _('Hours') }}</div>
+            </div>
+            <div class="s3 center-align">
+               <div class="countdown-value" data-unit="minutes" style="font-size: 1.5rem; font-weight: bold;">--</div>
+               <div class="small">{{ _('Minutes') }}</div>
+            </div>
+            <div class="s3 center-align">
+               <div class="countdown-value" data-unit="seconds" style="font-size: 1.5rem; font-weight: bold;">--</div>
+               <div class="small">{{ _('Seconds') }}</div>
+            </div>
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+</article>
+{% elif has_list_permission('Create', countdown_title) %}
+<article class="no-padding primary-container">
+   <div class="padding center-align">
+      <i>timer</i>
+      <p>{{ _('No countdowns yet') }}</p>
+      <button class="round" onclick="callUi('#dialog-create-countdown')">
+         <i>add</i>
+         <span>{{ _('Create countdown') }}</span>
+      </button>
+   </div>
+</article>
+{% endif %}
+

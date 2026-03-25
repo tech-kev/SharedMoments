@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }} </title>
+      {% include 'layouts/head.html' %}
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+
+   <!-- Overlay wenn Edit-Settings Dialog geöffnet -->
+   <div class="overlay" id="div-overlay-settings" onclick="closeEditDialogIfAllowed()"></div>
+
+   <dialog id="dialog-edit-settings">
+    <h5 id="dialog-edit-title">{{ _('Change') }}</h5>
+
+    <!-- Hinweis bei Pflichtfeld -->
+    <p id="edit-field-required-hint" class="error-text" style="display:none;"></p>
+
+    <!-- Text/Number Input -->
+    <div class="field label border" id="edit-field-text" style="display:none;">
+      <input type="text" id="input-edit-setting-value">
+      <label id="label-edit-setting-name"></label>
+    </div>
+
+    <!-- Date Input -->
+    <div class="field label border" id="edit-field-date" style="display:none;">
+      <input type="date" id="input-edit-setting-date">
+      <label id="label-edit-setting-date"></label>
+    </div>
+
+    <!-- Select/Dropdown -->
+    <div class="field label border" id="edit-field-select" style="display:none;">
+      <select id="input-edit-setting-select"></select>
+      <label id="label-edit-setting-select"></label>
+    </div>
+
+    <nav class="right-align no-space">
+       <button class="transparent link" id="cancel-setting" onclick="closeEditDialog()">{{ _('Cancel') }}</button>
+       <button class="transparent link" id="save-setting">{{ _('Save') }}</button>
+    </nav>
+    </dialog>
+
+   <!-- Settings -->
+
+   <main class="responsive">
+    <article class="primary-container">
+            <legend>{{ _('About') }}</legend>
+            {% if settings_type == 'settings' %}
+            {% for setting in settings %}
+            {% if setting.category == 'about' %}
+              {% if setting.name == 'sm_version' %}
+              {# Version: nur Anzeige, nicht editierbar #}
+              <a class="row padding primary-container">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                </div>
+              </a>
+              {% elif setting.name == 'sm_edition' %}
+              {# Edition: Dropdown mit Bestätigungsdialog #}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editEdition(){% endif %}">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value | capitalize }}</div>
+                </div>
+              </a>
+              {% else %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}'){% endif %}">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endif %}
+              {% endfor %}
+
+
+              <legend>{{ _('General') }}</legend>
+
+              {# Hier namespace, um die Variable edition außerhalb der Schleife verfügbar zu machen #}
+
+              {% set ns = namespace(edition=None) %}
+              {% for setting in settings %}
+                  {% if setting.name == 'sm_edition' %}
+                     {% set ns.edition = setting.value %}
+                  {% endif %}
+              {% endfor %}
+
+              {% for setting in settings %}
+              {% if setting.category == 'general' and setting.edition == ns.edition and setting.name not in ['banner_song', 'banner_image', 'family_banner_image', 'friends_banner_image'] %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="editSetting('{{setting.name}}', '{{setting.type}}'){% endif %}"
+                {% if setting.name in ['anniversary_date', 'engaged_date', 'wedding_date'] %} data-date-setting="{{ setting.name }}"{% endif %}>
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  {% if setting.name == 'relationship_status' %}
+                  <div id="{{setting.name}}-value" data-value="{{ setting.value }}">
+                    {% for status in relationship_statuses %}
+                      {% if status.id|string == setting.value|string %}{{ status.name }}{% endif %}
+                    {% endfor %}
+                  </div>
+                  {% elif setting.type == 'date' %}
+                  <div id="{{setting.name}}-value" data-value="{{ setting.value or '' }}">{{ setting.value | format_string_date_dmy if setting.value else '-' }}</div>
+                  {% else %}
+                  <div id="{{setting.name}}-value">{{ setting.value }}</div>
+                  {% endif %}
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# banner_image file upload (edition-specific) #}
+              {% for setting in settings %}
+              {% if (setting.name == 'banner_image' and ns.edition == 'couples') or (setting.name == 'family_banner_image' and ns.edition == 'family') or (setting.name == 'friends_banner_image' and ns.edition == 'friends') %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-image-input').click()"{% endif %}>
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No image') }}</div>
+                </div>
+                {% if setting.value and has_permission('Update Setting') %}
+                <button class="transparent circle" onclick="event.stopPropagation(); deleteBannerImage(this, '{{ setting.name }}')">
+                  <i>delete</i>
+                </button>
+                {% endif %}
+              </a>
+              <input type="file" id="banner-image-input" accept="image/*" style="display:none;" data-setting="{{ setting.name }}" onchange="uploadBannerImage(this)">
+              {% endif %}
+              {% endfor %}
+
+              {# banner_song file upload (couples edition) #}
+              {% for setting in settings %}
+              {% if setting.name == 'banner_song' and setting.edition == ns.edition %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave{% endif %}" {% if has_permission('Update Setting') %}onclick="document.getElementById('banner-song-input').click()"{% endif %}>
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                  <div id="{{ setting.name }}-value">{{ setting.value if setting.value else _('No song') }}</div>
+                </div>
+                {% if setting.value and has_permission('Update Setting') %}
+                <button class="transparent circle" onclick="event.stopPropagation(); deleteBannerSong(this)">
+                  <i>delete</i>
+                </button>
+                {% endif %}
+              </a>
+              <input type="file" id="banner-song-input" accept=".mp3,audio/mpeg" style="display:none;" onchange="uploadBannerSong(this)">
+              {% endif %}
+              {% endfor %}
+
+              {# share_tracking toggle (edition-independent) #}
+              {% for setting in settings %}
+              {% if setting.name == 'share_tracking' %}
+              <a class="row padding primary-container{% if has_permission('Update Setting') %} wave" onclick="toggleShareTracking(){% endif %}">
+                <i>{{ setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ setting.name }}-name">{{ _(setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="share-tracking-toggle" {{ 'checked' if setting.value == 'True' }} {% if not has_permission('Update Setting') %}disabled{% endif %}>
+                  <span></span>
+                </label>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {% if has_permission('Access Admin Panel') %}
+              <!-- Data Management Section -->
+              <legend>{{ _('Data Management') }}</legend>
+
+              <!-- Export -->
+              <a class="row padding primary-container wave" id="export-data-row" onclick="startDataExport(this)">
+                <i>download</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Export data') }}</h6>
+                  <div>{{ _('Download all items and media as ZIP') }}</div>
+                </div>
+              </a>
+
+              <!-- Export Progress -->
+              <div id="export-progress-container" style="display:none;" class="padding primary-container">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <progress id="export-progress-bar" value="0" max="100" style="flex:1;"></progress>
+                  <span id="export-progress-text">0%</span>
+                </div>
+                <a id="export-download-link" style="display:none; margin-top:0.5rem;" class="row wave">
+                  <i>file_download</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Download') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Import -->
+              <a class="row padding primary-container wave" id="import-data-row" onclick="document.getElementById('import-file-input').click()">
+                <i>upload</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Import data') }}</h6>
+                  <div>{{ _('Import items and media from ZIP (v2 only)') }}</div>
+                </div>
+              </a>
+              <input type="file" id="import-file-input" accept=".zip" style="display:none;" onchange="startDataImport(this)">
+
+              <!-- Import Progress -->
+              <div id="import-progress-container" style="display:none;" class="padding primary-container">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <progress id="import-progress-bar" value="0" max="100" style="flex:1;"></progress>
+                  <span id="import-progress-text">0%</span>
+                </div>
+                <p class="small" id="import-progress-phase" style="margin-top:0.25rem; opacity:0.7;"></p>
+              </div>
+
+              <!-- Import Summary -->
+              <div id="import-summary-container" style="display:none;" class="padding primary-container">
+                <h6 class="small">{{ _('Import Summary') }}</h6>
+                <div id="import-summary-text"></div>
+              </div>
+              {% endif %}
+
+              {% elif settings_type == 'user-settings' %}
+              <!-- Profile picture -->
+              <a class="row padding primary-container wave" onclick="document.getElementById('profile-picture-input').click()">
+                <img class="circle" src="/api/v2/media/static/{{ user_data.profilePicture or 'profile-placeholder.jpg' }}" id="profile-picture-preview" style="width:40px;height:40px;object-fit:cover;">
+                <div class="max">
+                  <h6 class="small">{{ _('Profile picture') }}</h6>
+                  <div>{{ _('Change') }}</div>
+                </div>
+                <i>edit</i>
+              </a>
+              <input type="file" id="profile-picture-input" accept="image/*" style="display:none;" onchange="updateProfilePicture(this)">
+
+              <!-- Change password -->
+              <a class="row padding primary-container wave" onclick="callUi('#dialog-change-password')">
+                <i>lock</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Change password') }}</h6>
+                  <div>{{ _('Update your password') }}</div>
+                </div>
+                <i>chevron_right</i>
+              </a>
+
+              <!-- Passkeys Section -->
+              <legend>{{ _('Passkeys') }}</legend>
+
+              {% for passkey in passkeys %}
+              <div class="row padding primary-container" style="cursor:pointer;" onclick="callUi('#dialog-rename-passkey'); prepareRenamePasskey({{ passkey.id }}, '{{ passkey.name|e }}')">
+                <i>passkey</i>
+                <div class="max">
+                  <h6 class="small">{{ passkey.name }}</h6>
+                  <div>{{ _('Created') }}: {{ passkey.dateCreated|format_date_ymd|format_string_date_dmy if passkey.dateCreated else '-' }}</div>
+                </div>
+                <button class="transparent circle" onclick="event.stopPropagation(); deletePasskey({{ passkey.id }}, '{{ passkey.name|e }}')">
+                  <i>delete</i>
+                </button>
+              </div>
+              {% endfor %}
+
+              {% if passkeys|length == 0 %}
+              <div class="row padding primary-container">
+                <i>info</i>
+                <div class="max">
+                  <div>{{ _('No passkeys configured') }}</div>
+                </div>
+              </div>
+              {% endif %}
+
+              <a class="row padding primary-container wave" onclick="addPasskey()">
+                <i>add</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Add passkey') }}</h6>
+                </div>
+              </a>
+
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'darkmode' %}
+              <a class="row padding primary-container wave" onclick="toggleDarkmode()">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="darkmode-toggle" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'language' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'language')">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% elif user_setting.name == 'accent_color' %}
+              {# Rendered in dedicated Appearance section below #}
+              {% elif user_setting.name.startswith('pwa_') or user_setting.name.startswith('notification_') %}
+              {# PWA and notification settings rendered in dedicated sections below #}
+              {% else %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'text')">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              <!-- Appearance Section -->
+              <legend>{{ _('Appearance') }}</legend>
+
+              <div class="padding primary-container" style="border-radius: 0.75rem;">
+                <nav>
+                  <i>palette</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Accent color') }}</h6>
+                  </div>
+                </nav>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;">
+                  {% set presets = [
+                    ('#F44336', 'Red 500'),
+                    ('#E91E63', 'Pink 500'),
+                    ('#9C27B0', 'Purple 500'),
+                    ('#673AB7', 'Deep Purple 500'),
+                    ('#3F51B5', 'Indigo 500'),
+                    ('#2196F3', 'Blue 500'),
+                    ('#03A9F4', 'Light Blue 500'),
+                    ('#00BCD4', 'Cyan 500'),
+                    ('#009688', 'Teal 500'),
+                    ('#4CAF50', 'Green 500'),
+                    ('#8BC34A', 'Light Green 500'),
+                    ('#CDDC39', 'Lime 500'),
+                    ('#FFEB3B', 'Yellow 500'),
+                    ('#FFC107', 'Amber 500'),
+                    ('#FF9800', 'Orange 500'),
+                    ('#FF5722', 'Deep Orange 500'),
+                    ('#795548', 'Brown 500'),
+                    ('#607D8B', 'Blue Grey 500'),
+                    ('#D32F2F', 'Red 700'),
+                    ('#7B1FA2', 'Purple 700'),
+                    ('#1976D2', 'Blue 700'),
+                    ('#00796B', 'Teal 700'),
+                    ('#388E3C', 'Green 700'),
+                    ('#F57C00', 'Orange 700'),
+                    ('#6750A4', 'M3 Primary'),
+                  ] %}
+                  {% for hex, name in presets %}
+                  <button class="circle small accent-swatch"
+                          data-color="{{ hex }}"
+                          style="background:{{ hex }}; width:2.5rem; height:2.5rem; min-width:2.5rem;
+                                 border:3px solid {% if accent_color == hex %}var(--on-surface){% else %}transparent{% endif %};"
+                          onclick="selectAccentColor('{{ hex }}')"
+                          title="{{ name }}">
+                  </button>
+                  {% endfor %}
+                </div>
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-top:1rem;">
+                  <div id="color-preview-swatch" style="width:2.5rem; height:2.5rem; min-width:2.5rem; border-radius:50%; border:2px solid var(--outline); background:{{ accent_color }};"></div>
+                  <div class="field label border max">
+                    <input type="text" id="input-custom-accent-color"
+                           value="{{ accent_color }}" maxlength="7">
+                    <label>Hex</label>
+                  </div>
+                  <button class="square round small" onclick="applyCustomAccentColor()">
+                    <i>check</i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notifications Section -->
+              <legend>{{ _('Notifications') }}</legend>
+
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'notification_push_enabled' %}
+              <!-- Browser Push -->
+              <a class="row padding primary-container wave" onclick="togglePush(!document.getElementById('toggle-push').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Browser Push') }}</h6>
+                  <div id="push-status-text">{{ _('Not configured') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-push" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); togglePush(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="push-permission-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="requestPushPermission()">
+                  <i>notifications_active</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Allow Notifications') }}</h6>
+                  </div>
+                </a>
+              </div>
+              <div id="push-test-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="testNotification('push', this)">
+                  <i>send</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Send test notification') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              {% elif user_setting.name == 'notification_email_enabled' and smtp_available %}
+              <!-- E-Mail -->
+              <a class="row padding primary-container wave" onclick="toggleEmail(!document.getElementById('toggle-email').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">{{ _('E-Mail') }}</h6>
+                  <div>{{ user_data.email or _('No email address') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-email" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); toggleEmail(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="email-test-section" style="display:none;">
+                <a class="row padding primary-container wave" onclick="testNotification('email', this)">
+                  <i>send</i>
+                  <div class="max">
+                    <h6 class="small">{{ _('Send test email') }}</h6>
+                  </div>
+                </a>
+              </div>
+
+              {% elif user_setting.name == 'notification_telegram_enabled' and telegram_available %}
+              <!-- Telegram -->
+              <a class="row padding primary-container wave" onclick="toggleTelegram(!document.getElementById('toggle-telegram').checked)">
+                <i>{{ user_setting.icon }}</i>
+                <div class="max">
+                  <h6 class="small">Telegram</h6>
+                  <div id="telegram-status-text">{{ telegram_chat_id or _('Not configured') }}</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-telegram" {{ 'checked' if user_setting.value == 'True' }} onchange="event.stopPropagation(); toggleTelegram(this.checked)">
+                  <span></span>
+                </label>
+              </a>
+              <div id="telegram-config-section" style="display:none;">
+                <div class="padding">
+                  <div class="field label border small">
+                    <input type="text" id="input-telegram-chat-id" value="{{ telegram_chat_id }}">
+                    <label>Chat-ID</label>
+                  </div>
+                  <p class="small" style="opacity:0.7;">{{ _('Send /start to the bot, then enter your Chat-ID here.') }}</p>
+                  <div class="row" style="margin-top: 0.5rem; gap: 0.5rem;">
+                    <button class="small" onclick="saveTelegramConfig()">
+                      <i>save</i><span>{{ _('Save') }}</span>
+                    </button>
+                    <button class="small border" onclick="testNotification('telegram', this)">
+                      <i>send</i><span>{{ _('Test') }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+
+              <!-- Offline & Storage Section -->
+              <legend>{{ _('Offline & Storage') }}</legend>
+
+              <!-- Storage usage display -->
+              <div class="row padding primary-container">
+                <i>storage</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Storage used') }}</h6>
+                  <div id="pwa-storage-usage">...</div>
+                </div>
+              </div>
+
+              <!-- PWA toggle settings -->
+              {% for user_setting in user_settings %}
+              {% if user_setting.name == 'pwa_offline_all' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>cloud_download</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_wifi_only_upload' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>wifi</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_preload_on_wifi' %}
+              <a class="row padding primary-container wave" onclick="togglePwaSetting('{{user_setting.name}}')">
+                <i>download_for_offline</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pwa-toggle-{{user_setting.name}}" {{ 'checked' if user_setting.value == 'TRUE' }}>
+                  <span></span>
+                </label>
+              </a>
+              {% elif user_setting.name == 'pwa_auto_cache_count' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'number')">
+                <i>format_list_numbered</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% elif user_setting.name == 'pwa_cache_expiry_days' %}
+              <a class="row padding primary-container wave" onclick="editSetting('{{user_setting.name}}', 'number')">
+                <i>schedule</i>
+                <div class="max">
+                  <h6 class="small" id="{{ user_setting.name }}-name">{{ _(user_setting.name) }}</h6>
+                  <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
+                </div>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              <!-- Force update button -->
+              <a class="row padding primary-container wave" onclick="forceUpdatePWA(this)">
+                <i>system_update</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Check for PWA updates') }}</h6>
+                  <div>{{ _('Force download latest version') }}</div>
+                </div>
+              </a>
+
+              <!-- Clear cache button -->
+              <a class="row padding primary-container wave" onclick="clearPwaCache(this)">
+                <i>delete_sweep</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Clear offline cache') }}</h6>
+                  <div>{{ _('Remove all cached content') }}</div>
+                </div>
+              </a>
+
+              <!-- Delete all pending posts -->
+              <a class="row padding primary-container wave" onclick="deleteAllGhostCards()">
+                <i>delete_forever</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Delete all pending posts') }}</h6>
+                  <div>{{ _('Remove all offline posts that have not been synced yet') }}</div>
+                </div>
+              </a>
+
+              {% endif %}
+
+    </article>
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   <div class="snackbar" id="settings-snackbar">
+      <div class="max" id="settings-snackbar-text" onclick="document.getElementById('settings-snackbar').classList.remove('active');"></div>
+      <a id="settings-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-settings-error">
+   </div>
+
+   <dialog id="settings-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="settings-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('settings', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <!-- Change Password Dialog -->
+   <div class="overlay" id="div-overlay-change-password" onclick="callUi('#dialog-change-password')"></div>
+   <dialog id="dialog-change-password">
+      <h5>{{ _('Change password') }}</h5>
+      <div class="field label border">
+         <input type="password" id="input-current-password">
+         <label>{{ _('Current password') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="password" id="input-new-password">
+         <label>{{ _('New password') }}</label>
+      </div>
+      <div class="field label border">
+         <input type="password" id="input-confirm-password">
+         <label>{{ _('Confirm password') }}</label>
+      </div>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-change-password')">{{ _('Cancel') }}</button>
+         <button class="transparent link" id="btn-save-password" onclick="changePassword()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+   <!-- Rename Passkey Dialog -->
+   <div class="overlay" id="div-overlay-rename-passkey" onclick="callUi('#dialog-rename-passkey')"></div>
+   <dialog id="dialog-rename-passkey">
+      <h5>{{ _('Rename passkey') }}</h5>
+      <div class="field label border">
+         <input type="text" id="input-rename-passkey">
+         <label>{{ _('Name') }}</label>
+      </div>
+      <input type="hidden" id="input-rename-passkey-id">
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-rename-passkey')">{{ _('Cancel') }}</button>
+         <button class="transparent link" onclick="saveRenamePasskey()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+   <!-- Edition-Wechsel Bestätigungsdialog -->
+   <div class="overlay" id="div-overlay-edition-confirm" onclick="closeEditionDialog()"></div>
+   <dialog id="dialog-edition-confirm">
+      <h5>{{ _('Change edition') }}</h5>
+      <div class="field label border">
+         <select id="input-edition-select"></select>
+         <label>{{ _('sm_edition') }}</label>
+      </div>
+      <article class="border" id="edition-info-box" style="display:none;">
+         <p><i>info</i> {{ _('No data will be lost when switching editions.') }}</p>
+         <p>{{ _('Only content for the new edition and cross-edition content will be shown.') }}</p>
+         <p>{{ _('You can switch back at any time and all previous content will be available again.') }}</p>
+      </article>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="closeEditionDialog()">{{ _('Cancel') }}</button>
+         <button class="transparent link" id="save-edition-btn" onclick="saveEdition()">{{ _('Save') }}</button>
+      </nav>
+   </dialog>
+
+
+   <script src="{{ static_versioned('js/main.js') }}"></script>
+   <script src="{{ static_versioned('js/home.js') }}"></script>
+
+   <script>
+    // Data from backend (must stay inline for Jinja)
+    const relationshipStatuses = {% if relationship_statuses is defined %}{{ relationship_statuses | tojson }}{% else %}[]{% endif %};
+    const supportedLanguages = {% if supported_languages is defined %}{{ supported_languages | tojson }}{% else %}[]{% endif %};
+    const editions = [
+      {id: 'couples', name: 'Couples'},
+      {id: 'family', name: 'Family'},
+      {id: 'friends', name: 'Friends'}
+    ];
+    const currentEdition = '{{ settings.sm_edition.value }}';
+    const settingsType = '{{ settings_type }}';
+    const appLocale = '{{ session.get("lang", "en-US") }}';
+    {% if settings_type == 'user-settings' %}
+    {% set push_val = 'True' %}
+    {% for s in user_settings if s.name == 'notification_push_enabled' %}{% set push_val = s.value %}{% endfor %}
+    window.pushEnabled = {{ (push_val == 'True')|tojson }};
+    const passkeysUserEmail = {{ user_data.email|tojson }};
+    const passkeysUserName = {{ user_data.firstName|tojson }};
+    {% endif %}
+   </script>
+   <script src="{{ static_versioned('js/settings.js') }}"></script>
+
+   </body>
+</html>

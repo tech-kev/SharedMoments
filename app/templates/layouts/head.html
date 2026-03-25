@@ -1,0 +1,163 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="{{ accent_color|default('#6750A4') }}">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="{{ static_versioned('pwa/sm-icon-192.png') }}">
+<!-- html2canvas (Banner Export) -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+<!-- SortableJS (Drag & Drop) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js" defer></script>
+<!-- BeerCSS -->
+{% if accent_color and accent_color != '#6750A4' %}
+<style id="theme-cloak">body { opacity: 0; } body.theme-ready { opacity: 1; }</style>
+{% endif %}
+<link href="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.css" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.6.13/dist/cdn/beer.min.js"></script>
+<script type="module"
+    src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/material-dynamic-colors.min.js"></script>
+<script type="module">
+  window.applyTheme = async (hex) => await ui('theme', hex);
+  const accentColor = '{{ accent_color|default("#6750A4") }}';
+  if (accentColor && accentColor !== '#6750A4') {
+    await ui('theme', accentColor);
+  }
+  document.body.classList.add('theme-ready');
+  const cloak = document.getElementById('theme-cloak');
+  if (cloak) cloak.remove();
+</script>
+<!-- BeerCSS -->
+<!-- PWA Scripts -->
+<script>var translationsArray = {{ translations_json|safe }};</script>
+<script src="{{ static_versioned('pwa/idb-manager.js') }}"></script>
+<script src="{{ static_versioned('pwa/pwa.js') }}"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { scope: '/' });
+}
+</script>
+<style>
+   /* Skeleton/Shimmer Loading */
+   .skeleton {
+      background: var(--surface-variant);
+      overflow: hidden;
+      position: relative;
+   }
+   .skeleton::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+      animation: shimmer 1.5s ease-in-out infinite;
+   }
+   .dark .skeleton::after {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+   }
+   @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+   }
+   .img-skeleton-wrapper {
+      position: relative;
+      overflow: hidden;
+   }
+   .img-skeleton-wrapper[data-lqip]::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      background: var(--lqip) center/cover no-repeat;
+      filter: blur(10px);
+      z-index: 1;
+   }
+   .img-skeleton-wrapper.loaded::before {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
+   .img-skeleton-wrapper.loaded .skeleton-overlay {
+      display: none;
+   }
+   .skeleton-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+   }
+   .skeleton-image {
+      aspect-ratio: 4/3;
+   }
+   .skeleton-text {
+      height: 1rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+   }
+   .skeleton-text.short { width: 40%; }
+   .skeleton-text.medium { width: 70%; }
+   .skeleton-text.long { width: 100%; }
+   .skeleton-card {
+      padding: 0;
+      overflow: hidden;
+   }
+   /* Lazy Loading */
+   img.lazy {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
+   img.lazy.lazy-loaded {
+      opacity: 1;
+   }
+   /* PWA Sync Animation */
+   @keyframes pwa-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+   }
+   .pwa-syncing .outbox-ghost-card i {
+      animation: pwa-spin 1s linear infinite;
+   }
+   .pwa-syncing #pwa-outbox-badge {
+      animation: pwa-spin 1.5s linear infinite;
+   }
+   /* Button loading spinner */
+   button progress.circle.small,
+   a progress.circle.small {
+      width: 1.2rem;
+      height: 1.2rem;
+   }
+   /* Ghostcard visual distinction */
+   .outbox-ghost-card, .outbox-ghost-item {
+      border-left: 3px solid var(--tertiary);
+   }
+   /* Dialog nav: allow h5.max title to shrink so buttons stay visible */
+   dialog nav h5.max {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+   }
+   /* Long Press Feedback */
+   .home-item.long-press-active {
+      transform: scale(0.97);
+      opacity: 0.85;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+   }
+   .home-item {
+      transition: transform 0.15s ease, opacity 0.15s ease;
+   }
+</style>
+
+<!-- Ghostcard Delete Dialog -->
+<div class="overlay" id="div-overlay-delete-ghostcard" onclick="callUi('#dialog-delete-ghostcard')"></div>
+<dialog id="dialog-delete-ghostcard">
+  <h5>{{ _('Delete post') }}</h5>
+  <p>{{ _('This post has not been synced yet. Delete? The data will be lost.') }}</p>
+  <input type="hidden" id="input-delete-ghostcard-id" value="">
+  <nav class="right-align no-space">
+    <button class="transparent link" onclick="callUi('#dialog-delete-ghostcard')">{{ _('Cancel') }}</button>
+    <button class="transparent link" onclick="confirmDeleteGhostCard()">{{ _('Delete') }}</button>
+  </nav>
+</dialog>

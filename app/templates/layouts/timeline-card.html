@@ -1,0 +1,32 @@
+<article class="no-padding primary-container">
+    <div class="padding">
+       <h5 class="middle-align center-align">{{ _('Our special moments') }}</h5>
+       <nav style="overflow: auto;">
+
+         {% for moment, user in moments %}
+         <div class="center-align">
+            <div class="small-margin">{{ moment.title }}</div>
+           <button class="circle small"
+               data-id="{{ moment.id }}"
+               data-title="{{ moment.title }}"
+               data-date="{{ moment.dateCreated|format_date_dmy }}"
+               data-date-ymd="{{ moment.dateCreated|format_date_ymd }}"
+               data-content="{{ moment.content or '' }}"
+               onclick="showTimelineItemDetails(this)">
+           </button>
+           <div class="small-margin">{{ moment.dateCreated|format_date_dmy }}</div>
+         </div>
+         <hr class="max timeline-hr">
+         {% endfor %}
+
+          {% if has_list_permission('Create', moments_title) %}
+          <div class="center-align">
+            <button class="circle small" onclick="callUi('#dialog-create-new-timeline-item')">
+              <i>arrow_forward</i>
+            </button>
+          </div>
+          {% endif %}
+       </nav>
+      </div>
+ </article>
+

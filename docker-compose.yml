@@ -1,0 +1,83 @@
+services:
+  sharedmoments:
+    image: techkev/sharedmoments
+    container_name: sharedmoments
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    volumes:
+      # v2 data
+      - sm-database:/app/app/database
+      - sm-uploads:/app/app/uploads
+      - /etc/localtime:/etc/localtime:ro
+
+      # v1 → v2 Migration (remove after migration is done)
+      #- /path/to/v1/uploads:/v1-uploads:ro
+      #- sm-migration-data:/app/app/migration_data
+    environment:
+      # Required
+      - SECRET_KEY=CHANGE-ME-generate-with-python-secrets-token_hex-32
+
+      # Optional: AI Provider (configure at least one for AI features)
+      # Open AI
+      #- OPENAI_API_KEY=
+      #- OPENAI_MODEL=gpt-4o-mini
+
+      # Anthropic
+      #- ANTHROPIC_API_KEY=
+      #- ANTHROPIC_MODEL=claude-haiku-4-5
+
+      # Ollama
+      #- OLLAMA_BASE_URL=http://host.docker.internal:11434
+      #- OLLAMA_MODEL=llama3.2
+
+      # Overwrite the Stock AI-Prompt
+      #- AI_SYSTEM_PROMPT=
+
+      # Optional: E-Mail Notifications (SMTP)
+      #- SMTP_HOST=
+      #- SMTP_PORT=587
+      #- SMTP_USER=
+      #- SMTP_PASS=
+      #- SMTP_FROM=
+
+      # Optional: Telegram Notifications
+      #- TELEGRAM_BOT_TOKEN=
+
+      # v1 → v2 Migration (remove env vars, volumes and db service after migration)
+      # See https://github.com/tech-kev/SharedMoments/wiki for more Details
+
+      #- MIGRATION_V1_MYSQL_HOST=db
+      #- MIGRATION_V1_MYSQL_PORT=3306
+      #- MIGRATION_V1_MYSQL_USER=root
+      #- MIGRATION_V1_MYSQL_PASS=your-password
+      #- MIGRATION_V1_MYSQL_DB=sharedmoments
+      #- MIGRATION_V1_UPLOAD_PATH=/v1-uploads
+
+      # Optional: Make a dry run without any changes to your system
+      #- MIGRATION_DRY_RUN=true
+
+      # Optional: Demo Mode
+      #- DEMO_MODE=true
+      #- DEMO_SESSION_TIMEOUT=30
+    #depends_on:
+    #  - db
+
+  # v1 → v2 Migration: v1 MySQL database (remove after migration is done)
+  #db:
+  #  image: mysql:8.2
+  #  container_name: sharedmoments-v1-db
+  #  restart: "no"
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: your-password
+  #    MYSQL_DATABASE: sharedmoments
+  #    MYSQL_USER: your-user
+  #    MYSQL_PASSWORD: your-password
+  #  volumes:
+  #    - /path/to/v1/db:/var/lib/mysql
+  #    - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  sm-database:
+  sm-uploads:
+  #sm-migration-data:

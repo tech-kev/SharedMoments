@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }}</title>
+      {% include 'layouts/head.html' %}
+      <style>
+         .preview-image {
+         width: 100px;
+         /* oder eine andere gewünschte Breite */
+         height: 100px;
+         /* oder eine andere gewünschte Höhe */
+         object-fit: cover;
+         /* sorgt dafür, dass das Bild den Rahmen ausfüllt, ohne die Proportionen zu verzerren */
+         border: 1px solid #ccc;
+         /* optional, um die Bilder zu umrahmen */
+         margin: 5px;
+         /* optional, um etwas Abstand zwischen den Bildern zu schaffen */
+         }
+         .preview-image-container {
+         position: relative;
+         display: inline-block;
+         }
+         .image-chip {
+         position: absolute;
+         top: 10px;
+         right: 2px;
+         padding: 2px 10px;
+         border-radius: 16px;
+         font-size: 12px;
+         font-weight: bold;
+         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+         }
+         .timeline-hr {
+            background-color: black;
+            border: none;
+            height: 1.5px;
+         }
+         .item-selected {
+            border: 2px solid var(--primary);
+         }
+      </style>
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+   <!-- Overlay für New-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-new-timeline-item" onclick="callUi('#dialog-create-new-timeline-item')"></div>
+
+   <!-- Overlay für Details-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-details-timeline-item" onclick="callUi('#dialog-details-timeline-item')"></div>
+
+   <!-- Overlay für Edit-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-edit-timeline-item" onclick="callUi('#dialog-edit-timeline-item')"></div>
+
+   <!-- Timeline Details Dialog -->
+   <dialog class="modal" id="dialog-details-timeline-item">
+     <nav>
+        <h5 id="timeline-detail-title" class="max"></h5>
+        {% if has_list_permission('Delete', moments_title) %}
+        <button class="circle transparent" onclick="deleteTimelineItem(this)"><i>delete</i></button>
+        {% endif %}
+        {% if has_list_permission('Update', moments_title) %}
+        <button class="circle transparent" onclick="editTimelineItem()"><i>edit</i></button>
+        {% endif %}
+     </nav>
+     <p id="timeline-detail-date" class="small"></p>
+     <div id="div-details-timeline-item"></div>
+     <nav class="right-align no-space">
+       <button class="transparent link" onclick="callUi('#dialog-details-timeline-item')">{{ _('Close') }}</button>
+     </nav>
+   </dialog>
+
+   <!-- Timeline Edit Dialog -->
+   <dialog class="bottom" id="dialog-edit-timeline-item">
+     <nav>
+       <button class="circle transparent" onclick="callUi('#dialog-edit-timeline-item')"><i>close</i></button>
+       <h5 class="max">{{ _('Edit moment') }}</h5>
+       <a onclick="saveEditedTimelineItem(this)">{{ _('Save') }}</a>
+     </nav>
+     <div class="grid">
+       <div class="s12">
+         <div class="field label border">
+           <input type="text" id="edit-timeline-item-title">
+           <label>{{ _('Title') }}</label>
+         </div>
+       </div>
+       <div class="s12">
+         <div class="field label border textarea">
+           <textarea id="edit-timeline-item-content"></textarea>
+           <label>{{ _('Description') }}</label>
+         </div>
+       </div>
+       <div class="s12">
+         <div class="field label border">
+           <input type="date" id="edit-timeline-item-date">
+           <label>{{ _('Creation Date') }}</label>
+         </div>
+       </div>
+     </div>
+     <input type="hidden" id="edit-timeline-item-id">
+   </dialog>
+
+   <!-- Overlay für Countdown-Dialoge -->
+   <div class="overlay" id="div-overlay-create-countdown" onclick="callUi('#dialog-create-countdown')"></div>
+   <div class="overlay" id="div-overlay-edit-countdown" onclick="callUi('#dialog-edit-countdown')"></div>
+
+   <!-- Countdown Create Dialog -->
+   <dialog class="bottom" id="dialog-create-countdown">
+      <nav>
+         <button class="circle transparent" onclick="callUi('#dialog-create-countdown')"><i>close</i></button>
+         <h5 class="max">{{ _('Create countdown') }}</h5>
+         <a onclick="saveNewCountdown(this)">{{ _('Save') }}</a>
+      </nav>
+      <div class="grid">
+         <div class="s12">
+            <div class="field label border">
+               <input type="text" id="input-create-countdown-title">
+               <label>{{ _('Title') }}</label>
+            </div>
+         </div>
+         <div class="s12">
+            <div class="field label border">
+               <input type="date" id="input-create-countdown-date">
+               <label>{{ _('Target date') }}</label>
+            </div>
+         </div>
+      </div>
+   </dialog>
+
+   <!-- Countdown Edit Dialog -->
+   <dialog class="bottom" id="dialog-edit-countdown">
+      <nav>
+         <button class="circle transparent" onclick="callUi('#dialog-edit-countdown')"><i>close</i></button>
+         <h5 class="max">{{ _('Edit countdown') }}</h5>
+         <a onclick="saveEditedCountdown(this)">{{ _('Save') }}</a>
+      </nav>
+      <div class="grid">
+         <div class="s12">
+            <div class="field label border">
+               <input type="text" id="input-edit-countdown-title">
+               <label>{{ _('Title') }}</label>
+            </div>
+         </div>
+         <div class="s12">
+            <div class="field label border">
+               <input type="date" id="input-edit-countdown-date">
+               <label>{{ _('Target date') }}</label>
+            </div>
+         </div>
+      </div>
+      <nav class="right-align">
+         {% if has_list_permission('Delete', countdown_title) %}
+         <button class="transparent error" onclick="deleteCountdown(this)">
+            <i>delete</i>
+            <span>{{ _('Delete') }}</span>
+         </button>
+         {% endif %}
+      </nav>
+      <input type="hidden" id="input-edit-countdown-id">
+   </dialog>
+
+   <!-- Feed-Karten -->
+   <main class="responsive">
+
+      <div id="div-render-banner-card">
+         {% include 'layouts/banner-card.html' %}
+      </div>
+      <br>
+
+      {% if has_list_permission('View', moments_title) %}
+      <div id="div-render-timeline-card">
+         {% include 'layouts/timeline-card.html' %}
+      </div>
+      <br>
+      {% endif %}
+
+      {% if has_list_permission('View', countdown_title) %}
+      <div id="div-render-countdown-card">
+         {% include 'layouts/countdown-card.html' %}
+      </div>
+      <br>
+      {% endif %}
+
+      {% if has_list_permission('View', list_type_title) %}
+      <div id="div-render-home-items">
+         {% include 'layouts/home-items.html' %}
+      </div>
+      {% endif %}
+
+      <!-- Dialog zum Erstellen eines neuen Eintrags -->
+      {% if has_list_permission('Create', list_type_title) %}
+      <div id="div-render-new-home-items">
+         {% include 'layouts/new-home-item.html' %}
+      </div>
+      {% endif %}
+
+      <!-- Dialog zum Bearbeiten von Einträgen -->
+      <div id="div-render-edit-home-items"></div>
+
+      <!-- Dialog zum Teilen von Einträgen -->
+      {% if has_permission('Share Items') %}
+      <div class="overlay" id="div-overlay-share-item"></div>
+      <dialog id="dialog-share-item">
+         <h5>{{ _('Share item') }}</h5>
+         <input type="hidden" id="input-share-item-id">
+         <div class="field border round">
+            <input type="datetime-local" id="input-share-expires-at">
+            <label>{{ _('Expires at') }} ({{ _('optional') }})</label>
+         </div>
+         <div class="field border round">
+            <input type="password" id="input-share-password">
+            <label>{{ _('Password') }} ({{ _('optional') }})</label>
+         </div>
+         <div id="div-share-result" style="display:none;">
+            <div class="space"></div>
+            <div class="field border round">
+               <input type="text" id="input-share-url" readonly>
+               <label>{{ _('Share link') }}</label>
+            </div>
+            <nav class="center-align">
+               <button class="round" onclick="copyShareLink()">
+                  <i>content_copy</i>
+                  <span>{{ _('Copy link') }}</span>
+               </button>
+            </nav>
+         </div>
+         <nav class="right-align">
+            <button class="transparent link" onclick="closeShareDialog()">{{ _('Close') }}</button>
+            <button id="btn-create-share" onclick="createShareLink()">{{ _('Create link') }}</button>
+         </nav>
+      </dialog>
+      {% endif %}
+
+       <!-- Dialog zum Erstellen eines neuen Timeline-Eintrags -->
+       {% if has_list_permission('Create', moments_title) %}
+       <div id="div-render-new-timeline-items">
+         {% include 'layouts/new-timeline-item.html' %}
+      </div>
+      {% endif %}
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   <!-- FAB um neuen Eintrag zu erstellen -->
+   {% if has_list_permission('Create', list_type_title) %}
+   <div id="div-fab-create-new-home-item" class="fixed bottom right" style="margin-right: 8px;margin-bottom: 16px;z-index: 90;" onclick="openCreateDialog()">
+      <button class="square round extra" style="box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);">
+      <i>add</i>
+      </button>
+   </div>
+   {% endif %}
+
+   <footer class="fixed bottom secondary-container" style="display: none;" id="footer-bottom-bar-home-items">
+      <nav>
+         <button class="circle transparent" onclick="deselectAllItems()">
+         <i>close</i>
+         </button>
+         {% if has_list_permission('Delete', list_type_title) %}
+         <button class="circle transparent" onclick="deleteHomeItems(this)">
+         <i>delete</i>
+         </button>
+         {% endif %}
+         {% if has_permission('Share Items') %}
+         <button class="circle transparent" id="btn-share-home-item" onclick="shareSelectedItems()">
+         <i>share</i>
+         </button>
+         {% endif %}
+         <div class="max"></div>
+         {% if has_list_permission('Update', list_type_title) %}
+         <button class="square round extra" id="fab-edit-home-item" onclick="getHomeItem(selectedArticles)">
+         <i>edit</i>
+         </button>
+         {% endif %}
+      </nav>
+   </footer>
+
+   <div class="snackbar" id="home-snackbar">
+      <div class="max" id="home-snackbar-text" onclick="document.getElementById('home-snackbar').classList.remove('active');"></div>
+      <a id="home-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-home-error">
+   </div>
+
+   <dialog id="home-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="home-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('home', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <div class="overlay" id="div-overlay-failed-uploads"></div>
+
+   <dialog id="dialog-failed-uploads" style="max-width:500px;">
+      <h5>{{ _('Upload failed') }}</h5>
+      <p>
+         <span id="span-failed-uploads-count"></span> {{ _('file(s) could not be uploaded:') }}
+      </p>
+      <div id="div-failed-uploads-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;max-height:300px;overflow-y:auto;margin:16px 0;">
+      </div>
+      <nav class="right-align no-space">
+         <button class="transparent link" onclick="callUi('#dialog-failed-uploads')">{{ _('OK') }}</button>
+      </nav>
+   </dialog>
+
+   <script>
+      window.currentEdition = '{{ sm_edition }}';
+      window.canSelectItems = {{ 'true' if has_list_permission('Update', list_type_title) or has_list_permission('Delete', list_type_title) else 'false' }};
+      window.countdownListTypeId = '{{ countdown_list_type_id }}';
+      window.listType = '{{ list_type }}';
+      window.uploadedUrls = '';
+   </script>
+   <script src="{{ static_versioned('js/main.js') }}"></script>
+   <script src="{{ static_versioned('js/home.js') }}"></script>
+   <script src="{{ static_versioned('js/timeline.js') }}"></script>
+   <script src="{{ static_versioned('js/countdown.js') }}"></script>
+
+
+   </body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SharedMoments {{ sm_edition.value | capitalize }} {{ _('Login') }}</title>
+    {% include 'layouts/head.html' %}
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h6 class="max center-align">SharedMoments {{ sm_edition.value | capitalize }}</h6>
+        </nav>
+    </header>
+
+    <main class="responsive">
+        {% if demo_mode %}
+        <article class="secondary-container no-padding">
+            <div class="padding">
+                <p><h3>Demo Mode</h3></p>
+                <p><b>Admin-User:</b> lukas.bader@demo.com</p>
+                <p><b>Adult-User:</b> anna.klein@demo.com</p>
+                <p><b>Password:</b> demo</p>
+            </div>
+        </article>
+        <div class="space"></div>
+        {% endif %}
+        <article class="no-padding primary-container">
+            <div class="padding">
+                <h6>{{ _('Login') }}</h6>
+                <form id="loginForm">
+                    <div class="field label border">
+                        <input type="email" name="email" id="email" onchange="emailVerification()">
+                        <label>{{ _('E-Mail') }}</label>
+                        <span class="helper" id="email-helper">*{{ _('required') }}</span>
+                    </div>
+                    <div class="field label border">
+                        <input type="password" name="password" id="password">
+                        <label>{{ _('Password') }}</label>
+                        <span class="helper">*{{ _('required') }}</span>
+                    </div>
+                    <label class="checkbox">
+                        <input type="checkbox" id="remember_me">
+                        <span>{{ _('Stay logged in') }}</span>
+                    </label>
+                    <div class="space"></div>
+                    <button type="submit" class="btn">{{ _('Login') }}</button>
+                </form>
+                <br>
+                <button onclick="authenticatePasskey()">
+                    <i>home</i>
+                    <span>{{ _('Login with passkey') }}</span>
+                </button>
+                {% if smtp_configured %}
+                <div class="space"></div>
+                <a class="link" style="cursor:pointer;" onclick="var s=document.getElementById('forgot-password-section').style; s.display=s.display==='none'?'block':'none';">{{ _('Forgot password?') }}</a>
+                <div id="forgot-password-section" style="display:none; margin-top:1rem;">
+                    <div class="field label border">
+                        <input type="email" id="forgot-email">
+                        <label>{{ _('E-Mail') }}</label>
+                    </div>
+                    <button onclick="requestPasswordReset()" id="btn-forgot">
+                        <i>mail</i>
+                        <span>{{ _('Send reset link') }}</span>
+                    </button>
+                </div>
+                {% endif %}
+                <div class="space"></div>
+                <button class="pwa-install-btn transparent border" style="display:none;" onclick="installPWA()">
+                    <i>install_mobile</i>
+                    <span>{{ _('Install App') }}</span>
+                </button>
+            </div>
+        </article>
+
+        <div class="snackbar" id="setup-snackbar">
+            <div class="max" id="setup-snackbar-text"
+                onclick="document.getElementById('setup-snackbar').classList.remove('active');"></div>
+            <a id="setup-snackbar-more-link"></a>
+        </div>
+
+        <div class="overlay" id="div-overlay-setup-error"></div>
+
+        <dialog id="setup-error-more-details">
+            <h5>{{ _('Error details') }}</h5>
+            <div id="setup-error-more-details-text"></div>
+            <nav class="right-align no-space">
+                <button class="transparent link" onclick="showMoreInfo('setup', null, 'close')">{{ _('OK') }}</button>
+            </nav>
+        </dialog>
+    </main>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('remember_me', document.getElementById('remember_me').checked ? 'true' : 'false');
+
+            try {
+                const response = await fetch("/login", {
+                    method: "POST",
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.status === "success") {
+                    window.location.href = '/home'; // Weiterleitung zur Startseite
+                } else {
+                    showSnackbar('setup', true, 'error', result.message, null, false);
+                }
+            } catch (error) {
+                if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
+                showSnackbar('setup', true, 'error', error, null, false);
+            }
+        });
+
+        async function requestPasswordReset() {
+            const email = document.getElementById('forgot-email').value;
+            if (!email) {
+                showSnackbar('setup', true, 'error', "{{ _('Please enter your e-mail address.') }}", null, false);
+                return;
+            }
+            const btn = document.getElementById('btn-forgot');
+            btn.disabled = true;
+            try {
+                const formData = new FormData();
+                formData.append('email', email);
+                const response = await fetch('/forgot-password', { method: 'POST', body: formData });
+                const result = await response.json();
+                showSnackbar('setup', true, result.status === 'success' ? 'helper' : 'error', result.message, null, false);
+            } catch (error) {
+                showSnackbar('setup', true, 'error', "{{ _('Server not reachable') }}", null, false);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function emailVerification() {
+            var email = document.getElementById("email").value;
+            var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            var emailHelper = document.getElementById("email-helper");
+            if (!emailRegex.test(email)) {
+                emailHelper.classList.remove("helper");
+                emailHelper.classList.add("error");
+                emailHelper.innerHTML = "{{ _('Please enter a valid email address.') }}";
+            } else {
+                emailHelper.classList.remove("error");
+                emailHelper.classList.add("helper");
+                emailHelper.innerHTML = "*{{ _('required') }}";
+            }
+        }
+
+        async function authenticatePasskey() {
+            if (!navigator.credentials || !navigator.credentials.create) {
+                showSnackbar('setup', true, 'error', "WebAuthn is not supported in this browser.", null, true);
+                return;
+            }
+
+            // Passkeys only work on localhost or matching domain, not via IP
+            const hostname = window.location.hostname;
+            if (hostname !== 'localhost' && /^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+                showSnackbar('setup', true, 'error', "{{ _('Passkey login is not available when accessing via IP address. Use localhost or a domain name.') }}", null, false);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("email", document.getElementById("email").value);
+
+            try {
+                const response = await fetch("/webauthn/authenticate", {
+                    method: "POST",
+                    body: formData,
+                });
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    const publicKeyOptions = JSON.parse(result.data);
+                    publicKeyOptions.challenge = base64urlToUint8Array(publicKeyOptions.challenge);
+
+                    const credential = await navigator.credentials.get({ publicKey: publicKeyOptions });
+
+                    if (credential) {
+                        const credentialData = {
+                            id: credential.id,
+                            rawId: Array.from(new Uint8Array(credential.rawId)),
+                            type: credential.type,
+                            response: {
+                                authenticatorData: Array.from(new Uint8Array(credential.response.authenticatorData)),
+                                clientDataJSON: Array.from(new Uint8Array(credential.response.clientDataJSON)),
+                                signature: Array.from(new Uint8Array(credential.response.signature)),
+                                userHandle: credential.response.userHandle ? Array.from(new Uint8Array(credential.response.userHandle)) : null
+                            }
+                        };
+
+                        const verifyResponse = await fetch("/webauthn/authenticate/verify", {
+                            method: "POST",
+                            body: JSON.stringify(credentialData),
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const verifyResult = await verifyResponse.json();
+
+                        if (verifyResult.status === "success") {
+                            window.location.href = '/home';
+                        } else {
+                            showSnackbar('setup', true, 'error', verifyResult.message, verifyResult, true);
+                        }
+                    }
+                } else {
+                    showSnackbar('setup', true, 'error', result.message, result, true);
+                }
+            } catch (error) {
+                let msg = "{{ _('Passkey login failed.') }}";
+                if (error.message && error.message.includes('rp.id')) {
+                    msg = "{{ _('Passkey login is not available when accessing via IP address. Use localhost or a domain name.') }}";
+                }
+                showSnackbar('setup', true, 'error', msg, {data: {error_code: error.name || 'Error', error_message: error.toString()}}, true);
+            }
+        }
+
+        function base64urlToUint8Array(base64urlString) {
+            const padding = '='.repeat((4 - (base64urlString.length % 4)) % 4);
+            const base64 = (base64urlString + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function showSnackbar(element, isActive, type, message, data, moreInfo) {
+            if (isActive === true) {
+                document.getElementById(element + '-snackbar').classList.add('active', type);
+                document.getElementById(element + '-snackbar-text').textContent = message;
+            } else {
+                document.getElementById(element + '-snackbar').classList.remove('active', type);
+            }
+
+            if (moreInfo === true) {
+                document.getElementById(element + '-snackbar-more-link').textContent = "Details";
+                document.getElementById(element + '-snackbar-more-link').addEventListener('click', () => {
+                    showMoreInfo(element, data, 'open');
+                });
+                document.getElementById(element + '-snackbar-more-link').addEventListener('click', () => {
+                    document.getElementById(element + '-snackbar').classList.remove('active', type);
+                });
+            } else {
+                setTimeout(() => {
+                    document.getElementById(element + '-snackbar').classList.remove('active', type);
+                }, 4000);
+            }
+        }
+
+        function showMoreInfo(element, result, mode) {
+            if (mode === 'open') {
+                document.body.style.overflow = "hidden";
+                document.getElementById('div-overlay-' + element + '-error').classList.add('active');
+                document.getElementById(element + '-error-more-details-text').innerHTML = `
+      <br>
+      Fehlercode: ${result.data.error_code}
+      <br>
+      Fehlertext: ${result.data.error_message}`;
+                document.getElementById(element + '-error-more-details').classList.add('active');
+            } else if (mode === 'close') {
+                document.getElementById('div-overlay-' + element + '-error').classList.remove('active');
+                document.getElementById(element + '-error-more-details').classList.remove('active');
+                document.body.style.overflow = "auto";
+            }
+        }
+
+    </script>
+</body>
+
+</html>

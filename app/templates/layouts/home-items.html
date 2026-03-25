@@ -1,0 +1,75 @@
+{% if not items %}
+<article class="medium middle-align center-align primary-container">
+   <div>
+      <i class="extra">format_list_bulleted_add</i>
+      <h5>{{ _("You haven't created any entry yet") }}</h5>
+      {% if has_list_permission('Create', list_type_title) %}
+      <p>{{ _('Click the button to create a new entry') }}</p>
+      <div class="space"></div>
+      <nav class="center-align">
+         <button onclick="openCreateDialog()">{{ _('Create entry') }}</button>
+      </nav>
+      {% endif %}
+   </div>
+</article>
+{% endif %}
+{% for item, user in items %}
+<article class="no-padding primary-container home-item" id="article_{{ item.id }}">
+   {% if item.contentType == 'galleryStartWithImage' or item.contentType == 'galleryStartWithVideo' or item.contentType == 'video' or item.contentType == 'video-mov' %}
+   <a href="/gallery/{{ item.id }}" style="display:block">
+      {% endif %}
+      {% if item.contentType == 'image' or item.contentType == 'galleryStartWithImage' %}
+      {% set contentURL = item.contentURL.split(';')[0] %}
+      <div class="img-skeleton-wrapper"{% if item.blurPlaceholder %} data-lqip{% endif %} style="{% if item.mediaWidth and item.mediaHeight %}aspect-ratio:{{ item.mediaWidth }}/{{ item.mediaHeight }};{% endif %}{% if item.blurPlaceholder %}--lqip:url({{ item.blurPlaceholder }}){% endif %}">
+         <img class="responsive lazy" data-src="/api/v2/media/{{ contentURL }}" loading="lazy"{% if item.mediaWidth and item.mediaHeight %} width="{{ item.mediaWidth }}" height="{{ item.mediaHeight }}"{% endif %}>
+         {% if not item.blurPlaceholder %}
+         <div class="skeleton skeleton-overlay skeleton-image"></div>
+         {% endif %}
+      </div>
+      {% elif item.contentType == 'video' or item.contentType == 'video-mov' or item.contentType == 'galleryStartWithVideo' %}
+      {% set contentURL = item.contentURL.split(';')[0] %}
+      <div class="img-skeleton-wrapper"{% if item.blurPlaceholder %} data-lqip{% endif %} style="position:relative;{% if item.mediaWidth and item.mediaHeight %}aspect-ratio:{{ item.mediaWidth }}/{{ item.mediaHeight }};{% endif %}{% if item.blurPlaceholder %}--lqip:url({{ item.blurPlaceholder }}){% endif %}">
+         <img class="responsive lazy" data-src="/api/v2/media/thumb/{{ contentURL }}" loading="lazy" style="width:100%;object-fit:cover;"{% if item.mediaWidth and item.mediaHeight %} width="{{ item.mediaWidth }}" height="{{ item.mediaHeight }}"{% endif %}>
+         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2">
+            <i style="font-size:3rem;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);">play_circle</i>
+         </div>
+         {% if not item.blurPlaceholder %}
+         <div class="skeleton skeleton-overlay skeleton-image"></div>
+         {% endif %}
+      </div>
+      {% endif %}
+      {% if item.contentType == 'galleryStartWithImage' or item.contentType == 'galleryStartWithVideo' or item.contentType == 'video' or item.contentType == 'video-mov' %}
+   </a>
+   {% endif %}
+   <div class="absolute top right padding white-text">
+      <nav style="display: flex; gap: 4px; align-items: center;">
+         <button class="circle transparent small pwa-pin-btn" data-item-id="{{ item.id }}"
+                 data-media-urls="{{ item.contentURL }}" data-item-title="{{ item.title }}"
+                 onclick="event.stopPropagation(); togglePinItem(this)" style="min-width:32px; min-height:32px;">
+            <i class="small">download</i>
+         </button>
+         {% if shared_item_ids is defined and item.id in shared_item_ids %}
+         <a class="chip no-border tertiary small round">
+         <i class="small">share</i>
+         </a>
+         {% endif %}
+         {% if item.contentType == 'galleryStartWithImage' or item.contentType == 'galleryStartWithVideo' %}
+         <a class="chip no-border secondary small round">
+         <span>{{ _('Gallery') }}</span>
+         </a>
+         {% endif %}
+      </nav>
+   </div>
+   <div class="padding">
+      <h5>{{ item.title|nl2br }}</h5>
+      <p>{{ item.content|nl2br }}</p>
+      <nav class="right-align">
+         <div class="max"></div>
+         <a class="chip no-border secondary small round">
+         <span>{{ item.dateCreated|format_date_dmy }}<span>
+         </a>
+         <img class="circle" src="/api/v2/media/static/{{ user.profilePicture or 'profile-placeholder.jpg' }}">
+      </nav>
+   </div>
+</article>
+{% endfor %}

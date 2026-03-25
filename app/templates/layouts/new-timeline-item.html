@@ -1,0 +1,108 @@
+<dialog class="bottom" id="dialog-create-new-timeline-item">
+    <nav>
+       <button class="circle transparent" id="button-close-dialog-create-new-timeline-item" onclick="callUi('#dialog-create-new-timeline-item')"><i>close</i></button>
+       <h5 class="max">{{ _('Create new moment') }}</h5>
+       <a onclick="saveNewTimelineItem()">{{ _('Save') }}</a>
+    </nav>
+    <div class="grid">
+       <div class="s12">
+          <div class="field label border">
+           <input type="text" id="div-create-timeline-item-title">
+           <label>{{ _('Title') }}</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label border textarea">
+           <textarea id="textarea-create-timeline-item-content"></textarea>
+           <label>{{ _('Description') }}</label>
+           </div>
+       </div>
+       <div class="s12">
+          <div class="field label border"><input type="date" id="div-create-timeline-item-date-created">
+           <label>{{ _('Creation Date') }}</label>
+           </div>
+       </div>
+    </div>
+ </dialog>
+
+ <script>
+async function saveNewTimelineItem() {
+   var title = document.getElementById("div-create-timeline-item-title").value;
+   var content = document.getElementById("textarea-create-timeline-item-content").value;
+   var dateCreated = document.getElementById("div-create-timeline-item-date-created").value;
+
+   // Offline: direkt in Outbox speichern
+   if (!navigator.onLine && typeof addToOutbox === 'function') {
+      return saveTimelineItemToOutbox(title, content, dateCreated);
+   }
+
+   const formData = new FormData();
+   formData.append("title", title);
+   formData.append("content", content);
+   formData.append("contentType", "text");
+   formData.append("listType", 2);
+   formData.append("dateCreated", dateCreated);
+   formData.append("edition", window.currentEdition || 'all');
+
+   fetch("/api/v2/items", {
+      method: "POST",
+      body: formData,
+   })
+      .then(async (response) => {
+         try {
+            const result = await response.json();
+            if (result.status === "success") {
+               document.getElementById("div-render-timeline-card").innerHTML = result.data.rendered_items;
+               callUi("#dialog-create-new-timeline-item");
+               document.getElementById('div-create-timeline-item-title').value = "";
+               document.getElementById('textarea-create-timeline-item-content').value = "";
+               document.getElementById('div-create-timeline-item-date-created').value = "";
+               showSnackbar('home', true, 'green', result.message, null, false);
+            } else {
+               showSnackbar('home', true, 'error', result.message, result, true);
+            }
+         } catch (error) {
+            showSnackbar('home', true, 'error', error, null, false);
+         }
+      })
+      .catch(async (error) => {
+         // Netzwerkfehler: in Outbox speichern
+         if (typeof addToOutbox === 'function') {
+            return saveTimelineItemToOutbox(title, content, dateCreated);
+         }
+         if (String(error) === "TypeError: Failed to fetch") {
+            error = _('Server not reachable');
+         }
+         showSnackbar('home', true, 'error', error, null, false);
+      });
+}
+
+async function saveTimelineItemToOutbox(title, content, dateCreated) {
+   try {
+      await addToOutbox({
+         title: title,
+         content: content,
+         contentType: 'text',
+         listType: 2,
+         dateCreated: dateCreated,
+         edition: 'all',
+         files: [],
+         contentURL: '',
+      });
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+         const reg = await navigator.serviceWorker.ready;
+         await reg.sync.register('sync-outbox');
+      }
+      callUi("#dialog-create-new-timeline-item");
+      document.getElementById('div-create-timeline-item-title').value = "";
+      document.getElementById('textarea-create-timeline-item-content').value = "";
+      document.getElementById('div-create-timeline-item-date-created').value = "";
+      showSnackbar('home', true, 'green', _('Item saved offline. Will sync when online.'), null, false);
+      if (typeof updateOutboxBadge === 'function') updateOutboxBadge();
+      if (typeof renderOutboxGhostCards === 'function') renderOutboxGhostCards();
+   } catch (err) {
+      console.error('[PWA] Failed to save to outbox:', err);
+      showSnackbar('home', true, 'error', _('Server not reachable'), null, false);
+   }
+}
+ </script>

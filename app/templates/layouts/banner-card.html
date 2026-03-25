@@ -1,0 +1,41 @@
+{% if banner_text %}
+<article class="no-padding primary-container">
+    {% if settings.sm_edition.value == 'family' and settings.family_banner_image.value %}
+    <img class="responsive" src="/api/v2/media/{{ settings.family_banner_image.value }}">
+    {% elif settings.sm_edition.value == 'friends' and settings.friends_banner_image.value %}
+    <img class="responsive" src="/api/v2/media/{{ settings.friends_banner_image.value }}">
+    {% elif settings.sm_edition.value == 'couples' and settings.banner_image.value %}
+    <img class="responsive" src="/api/v2/media/{{ settings.banner_image.value }}">
+    {% else %}
+    <img class="responsive" src="/api/v2/media/static/setup-{{ settings.sm_edition.value }}.jpg">
+    {% endif %}
+    <div class="padding">
+       <h5 class="middle-align center-align">
+         {% if settings.sm_edition.value == 'couples' %}
+           {% if settings.relationship_status.value == '1' or settings.relationship_status.value == '4' or settings.relationship_status.value == '5' %}
+           {{ settings.anniversary_date.value|format_string_date_dmy if settings.anniversary_date.value else '' }}
+           {% elif settings.relationship_status.value == '2' %}
+           {{ settings.engaged_date.value|format_string_date_dmy if settings.engaged_date.value else '' }}
+           {% elif settings.relationship_status.value == '3' %}
+           {{ settings.wedding_date.value|format_string_date_dmy if settings.wedding_date.value else '' }}
+           {% endif %}
+         {% elif settings.sm_edition.value == 'family' %}
+           {{ settings.family_founding_date.value|format_string_date_dmy if settings.family_founding_date.value else '' }}
+         {% elif settings.sm_edition.value == 'friends' %}
+           {{ settings.friend_group_founding_date.value|format_string_date_dmy if settings.friend_group_founding_date.value else '' }}
+         {% endif %}
+      </h5>
+       <p class="middle-align center-align">{{ banner_text }}</p>
+       <div style="display:flex;justify-content:flex-end;gap:8px;">
+         {% if settings.sm_edition.value == 'couples' and settings.banner_song.value %}
+         <button class="circle" id="btn-play-song" data-song="/api/v2/media/{{ settings.banner_song.value }}" onclick="toggleSong()">
+           <i>play_arrow</i>
+         </button>
+         {% endif %}
+         <button class="circle" id="btn-export-banner" onclick="exportBannerCard()">
+           <i>ios_share</i>
+         </button>
+       </div>
+    </div>
+ </article>
+{% endif %}

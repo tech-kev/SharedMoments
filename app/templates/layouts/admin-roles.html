@@ -1,0 +1,21 @@
+{% for role in roles %}
+<article class="surface-container row padding no-margin role-card" style="margin-bottom: 8px !important; border-radius: 12px;" onclick="editRolePermissions({{ role.id }}, '{{ role.roleName }}')">
+    <i>shield</i>
+    <div class="max" style="margin-left: 12px;">
+        <h6 class="small no-margin">{{ _(role.roleName) }}</h6>
+        <p class="no-margin" style="font-size: 0.85em; opacity: 0.7;">
+            {% if role.id in role_permissions_map %}
+                {{ role_permissions_map[role.id] | length }} {{ _('permissions') }}
+            {% else %}
+                0 {{ _('permissions') }}
+            {% endif %}
+        </p>
+    </div>
+    {% if role.id > 4 %}
+    <button class="circle transparent" onclick="event.stopPropagation(); deleteRole({{ role.id }}, '{{ role.roleName }}', this)">
+        <i>delete</i>
+    </button>
+    {% endif %}
+    <i>chevron_right</i>
+</article>
+{% endfor %}

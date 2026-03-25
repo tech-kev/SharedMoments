@@ -1,0 +1,23 @@
+{% for user in users %}
+<article class="surface-container row padding no-margin" style="margin-bottom: 8px !important; border-radius: 12px;">
+    <img class="circle medium" src="/api/v2/media/static/{{ user.profilePicture or 'profile-placeholder.jpg' }}" alt="{{ user.firstName }}">
+    <div class="max" style="margin-left: 12px;">
+        <h6 class="small no-margin">{{ user.firstName }} {{ user.lastName }}</h6>
+        <p class="no-margin" style="font-size: 0.85em; opacity: 0.7;">{{ user.email }}</p>
+        <div class="user-roles-chips" style="margin-top: 4px;">
+            {% if user.id in user_roles_map %}
+                {% for role_id in user_roles_map[user.id] %}
+                    {% for role in roles %}
+                        {% if role.id == role_id %}
+                            <span class="chip small">{{ _(role.roleName) }}</span>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <button class="circle transparent" onclick="editUser({{ user.id }}, '{{ user.firstName }}', '{{ user.lastName }}', '{{ user.email }}', '{{ user.birthDate if user.birthDate else '' }}', '{{ user.profilePicture or '' }}')">
+        <i>edit</i>
+    </button>
+</article>
+{% endfor %}

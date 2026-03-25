@@ -1,0 +1,37 @@
+<article class="no-padding primary-container">
+    <div class="padding">
+       <h5>{{ _('Translations')}}</h5>
+       <div class="medium-height scroll primary-container">
+        <table class="border">
+          <thead class="fixed">
+            <tr>
+              <th>{{ _('Type') }}</th>
+              <th>{{ _('Type ID') }}</th>
+              <th>{{ _('Fieldname') }}</th>
+              <th>{{ _('Translated Text') }}</th>
+              <th>{{ _('Edit') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for translation in translations %}
+                <tr>
+                  <td>{{ translation.entityType }}</td>
+                  <td>{{ translation.entityID }}</td>
+                  <td>{{ translation.fieldName }}</td>
+                  <td>{{ translation.translatedText }}</td>
+                  <td><button class="transparent small circle" onclick="focusmode(true, '{{ translation.id }}')">
+                    <i>edit</i>
+                  </button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if translations %}
+<nav class="right-align">
+    <button onclick="showLanguages()">{{_('Back')}}</button>
+    <button onclick="focusmode()" id="button-start-focusmode">{{ _('Focus mode') }}</button>
+ </nav>
+{% endif %}
+    </div>
+ </article>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }}</title>
+      {% include 'layouts/head.html' %}
+      
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+   <!-- Overlay wenn new-language geöffnet -->
+   <div class="overlay" id="div-overlay-new-language" onclick="callUi('#dialog-new-language')"></div>
+
+   <!-- Feed-Karten -->
+   <main class="responsive">
+
+   <div id="div-translation-management">
+   <article class="no-padding primary-container">
+      <div class="padding">
+         <h5>{{ _('Translation management') }}</h5>
+         <nav class="vertical" style="margin-top: 12px; gap: 8px;">
+            <button class="border small-round responsive" onclick="devToolsAction('loadNewTranslationsFromCode')">
+               <i>search</i>
+               <span>{{ _('Load new translations from Code') }}</span>
+            </button>
+            <button class="border small-round responsive" onclick="devToolsAction('approveNewTranslationsToAllLanguages')">
+               <i>check_circle</i>
+               <span>{{ _('Approve new Translations to all Languages') }}</span>
+            </button>
+            <button class="border small-round responsive error" onclick="devToolsAction('resetTranslations')">
+               <i>warning</i>
+               <span>{{ _('Reset all Translations') }}</span>
+            </button>
+         </nav>
+      </div>
+   </article>
+   <br>
+   </div>
+
+      <div id="div-render-available-translations">
+         {% include 'layouts/available-translations.html' %}
+      </div>
+
+      <div id="div-render-translations-for-language" style="display: none;">
+         {% include 'layouts/translations-for-language.html' %}
+      </div>
+
+      <div id="div-render-focusmode" style="display: none;">
+         <article class="no-padding primary-container">
+            <div class="absolute top right padding white-text">
+               <nav>
+                  <a class="chip no-border secondary small round">
+                  <span><span id="focusmode-counter"></span><span>/</span><span id="focusmode-total"></span></span>
+                  </a>
+               </nav>
+            </div>
+            <div class="padding">
+               <h7>{{ _('Translation of language') }} <span id="focusmode-title"></span></h7>
+               <br>
+               <h7>{{ _('Source text') }}: <span id="focusmode-fieldname"></span></h7>
+               <h7 id="focusmode-helpText-h" style="display: none;">{{ _('Help Text') }}: <span id="focusmode-helpText"></span></h7>
+               <div class="field label border" id="focusmode-helpText-input" style="display: none;">
+                  <input type="text" id="focusmode-helpText-new-value">
+                  <label>{{ _('Set Help Text') }}</label>
+               </div>
+               
+               <div class="field label border">
+                  <input type="text" id="focusmode-translation" onkeydown="if(event.keyCode === 13) saveTranslation()">
+                  <label>{{ _('Translation') }}</label>
+               </div>
+               <nav class="right-align">
+                  <button onclick="getTranslations(languageCode)">{{ _('Back') }}</button>
+                  <button onclick="saveTranslation()">{{ _('Next') }}</button>
+               </nav>
+            </div>
+         </article>
+      </div>
+
+       <!-- Modal for Edit Icon -->
+ <dialog class="modal" id="dialog-new-language">
+   <h5>{{ _('New language') }}</h5>
+   <div class="field label border">
+      <input type="text" id="input-new-language">
+      <label>{{ _('Language') }}</label>
+   </div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="callUi('#dialog-new-language');">{{ _('Cancel') }}</button>
+      <button class="transparent link" id="saveIcon" onclick="createNewLanguage()">{{ _('Save') }}</button>
+   </nav>
+</dialog>
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   <div class="snackbar" id="home-snackbar">
+      <div class="max" id="home-snackbar-text" onclick="document.getElementById('home-snackbar').classList.remove('active');"></div>
+      <a id="home-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-home-error">
+   </div>
+
+   <dialog id="home-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="home-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('home', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <script src="{{ static_versioned('js/main.js') }}"></script>
+
+   <script>
+   
+   function createNewLanguage() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
+      var language = document.getElementById('input-new-language').value;
+
+      if (language == "") {
+         showSnackbar("Bitte geben Sie eine Sprache ein.");
+         return;
+      }
+
+      var formData = new FormData();
+      
+      formData.append("languageCode", language);
+
+      fetch("/api/v2/translations", {
+         method: "POST",
+         body: formData,
+      })
+         .then(async (response) => {
+               try {
+                  const result = await response.json();
+                  if (result.status === "success") {
+                     document.getElementById("div-render-available-translations").innerHTML = result.data.rendered_languages; // Neue Items in die Seite einfügen
+                     callUi("#dialog-new-language"); // Modal schließen
+               
+                     // Eingabefelder der Modal leeren
+                     document.getElementById('input-new-language').value = "";
+                     showSnackbar('home', true, 'green', result.message, null, false);
+                  } else {
+                     showSnackbar('home', true, 'error', result.message, result, true);
+                  }
+               } catch (error) { // Kein gültiges JSON
+                  showSnackbar('home', true, 'error', error, null, false);
+               }
+         })
+         .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+            if (error == "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('home', true, 'error', error, null, false);
+      })
+   }
+
+let languageCode
+let translations
+let translationsToTranslate
+let currentTranslation
+let currentTranslationIndex
+let translationsToTranslateOrigLength
+
+function getTranslations(language) {
+   if (!navigator.onLine) {
+      showSnackbar('home', true, 'error', _('You are offline'), null, false);
+      return;
+   }
+
+   languageCode = language;
+
+   fetch("/api/v2/translations/" + languageCode, {
+      method: "GET",
+   })
+      .then(async (response) => {
+         try {
+            const result = await response.json();
+            if (result.status === "success") {
+               document.getElementById("div-render-translations-for-language").innerHTML = result.data.rendered_translations;
+               document.getElementById("div-render-translations-for-language").style.display = "";
+               document.getElementById("div-render-available-translations").style.display = "none";
+               document.getElementById("div-render-focusmode").style.display = "none";
+               document.getElementById("div-translation-management").style.display = "none";
+               translations = result.data.translations;
+               translationsToTranslate = translations.filter((translation) => !translation.translatedText);
+               currentTranslationIndex = 1;
+               translationsToTranslateOrigLength = 0;
+               if (translationsToTranslate.length <= 0) {
+                    document.getElementById("button-start-focusmode").disabled = true;
+               }
+            } else {
+               showSnackbar('home', true, 'error', result.message, result, true);
+            }
+         } catch (error) { // Kein gültiges JSON
+            showSnackbar('home', true, 'error', error, null, false);
+         }
+      })
+      .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+         if (error == "TypeError: Failed to fetch") {
+            error = _('Server not reachable');
+         }
+         showSnackbar('home', true, 'error', error, null, false);
+      })
+      
+   }
+
+   function focusmode(isEdit=false, translationId=null) {
+
+      if (isEdit) {
+         currentTranslation = translations.find((translation) => translation.id == translationId);
+         translationsToTranslateOrigLength = 1
+      } else {
+         currentTranslation = translationsToTranslate[0];
+         if (translationsToTranslateOrigLength <= 0) {
+            translationsToTranslateOrigLength = translationsToTranslate.length;
+         }
+      }
+      
+      
+      document.getElementById("div-render-translations-for-language").style.display = "none";
+      document.getElementById("div-render-available-translations").style.display = "none";
+      document.getElementById("div-render-focusmode").style.display = "";
+      document.getElementById("div-translation-management").style.display = "none";
+
+      document.getElementById("focusmode-title").innerText = languageCode; // Sprache setzten
+      document.getElementById("focusmode-fieldname").innerText = currentTranslation.fieldName; // Feldname setzten
+      document.getElementById("focusmode-translation").value = currentTranslation.translatedText; // Übersetzung setzten
+      document.getElementById("focusmode-counter").innerText = currentTranslationIndex++; // Counter setzten
+      document.getElementById("focusmode-total").innerText = translationsToTranslateOrigLength; // Total setzten
+
+      if (languageCode == "en") {
+         document.getElementById("focusmode-helpText-input").style.display = "";
+      } else {
+         document.getElementById("focusmode-helpText-input").style.display = "none";
+      }
+
+      if (currentTranslation.helpText) {
+         document.getElementById("focusmode-helpText").innerHTML = currentTranslation.helpText; // Hilfetext setzten
+         document.getElementById("focusmode-helpText-h").style.display = "";
+         document.getElementById("focusmode-helpText-new-value").value = currentTranslation.helpText;
+      } else {
+          document.getElementById("focusmode-helpText-h").style.display = "none";
+          document.getElementById("focusmode-helpText-new-value").value = "";
+      }
+
+   }
+
+   function saveTranslation() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
+      var formData = new FormData();
+      formData.append("entityType", currentTranslation.entityType);
+      formData.append("entityID", currentTranslation.entityID);
+      formData.append("fieldName", currentTranslation.fieldName);
+      formData.append("translatedText", document.getElementById("focusmode-translation").value);
+      formData.append("helpText", document.getElementById("focusmode-helpText-new-value").value);
+
+      fetch("/api/v2/translations/" + languageCode, {
+         method: "PUT",
+         body: formData,
+      })
+         .then(async (response) => {
+            try {
+               const result = await response.json();
+               if (result.status === "success") {
+                  translationsToTranslate = translationsToTranslate.filter((translation) => translation.id !== currentTranslation.id);
+
+                  if (translationsToTranslateOrigLength == 1 || translationsToTranslate.length <= 0) {
+                     getTranslations(languageCode);
+                  } else {
+                     focusmode();
+                  }
+               } else {
+                  showSnackbar('home', true, 'error', result.message, result, true);
+               }
+            } catch (error) { // Kein gültiges JSON
+               showSnackbar('home', true, 'error', error, null, false);
+            }
+         })
+         .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+            if (error == "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('home', true, 'error', error, null, false);
+         })
+   }
+
+   function showLanguages() {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
+
+      fetch("/api/v2/translations", {
+         method: "GET",
+      })
+         .then(async (response) => {
+            try {
+               const result = await response.json();
+               if (result.status === "success") {
+                  document.getElementById("div-render-available-translations").innerHTML = result.data.rendered_languages;
+                  document.getElementById("div-render-translations-for-language").style.display = "none";
+                  document.getElementById("div-render-available-translations").style.display = "";
+                  document.getElementById("div-render-focusmode").style.display = "none";
+                  document.getElementById("div-translation-management").style.display = "";
+
+               } else {
+                  showSnackbar('home', true, 'error', result.message, result, true);
+               }
+            } catch (error) { // Kein gültiges JSON
+               showSnackbar('home', true, 'error', error, null, false);
+            }
+         })
+         .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+            if (error == "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('home', true, 'error', error, null, false);
+         })
+   }
+
+   function devToolsAction(mode) {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
+
+      if (!confirm("{{ _('Are you sure? This action cannot be undone!') }}")) {
+         return;
+      }
+
+      var formData = new FormData();
+      formData.append("mode", mode);
+
+      fetch("/api/v2/devtools", {
+         method: "POST",
+         body: formData,
+      })
+         .then(async (response) => {
+            try {
+               const result = await response.json();
+               if (result.status === "success") {
+                  showSnackbar('home', true, 'green', result.message, null, false);
+                  showLanguages();
+               } else {
+                  showSnackbar('home', true, 'error', result.message, result, true);
+               }
+            } catch (error) { // Kein gültiges JSON
+               showSnackbar('home', true, 'error', error, null, false);
+            }
+         })
+         .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+            if (error == "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('home', true, 'error', error, null, false);
+         })
+   }
+
+   function exportTranslations(language) {
+      if (!navigator.onLine) {
+         showSnackbar('home', true, 'error', _('You are offline'), null, false);
+         return;
+      }
+      var formData = new FormData();
+      formData.append("languageCode", language);
+      formData.append("type", "JSON");
+
+      fetch("/api/v2/export/translations", {
+         method: "POST",
+         body: formData,
+      })
+         .then(async (response) => {
+            try {
+               const result = await response.json();
+               if (result.status === "success") {
+                  download_link = result.data.download_link;
+                  var a = document.createElement('a');
+                  a.href = download_link;
+                  a.download = download_link.split('/').pop();
+                  a.click();
+               } else {
+                  showSnackbar('home', true, 'error', result.message, result, true);
+               }
+            } catch (error) { // Kein gültiges JSON
+               showSnackbar('home', true, 'error', error, null, false);
+            }
+         })
+         .catch((error) => { // Fehler beim Fetchen ggf. Server nicht erreichbar
+            if (error == "TypeError: Failed to fetch") {
+               error = _('Server not reachable');
+            }
+            showSnackbar('home', true, 'error', error, null, false);
+         })
+   }
+
+
+   </script>
+
+
+   </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ title.value }}</title>
+      {% include 'layouts/head.html' %}
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lg-video.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lg-thumbnail.min.css">
+<style>
+   #lightgallery {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+     grid-gap: 10px;
+   }
+
+   #lightgallery a {
+     aspect-ratio: 1 / 1;
+     overflow: hidden;
+     background: var(--surface-variant);
+     border-radius: 0.5rem;
+   }
+
+   #lightgallery a img {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+   }
+ </style>
+ 
+ 
+   </head>
+   <body class="{% if darkmode.value == 'TRUE' %}dark{% endif %}">
+   <!-- Header -->
+   {% include 'layouts/header.html' %}
+   <!-- Overlay wenn Nav-Drawer geöffnet -->
+   <div class="overlay" id="div-overlay-nav-drawer" onclick="callUi('#dialog-nav-drawer')"></div>
+   <!-- Nav-Drawer -->
+   <div id="div-render-nav-drawer">
+      {% include 'layouts/nav-drawer.html' %}
+   </div>
+   <!-- Overlay für New-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-new-timeline-item" onclick="callUi('#dialog-create-new-timeline-item')"></div>
+
+   <!-- Overlay für Details-Timeline-Dialog -->
+   <div class="overlay" id="div-overlay-details-timeline-item" onclick="callUi('#dialog-details-timeline-item')"></div>
+
+   <!-- Gallery-Karten -->
+   <main class="responsive">
+      <article class="no-padding primary-container">
+         <div class="padding">
+            <h5><button class="circle transparent" onclick="window.history.back()"><i>arrow_back</i></button> {{ _('Gallery') }}</h5>
+            <p>{{ item.content }}</p>
+            <div id="lightgallery">
+               {% for url in item.contentURL.split(';') %}
+                   {% set video_extensions = ['.mp4', '.mov', '.avi', '.mkv'] %}
+                   {% set lower_url = url|lower %}
+                   {% if lower_url[-4:] in video_extensions %}
+                   <a
+                   data-lg-size="1200-720"
+                   data-video='{"source": [{"src":"/api/v2/media/{{ url }}", "type":"video/mp4"}], "attributes": {"preload": false, "controls": true}}'
+                   data-thumb="/api/v2/media/thumb/{{ url }}"
+                   data-poster="/api/v2/media/thumb/{{ url }}"
+               >
+                   <div style="position:relative;aspect-ratio:1;background:var(--surface-variant);overflow:hidden;">
+                       <img src="/api/v2/media/thumb/{{ url }}"
+                            style="width:100%;height:100%;object-fit:cover;"
+                            loading="lazy">
+                       <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+                           <i style="font-size:3rem;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);">play_circle</i>
+                       </div>
+                   </div>
+               </a>
+                   {% else %}
+                       <a href="/api/v2/media/{{ url }}" data-lg-size="150-100">
+                           <img src="/api/v2/media/{{ url }}">
+                       </a>
+                   {% endif %}
+                   {% endfor %}
+           </div>
+           
+              
+         </div>
+      </article>
+
+
+
+      <!-- Footer -->
+      {% include 'layouts/footer.html' %}
+   </main>
+
+   
+
+   <div class="snackbar" id="home-snackbar">
+      <div class="max" id="home-snackbar-text" onclick="document.getElementById('home-snackbar').classList.remove('active');"></div>
+      <a id="home-snackbar-more-link"></a>
+   </div>
+
+   <div class="overlay" id="div-overlay-home-error">
+   </div>
+
+   <dialog id="home-error-more-details">
+   <h5>{{ _('Error details') }}</h5>
+   <div id="home-error-more-details-text"></div>
+   <nav class="right-align no-space">
+      <button class="transparent link" onclick="showMoreInfo('home', null,'close')">{{ _('OK') }}</button>
+   </nav>
+   </dialog>
+
+   <script src="{{ static_versioned('js/main.js') }}"></script>
+
+   <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/video/lg-video.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/autoplay/lg-autoplay.min.js"></script>
+
+<script>
+  (function() {
+    if (typeof lightGallery === 'function') {
+      const lg = lightGallery(document.getElementById('lightgallery'), {
+        plugins: [lgThumbnail, lgVideo, lgAutoplay],
+        speed: 500,
+        thumbnail: true,
+        animateThumb: true,
+        zoomFromOrigin: false,
+        toggleThumb: true,
+        download: true,
+        hideScrollbar: true,
+        mobileSettings: { download: true },
+        autoplay: true
+      });
+
+      document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'VIDEO' || (e.target.tagName === 'SOURCE' && e.target.parentElement?.tagName === 'VIDEO')) {
+          const outer = e.target.closest('.lg-outer');
+          if (!outer || outer.querySelector('.video-error-notice')) return;
+          const notice = document.createElement('div');
+          notice.className = 'video-error-notice';
+          notice.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.85);color:white;padding:16px 24px;border-radius:12px;text-align:center;max-width:85%;z-index:10000;font-size:15px;';
+          notice.textContent = _('This video cannot be played in your browser (unsupported codec). Try opening it in a different browser or download it.');
+          outer.appendChild(notice);
+        }
+      }, true);
+    }
+  })();
+</script>
+   
+   </body>
+</html>
