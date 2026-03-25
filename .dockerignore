@@ -1,9 +1,40 @@
 .venv
+venv
 __pycache__
 *.pyc
+
 .env
+my.env
+.env.example
 .git
+.gitignore
+.dockerignore
 .claude
-app/database/*.db
+.vscode
+.pytest_cache
+.github
+.DS_Store
+
+# Database & data
+app/database/
+*.db-journal
 app/uploads/
 app/export/
+app/migration_data/
+
+# Logs
+logs/
+
+# Update backups
+backups/
+
+# Not needed in image
+screenshots/
+*.md
+LICENSE
+dockerv*.yml
+dockerv*.yaml
+gunicorn.ctl
+install.sh
+update.sh
+uninstall.sh

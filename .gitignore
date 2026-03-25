@@ -1,6 +1,7 @@
 __pycache__/
 
 .vscode/
+.claude/
 
 venv/
 .venv/
@@ -16,8 +17,8 @@ my.env
 logs/
 
 # Database
-app/database/*.db
-app/database/*.bin
+app/database/
+*.db-journal
 
 # Session files
 *.session.sql
@@ -28,8 +29,14 @@ app/export/
 # Uploads (user data)
 app/uploads/
 
-# User-uploaded images (keep only app assets)
-app/static/images/20*
+# Migration data (status, backups, logs)
+app/migration_data/
+
+# Update backups
+backups/
+
+# Gunicorn
+gunicorn.ctl
 
 # Test artifacts
 .pytest_cache/
