@@ -114,6 +114,7 @@ services:
     volumes:
       - sm-database:/app/app/database
       - sm-uploads:/app/app/uploads
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - SECRET_KEY=CHANGE-ME
 

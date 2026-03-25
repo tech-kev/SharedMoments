@@ -9,6 +9,7 @@ services:
       # v2 data
       - sm-database:/app/app/database
       - sm-uploads:/app/app/uploads
+      - /etc/localtime:/etc/localtime:ro
 
       # v1 → v2 Migration (remove after migration is done)
       #- /path/to/v1/uploads:/v1-uploads:ro
