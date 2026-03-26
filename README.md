@@ -5,7 +5,7 @@
 
 **Your private space for shared memories — for couples, families, and friends.**
 
-![Version](https://img.shields.io/badge/version-2.0.0--alpha-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green)
 ![Python](https://img.shields.io/badge/python-3.12-yellow)
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
