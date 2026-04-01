@@ -1,0 +1,4202 @@
+[
+    {
+        "entityID": 0,
+        "fieldName": "Home",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Home"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Moments",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Momenti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Movie List",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Lista Film"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Bucket List",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Lista dei Desideri"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Countdown",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Conto alla Rovescia"
+    },
+    {
+        "entityID": 1,
+        "fieldName": "in a relationship",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "relationship_status",
+        "translatedText": "in una relazione"
+    },
+    {
+        "entityID": 2,
+        "fieldName": "engaged",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "relationship_status",
+        "translatedText": "fidanzati"
+    },
+    {
+        "entityID": 3,
+        "fieldName": "married",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "relationship_status",
+        "translatedText": "sposati"
+    },
+    {
+        "entityID": 4,
+        "fieldName": "in an open relationship",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "relationship_status",
+        "translatedText": "in una relazione aperta"
+    },
+    {
+        "entityID": 5,
+        "fieldName": "in a complicated relationship",
+        "helpText": null,
+        "languageCode": "it-IT",
+        "entityType": "relationship_status",
+        "translatedText": "in una relazione complicata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_text_anniversary",
+        "helpText": "Consulta il <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> per una descrizione dettagliata su come inserire questa traduzione.",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Siamo {relationship_status} da {years_count}, {months_count} e {days_count}. Equivale a {diffInMonthsTotal} mesi, {diffInWeeksTotal} settimane o {diffInDays} giorni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_text_engaged",
+        "helpText": "Consulta il <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> per una descrizione dettagliata su come inserire questa traduzione.",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Siamo {relationship_status} da {years_count}, {months_count} e {days_count}. Equivale a {diffInMonthsTotal} mesi, {diffInWeeksTotal} settimane o {diffInDays} giorni. Siamo in una relazione dal {anniversary_date}."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_text_wedding",
+        "helpText": "Consulta il <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> per una descrizione dettagliata su come inserire questa traduzione.",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Siamo {relationship_status} da {years_count}, {months_count} e {days_count}. Equivale a {diffInMonthsTotal} mesi, {diffInWeeksTotal} settimane o {diffInDays} giorni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Year",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Anno"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Years",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Anni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Month",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Mese"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Months",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Mesi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Giorno"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Days",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Giorni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "You haven't created any entry yet",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non hai ancora creato nessuna voce"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Click the button to create a new entry",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Clicca il pulsante per creare una nuova voce"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create entry",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea voce"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "File",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "File"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "of",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "di"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new entry",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuova voce"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Save",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Salva"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Title",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Titolo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Description",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Descrizione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Creation Date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data di creazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "optional",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "opzionale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Images or videos",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Immagini o video"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new list",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuova lista"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Settings",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Change order",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cambia ordine"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Change icon",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cambia icona"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Cancel",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Annulla"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new list type",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuovo tipo di lista"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Path",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Percorso"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Icon",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Icona"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Error details",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Dettagli errore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "OK",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "OK"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Currently available languages:",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Lingue attualmente disponibili:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Language",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Lingua"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Status",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Stato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Export",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Esporta"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new translation",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuova traduzione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit entry",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica voce"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Our special moments",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "I nostri momenti speciali"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Details",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Dettagli"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Close",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Chiudi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translation",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User settings",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazioni utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Logout",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Disconnetti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Gallery",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Galleria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new moment",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuovo momento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translations",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Type",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Type ID",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "ID Tipo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Fieldname",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome campo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translated Text",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Testo tradotto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Back",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Indietro"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Focus mode",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modalità focus"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "SharedMoments Setup",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Configurazione SharedMoments"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Select edition",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Seleziona edizione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "SharedMoments Couples is designed for couples who want to store their shared experiences and wish lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "SharedMoments Couples è progettato per coppie che vogliono conservare le loro esperienze condivise e liste dei desideri"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "SharedMoments Family is designed for families who want to store their shared experiences and wish lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "SharedMoments Family è progettato per famiglie che vogliono conservare le loro esperienze condivise e liste dei desideri"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "SharedMoments Friends is designed for friend groups who want to store their shared experiences and wish lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "SharedMoments Friends è progettato per gruppi di amici che vogliono conservare le loro esperienze condivise e liste dei desideri"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please select an edition of SharedMoments to continue",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Seleziona un'edizione di SharedMoments per continuare"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Add user",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiungi utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Add users who will use SharedMoments",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiungi gli utenti che utilizzeranno SharedMoments"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Added users",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utenti aggiunti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "First name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Last name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cognome"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Email address",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Indirizzo email"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Birthdate",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data di nascita"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Repeat password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ripeti password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Profile picture",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Immagine del profilo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Preview",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Anteprima"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User role",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruolo utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Final touches",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ultimi ritocchi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Now make the final adjustments to get started!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ora apporta le ultime modifiche per iniziare!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Adjust settings",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Regola impostazioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Complete setup",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Completa configurazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Family name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome della famiglia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Name of your friend group",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome del tuo gruppo di amici"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Relationship status",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Stato relazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Anniversary",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Anniversario"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Engagement day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Giorno del fidanzamento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Wedding anniversary",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Anniversario di matrimonio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Change",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cambia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "About",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Informazioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "General",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Generale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Devtools",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Strumenti sviluppo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Load new translations from Code",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Carica nuove traduzioni dal codice"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Approve new Translations to all Languages",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Approva nuove traduzioni per tutte le lingue"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translation of language",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzione della lingua"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Source text",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Testo sorgente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Help Text",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Testo di aiuto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Set Help Text",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Imposta testo di aiuto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Next",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Avanti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "New language",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nuova lingua"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Login",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Accedi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "E-Mail",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Email"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "obbligatorio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a valid email address.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci un indirizzo email valido."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item is not a gallery",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "L'elemento non è una galleria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Setting updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazione aggiornata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the setting.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento dell'impostazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User-Setting updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazione utente aggiornata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the user-setting.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento dell'impostazione utente."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List type not found",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di lista non trovato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while completing the setup.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il completamento della configurazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "File uploaded successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "File caricato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No file provided",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun file fornito"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during file upload",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento del file"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce creata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the item.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione della voce."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item(s) deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce/voci eliminate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while deleting the items.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'eliminazione delle voci."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item(s) loaded successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce/voci caricate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading the item.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento della voce."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce aggiornata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the item.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento della voce."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List type updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di lista aggiornato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List Name updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome della lista aggiornato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List Icon updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Icona della lista aggiornata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the List type.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento del tipo di lista."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List type deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di lista eliminato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while deleting the List type.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'eliminazione del tipo di lista."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "List type created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di lista creato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the List type.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione del tipo di lista."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Languages loaded successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Lingue caricate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading the Languages.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento delle lingue."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No language code provided",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun codice lingua fornito"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Language created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Lingua creata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the Language.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione della lingua."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translations loaded successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzioni caricate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading the Translations.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento delle traduzioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translation updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzione aggiornata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the Translation.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento della traduzione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translations exported successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Traduzioni esportate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while exporting data.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'esportazione dei dati."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "sm_edition",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Edizione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "sm_version",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Versione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "setup_complete",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "configurazione_completata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "title",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Titolo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "family_name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Nome Famiglia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "friend_group_name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Nome Gruppo Amici"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "relationship_status",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Stato Relazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "anniversary_date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Data Anniversario"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "engaged_date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Data Fidanzamento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "wedding_date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Data Matrimonio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "language",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Lingua"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "darkmode",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Modalità scura"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reset all Translations",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Reimposta tutte le traduzioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Are you sure? This action cannot be undone!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sei sicuro? Questa azione non può essere annullata!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "A new version is available",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "È disponibile una nuova versione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Update",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiorna"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item unpinned from offline",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce rimossa dai contenuti offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Downloading for offline use...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Download per uso offline in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Download starts when online",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il download inizierà quando sei online"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Pending sync",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sincronizzazione in attesa"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item synced",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce sincronizzata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "All content cached for offline use",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tutto il contenuto è in cache per uso offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item saved for offline",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce salvata per offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "You are offline",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sei offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Items are being synced...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sincronizzazione voci in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Sync failed. Try again later.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sincronizzazione fallita. Riprova più tardi."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This page is not available offline. Please check your internet connection and try again.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questa pagina non è disponibile offline. Controlla la tua connessione internet e riprova."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Retry",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Riprova"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Install App",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Installa App"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Offline & Storage",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Offline e Archiviazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Storage used",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Spazio utilizzato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Check for PWA updates",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Controlla aggiornamenti PWA"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Force download latest version",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Forza download ultima versione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Clear offline cache",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cancella cache offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Remove all cached content",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Rimuovi tutto il contenuto in cache"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Service Worker not supported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Service Worker non supportato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Checking for updates...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Controllo aggiornamenti in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "App is up to date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "L'app è aggiornata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Cache cleared",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cache cancellata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Not available",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non disponibile"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "pwa_offline_all",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Salva tutto il contenuto offline"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "pwa_wifi_only_upload",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Carica solo su WiFi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "pwa_preload_on_wifi",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Precarica contenuto su WiFi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "pwa_auto_cache_count",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Numero di voci recenti da mantenere in cache"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "pwa_cache_expiry_days",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "Scadenza cache (giorni)"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item saved offline. Will sync when online.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Voce salvata offline. Verrà sincronizzata quando sei online."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Wedding Day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Giorno del Matrimonio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Engagement Day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Giorno del Fidanzamento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Birthday of {name}",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Compleanno di {name}"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "{n}-Year Milestone",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Siamo stati insieme per {n} anni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "{n}-Day Milestone",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Traguardo di {n} giorni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Countdown: {title}",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Conto alla rovescia: {title}"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Countdown \"{title}\" reached!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Conto alla rovescia \"{title}\" raggiunto!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Today is {title}!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Oggi è {title}!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "{title} in 1 day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "{title} tra 1 giorno"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "{title} in {days} days",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "{title} tra {days} giorni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "{title} is on {date}",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "{title} è il {date}"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminders",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Annual",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Annuale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "One-time",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Una tantum"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Milestone",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Traguardo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Auto",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Automatico"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "On the day",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Il giorno stesso"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "1 day before",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "1 giorno prima"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "days before",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "giorni prima"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No reminders yet",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Nessun promemoria ancora"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Unmute",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Riattiva audio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Mute",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Silenzia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create Reminder",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Crea promemoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit Reminder",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Modifica promemoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Notify me",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Notificami"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "3 days before",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "3 giorni prima"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "7 days before",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "7 giorni prima"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder muted",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria silenziato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder unmuted",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria riattivato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria creato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria aggiornato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria eliminato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while muting the reminder.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Si è verificato un errore durante la silenziazione del promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while unmuting the reminder.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Si è verificato un errore durante la riattivazione del promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "notification_push_enabled",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Notifiche push"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "notification_email_enabled",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Notifiche email"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "notification_telegram_enabled",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Notifiche Telegram"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "notification_telegram_chat_id",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Chat ID Telegram"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please set your anniversary date in the settings.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Imposta la data del tuo anniversario nelle impostazioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please set your engagement date in the settings.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Imposta la data del tuo fidanzamento nelle impostazioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please set your wedding date in the settings.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Imposta la data del tuo matrimonio nelle impostazioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Insufficient permissions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Permessi insufficienti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete this reminder?",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Eliminare questo promemoria?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter some text first",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci prima del testo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Server not reachable",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Server non raggiungibile"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Upload Files...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Carica file..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete selected items?",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Eliminare gli elementi selezionati?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Render preview images...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Genera anteprime immagini..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Click images to change the order",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Clicca sulle immagini per cambiare l'ordine"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Your browser does not support this video format (e.g. HEVC/H.265 codec). You can still upload it, but it will only play on supported devices.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il tuo browser non supporta questo formato video (es. codec HEVC/H.265). Puoi comunque caricarlo, ma verrà riprodotto solo su dispositivi supportati."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Filetype",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di file"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "is not supported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "non è supportato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "remaining",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "rimanenti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please select exactly one item to share",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Seleziona esattamente un elemento da condividere"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Expiration date must be in the future",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "La data di scadenza deve essere futura"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Link copied to clipboard",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Link copiato negli appunti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Error code",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Codice errore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Error message",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Messaggio di errore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please fill in all fields",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Compila tutti i campi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Only lowercase letters, numbers and hyphens",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Solo lettere minuscole, numeri e trattini"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit list",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica lista"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This path is reserved and cannot be used",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questo percorso è riservato e non può essere utilizzato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a sidebar name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci un nome per la barra laterale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a valid path",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci un percorso valido"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please select an icon",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Seleziona un'icona"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Do you really want to delete this entry? All associated entries will also be deleted.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Vuoi davvero eliminare questa voce? Verranno eliminate anche tutte le voci associate."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Save order",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Salva ordine"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create user",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "New password (leave empty to keep)",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nuova password (lascia vuoto per mantenere quella attuale)"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit user",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "First name and e-mail are required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome e email sono obbligatori"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password is required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "La password è obbligatoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passwords do not match.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Le password non coincidono."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User must have at least one role",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "L'utente deve avere almeno un ruolo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Liste"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Special",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Speciale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role name is required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il nome del ruolo è obbligatorio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Revoke this share link?",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Revocare questo link di condivisione?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please add at least one user.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiungi almeno un utente."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please save the settings first.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Salva prima le impostazioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please fill in all date fields.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Compila tutti i campi data."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Do you want to complete the setup?",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Vuoi completare la configurazione?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your First name.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci il tuo nome."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your Last name.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci il tuo cognome."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your Birthdate.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci la tua data di nascita."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your Password.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci la tua password."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please repeat your Password.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ripeti la tua password."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "E-Mail already in use. Please choose a different one.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Email già in uso. Scegline un'altra."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a date.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Inserisci una data."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This date is required for your relationship status.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questa data è richiesta per il tuo stato di relazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No image",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessuna immagine"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No song",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun brano"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Not configured",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non configurato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Telegram Chat-ID saved",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Chat ID Telegram salvata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Failed to get push key from server",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impossibile ottenere la chiave push dal server"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Push notifications enabled",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Notifiche push abilitate"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Push subscription failed",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sottoscrizione push fallita"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Not supported by browser",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non supportato dal browser"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Active",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Attivo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Blocked by browser",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Bloccato dal browser"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Permission required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Permesso richiesto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No active shares",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessuna condivisione attiva"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share links will appear here once created.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "I link di condivisione appariranno qui una volta creati."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Created by",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Creato da"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Expired",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Scaduto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Hours",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Minutes",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Minuti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Seconds",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Secondi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No countdowns yet",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun conto alla rovescia ancora"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create countdown",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea conto alla rovescia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Target date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data obiettivo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit countdown",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica conto alla rovescia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Elimina"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit moment",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica momento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Enhance with AI",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Migliora con IA"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Undo AI",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Annulla IA"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Regenerate",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Rigenera"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Show in all editions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Mostra in tutte le edizioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "permissions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "permessi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Done",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Fatto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Manage lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Gestisci liste"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Admin",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Amministratore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Sidebar name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome barra laterale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Page title",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Titolo pagina"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share item",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Condividi elemento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Expires at",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Scade il"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share link",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Link di condivisione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Copy link",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Copia link"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create link",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea link"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Users",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utenti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Roles & Permissions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruoli e Permessi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Shares",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Condivisioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Birth date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data di nascita"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Roles",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruoli"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit user roles",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica ruoli utente"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edit permissions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Modifica permessi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create new role",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea nuovo ruolo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome ruolo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Translation management",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Gestione traduzioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Stay logged in",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Rimani connesso"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Login with passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Accedi con passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Notifications",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Notifiche"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Browser Push",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Push browser"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Allow Notifications",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Consenti notifiche"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Send test notification",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Invia notifica di test"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No email address",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun indirizzo email"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Send test email",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Invia email di test"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Send /start to the bot, then enter your Chat-ID here.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Invia /start al bot, poi inserisci qui la tua Chat-ID."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Test",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Test"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Change edition",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cambia edizione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No data will be lost when switching editions.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun dato verrà perso quando cambi edizione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Only content for the new edition and cross-edition content will be shown.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Verrà mostrato solo il contenuto per la nuova edizione e il contenuto cross-edition."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "You can switch back at any time and all previous content will be available again.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Puoi tornare indietro in qualsiasi momento e tutto il contenuto precedente sarà di nuovo disponibile."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create a passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Crea una passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Only use passwordless login",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Usa solo login senza password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Adult",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Adulto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Child",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Bambino"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Login successful",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Accesso effettuato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "E-Mail or password cannot be empty",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Email o password non possono essere vuoti"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "E-Mail or password incorrect",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Email o password errati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while fetching user details.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il recupero dei dettagli utente."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Registration challenge created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sfida di registrazione creata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during registration",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la registrazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey registered successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey registrata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during registration verification",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la verifica della registrazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Authentication challenge created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sfida di autenticazione creata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during authentication",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'autenticazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during authentication verification",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la verifica dell'autenticazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Security Key",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Chiave di sicurezza"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Setup successful",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Configurazione completata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Only image files are allowed for the banner.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sono consentiti solo file immagine per il banner."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Only MP3 files are allowed for the banner song.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sono consentiti solo file MP3 per il brano del banner."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Profile picture updated",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Immagine del profilo aggiornata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Invalid filename",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome file non valido"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "File type not allowed. Allowed types:",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tipo di file non consentito. Tipi consentiti:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "File too large. Maximum size:",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "File troppo grande. Dimensione massima:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Item not found",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voce non trovata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share link created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Link di condivisione creato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the share link.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione del link di condivisione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Shares loaded successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Condivisioni caricate con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading shares.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento delle condivisioni."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share link revoked successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Link di condivisione revocato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while revoking the share link.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la revoca del link di condivisione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading reminders.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento dei promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Title and type are required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Titolo e tipo sono obbligatori"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the reminder.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione del promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while updating the reminder.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'aggiornamento del promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while deleting the reminder.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'eliminazione del promemoria."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No push subscription found. Please allow notifications first.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessuna sottoscrizione push trovata. Consenti prima le notifiche."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This is a test notification!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questa è una notifica di test!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No email address in your profile",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun indirizzo email nel tuo profilo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "SMTP server not configured",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Server SMTP non configurato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No Telegram Chat-ID configured",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessuna Chat-ID Telegram configurata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Telegram bot not configured",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Bot Telegram non configurato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Test notification sent!",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Notifica di test inviata!"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Failed to send test notification. Check configuration.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Invio notifica di test fallito. Controlla la configurazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role already exists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il ruolo esiste già"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruolo creato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role not found",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruolo non trovato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruolo aggiornato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Built-in roles cannot be deleted",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "I ruoli integrati non possono essere eliminati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Role deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruolo eliminato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Admin role must keep \"Access Admin Panel\" permission",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il ruolo amministratore deve mantenere il permesso \"Accesso Pannello Admin\""
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Permissions updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Permessi aggiornati con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "There must be at least one admin",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Deve esserci almeno un amministratore"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User roles updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Ruoli utente aggiornati con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "First name, e-mail and password are required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome, email e password sono obbligatori"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utente creato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User not found",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utente non trovato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User updated successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utente aggiornato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "You cannot delete your own account",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non puoi eliminare il tuo account"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utente eliminato con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "share_tracking",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Tracciamento condivisioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_image",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Immagine Banner"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_song",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "Brano Banner"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "migration_review_complete",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "revisione_migrazione_completata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "vapid_private_key",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "vapid_private_key"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "vapid_public_key",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "vapid_public_key"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_text_family",
+        "helpText": "Consulta il <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> per una descrizione dettagliata su come inserire questa traduzione.",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "La nostra famiglia — {years_count}, {months_count} e {days_count} di ricordi condivisi. Sono {diffInMonthsTotal} mesi, {diffInWeeksTotal} settimane o {diffInDays} giorni di crescita insieme."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "banner_text_friends",
+        "helpText": "Consulta il <a class=\"link underline\" target=\"_blank\" href=\"https://github.com/tech-kev/SharedMoments/wiki#-translation\">wiki</a> per una descrizione dettagliata su come inserire questa traduzione.",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Amici da {years_count}, {months_count} e {days_count}. Sono {diffInMonthsTotal} mesi, {diffInWeeksTotal} settimane o {diffInDays} giorni di momenti indimenticabili."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Uploading...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Caricamento in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Extracting ZIP...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Estrazione ZIP in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Importing items...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Importazione voci in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Copying media files...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Copia file multimediali in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Import completed successfully! Redirecting...",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Importazione completata con successo! Reindirizzamento in corso..."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Import failed",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Importazione fallita"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passwords do not match",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Le password non coincidono"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password must be at least 6 characters",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "La password deve essere di almeno 6 caratteri"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Invalid color code",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Codice colore non valido"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Export completed",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Esportazione completata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Export failed",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Esportazione fallita"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Items imported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Voci importate"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Skipped (duplicate)",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Saltato (duplicato)"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Skipped (error)",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Saltato (errore)"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Users imported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Utenti importati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "User settings imported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazioni utente importate"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminders imported",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Promemoria importati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Media files copied",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "File multimediali copiati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Settings updated",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impostazioni aggiornate"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Not synced",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Non sincronizzato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Sync now",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Sincronizza ora"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "All pending posts deleted",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tutti i post in attesa eliminati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Post deleted",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Post eliminato"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No pending posts",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun post in attesa"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete post",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Elimina post"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This post has not been synced yet. Delete? The data will be lost.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questo post non è stato ancora sincronizzato. Eliminarlo? I dati andranno persi."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "All editions",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Tutte le edizioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Edition",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Edizione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Data Management",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Gestione Dati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Export data",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Esporta dati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Download all items and media as ZIP",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Scarica tutte le voci e i media come ZIP"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Download",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Scarica"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Import data",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Importa dati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Import items and media from ZIP (v2 only)",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Importa voci e media da ZIP (solo v2)"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Import Summary",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Riepilogo Importazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Change password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Cambia password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Update your password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiorna la tua password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Appearance",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aspetto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Accent color",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Colore accento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete all pending posts",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Elimina tutti i post in attesa"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Remove all offline posts that have not been synced yet",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Rimuovi tutti i post offline che non sono stati ancora sincronizzati"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Current password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Password attuale"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "New password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nuova password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Confirm password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Conferma password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Or import data from a previous v2 instance",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Oppure importa dati da una precedente istanza v2"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Family founding date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data fondazione famiglia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Founding date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Data fondazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Incorrect password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Password errata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password updated",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Password aggiornata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred during import.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'importazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Invalid or corrupted ZIP file",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "File ZIP non valido o corrotto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "family_founding_date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "data_fondazione_famiglia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "friend_group_founding_date",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "data_fondazione_gruppo_amici"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "family_banner_image",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "immagine_banner_famiglia"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "friends_banner_image",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "setting",
+        "translatedText": "immagine_banner_amici"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "accent_color",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "user_setting",
+        "translatedText": "colore_accento"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Delete passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Elimina passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkeys are not available via IP address",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Le passkey non sono disponibili tramite indirizzo IP"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "WebAuthn is not supported in this browser",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "WebAuthn non è supportato in questo browser"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Name for this passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome per questa passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "My Passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "La mia Passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey login is not available when accessing via IP address. Use localhost or a domain name.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il login con passkey non è disponibile quando si accede tramite indirizzo IP. Usa localhost o un nome di dominio."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey login failed.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Login con passkey fallito."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkeys",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Created",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Creata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No passkeys configured",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessuna passkey configurata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Add passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Aggiungi passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Rename passkey",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Rinomina passkey"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Name",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nome"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey not recognized. It may have been deleted.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey non riconosciuta. Potrebbe essere stata eliminata."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while loading passkeys.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante il caricamento delle passkey."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Name is required",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Il nome è obbligatorio"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "No passkey registration data found. Please register a passkey first.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Nessun dato di registrazione passkey trovato. Registra prima una passkey."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey created successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey creata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while creating the passkey.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la creazione della passkey."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey renamed successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey rinominata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey not found",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey non trovata"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while renaming the passkey.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante la rinominazione della passkey."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Cannot delete the last passkey when no password is set.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Impossibile eliminare l'ultima passkey quando non è impostata alcuna password."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Passkey deleted successfully",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Passkey eliminata con successo"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "An error occurred while deleting the passkey.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Si è verificato un errore durante l'eliminazione della passkey."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "System",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Sistema"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Setting",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Impostazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reminder",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Promemoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Manage Lists",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Gestisci elenchi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Manage Translations",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Gestisci traduzioni"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Access Admin Panel",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Accedi al pannello di amministrazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Share Items",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Condividi elementi"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "View",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Visualizza"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Create",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Crea"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "View Reminders",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Visualizza promemoria"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Upload failed",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Caricamento fallito"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "file(s) could not be uploaded:",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "impossibile caricare il/i file:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This video cannot be played in your browser (unsupported codec). Try opening it in a different browser or download it.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Questo video non può essere riprodotto nel tuo browser (codec non supportato). Prova ad aprirlo in un browser diverso o scaricalo."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Deselect all",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Deseleziona tutto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Select all",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "static",
+        "translatedText": "Seleziona tutto"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Forgot password?",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Password dimenticata?"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Send reset link",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Invia link di reimpostazione"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Reset password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Reimposta password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Set new password",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Imposta nuova password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Back to login",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Torna al login"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Your password has been changed successfully.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "La tua password è stata modificata con successo."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This reset link has expired. Please request a new one.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Questo link di reimpostazione è scaduto. Richiedine uno nuovo."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This reset link is invalid.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Questo link di reimpostazione non è valido."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter a password.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Inserisci una password."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "If an account with this e-mail exists, a reset link has been sent.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Se esiste un account con questa email, è stato inviato un link di reimpostazione."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Please enter your e-mail address.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Inserisci il tuo indirizzo email."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Password Reset",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Reimpostazione password"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Hello",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Ciao"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "A password reset was requested for your account.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "È stata richiesta una reimpostazione della password per il tuo account."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "Click the following link to set a new password:",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Clicca sul seguente link per impostare una nuova password:"
+    },
+    {
+        "entityID": 0,
+        "fieldName": "This link is valid for 1 hour.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Questo link è valido per 1 ora."
+    },
+    {
+        "entityID": 0,
+        "fieldName": "If you did not request this, you can ignore this e-mail.",
+        "helpText": "",
+        "languageCode": "it-IT",
+        "entityType": "ui",
+        "translatedText": "Se non hai richiesto questa operazione, puoi ignorare questa email."
+    }
+]

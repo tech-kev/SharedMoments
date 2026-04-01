@@ -172,6 +172,7 @@ Coming from SharedMoments v1? v2 includes a built-in migration tool that transfe
 Currently available languages:
 - 🇩🇪 German
 - 🇬🇧 English
+- 🇮🇹 Italian
 
 New languages can be added directly in the built-in translation manager (accessible from the sidebar for users with the right permissions).
 
