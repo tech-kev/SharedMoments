@@ -195,7 +195,7 @@ function getFileContentType (dataUrl=null, filename=null) {
       }
    } else if (filename) {
       const extension = filename.split('.').pop().toLowerCase();
-      if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'].includes(extension)) {
          return 'image';
       } else if (['mp4', 'webm', 'mov'].includes(extension)) {
          if (extension === 'mov') {
@@ -865,7 +865,8 @@ function renderFile(file, index, containerDiv) {
 
 // Funktion zum Rendern eines Bildes aus einer URL
 function renderImageFromURL(fileObj, containerDiv) {
-   const apiUrl = "/api/v2/media/"
+   const heif = /\.(heic|heif)$/i.test(fileObj.url);
+   const apiUrl = heif ? "/api/v2/media/thumb/" : "/api/v2/media/";
    return createPreview(apiUrl+fileObj.url, fileObj.index, containerDiv, 'edit');
 }
 
@@ -896,6 +897,10 @@ function createPreview(src, index, containerDiv, mode, filename) {
        const img = document.createElement("img");
        img.className = "preview-image";
        img.src = src;
+       img.addEventListener('error', () => {
+           // Browsers without HEIF support can still upload the original.
+           img.src = '/api/v2/media/static/filenotsupported.jpg';
+       }, { once: true });
        img.dataset.index = index;
        img.addEventListener("click", selectImage);
 
@@ -1593,4 +1598,3 @@ function copyShareLink() {
       showSnackbar('home', true, 'green', _('Link copied to clipboard'), null, false);
    }
 }
-

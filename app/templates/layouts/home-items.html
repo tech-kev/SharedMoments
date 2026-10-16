@@ -21,7 +21,7 @@
       {% if item.contentType == 'image' or item.contentType == 'galleryStartWithImage' %}
       {% set contentURL = item.contentURL.split(';')[0] %}
       <div class="img-skeleton-wrapper"{% if item.blurPlaceholder %} data-lqip{% endif %} style="{% if item.mediaWidth and item.mediaHeight %}aspect-ratio:{{ item.mediaWidth }}/{{ item.mediaHeight }};{% endif %}{% if item.blurPlaceholder %}--lqip:url({{ item.blurPlaceholder }}){% endif %}">
-         <img class="responsive lazy" data-src="/api/v2/media/{{ contentURL }}" loading="lazy"{% if item.mediaWidth and item.mediaHeight %} width="{{ item.mediaWidth }}" height="{{ item.mediaHeight }}"{% endif %}>
+         <img class="responsive lazy" data-src="/api/v2/media/{% if contentURL.lower().endswith(('.heic', '.heif')) %}thumb/{% endif %}{{ contentURL }}" loading="lazy"{% if item.mediaWidth and item.mediaHeight %} width="{{ item.mediaWidth }}" height="{{ item.mediaHeight }}"{% endif %}>
          {% if not item.blurPlaceholder %}
          <div class="skeleton skeleton-overlay skeleton-image"></div>
          {% endif %}

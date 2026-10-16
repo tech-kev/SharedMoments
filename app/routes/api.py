@@ -521,10 +521,54 @@ def _ensure_video_thumbnail(filename):
     return thumb_path if os.path.exists(thumb_path) else None
 
 
+HEIF_EXTENSIONS = {'heic', 'heif'}
+
+
+def _ensure_heif_preview(filename):
+    """Cache a browser-friendly JPEG while retaining the unmodified HEIF original."""
+    from PIL import Image, ImageOps
+
+    safe = _secure_filename_preserve(filename)
+    if not safe or safe != filename:
+        abort(400)
+    base_folder = os.path.abspath(_find_media_folder(safe))
+    source = os.path.abspath(os.path.join(base_folder, safe))
+    if os.path.commonpath([base_folder, source]) != base_folder or not os.path.isfile(source):
+        abort(404)
+
+    thumb_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'uploads', 'thumbs'))
+    os.makedirs(thumb_folder, exist_ok=True)
+    preview = os.path.join(thumb_folder, f'heif-{safe}.jpg')
+    if os.path.isfile(preview) and os.path.getmtime(preview) >= os.path.getmtime(source):
+        return preview
+
+    import tempfile
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=thumb_folder, suffix='.jpg', delete=False) as temp:
+            temp_path = temp.name
+        with Image.open(source) as original:
+            image = ImageOps.exif_transpose(original)
+            image.thumbnail((2000, 2000))
+            image.convert('RGB').save(temp_path, format='JPEG', quality=85)
+        os.replace(temp_path, preview)
+        return preview
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+
 @api_bp.route('/api/v2/media/thumb/<filename>')
 @jwt_required
 def media_thumb(filename):
-    """Generate and serve a JPEG thumbnail for a video file using ffmpeg."""
+    """Generate and serve a browser-compatible thumbnail for supported media."""
+    if filename.rsplit('.', 1)[-1].lower() in HEIF_EXTENSIONS:
+        try:
+            return send_file(_ensure_heif_preview(filename), mimetype='image/jpeg')
+        except (OSError, ValueError) as e:
+            log('error', f'HEIF preview generation failed for {filename}: {e}')
+            abort(422)
+
     safe = _secure_filename_preserve(filename)
     if not safe or safe != filename:
         abort(400)
@@ -572,7 +616,7 @@ def all_media_urls():
     return jsonify({'status': 'success', 'data': {'urls': urls}})
 
 
-IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'}
+IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'} | HEIF_EXTENSIONS
 VIDEO_EXTENSIONS = {'mp4', 'mov', 'avi', 'webm', 'mkv'}
 MUSIC_EXTENSIONS = {'mp3'}
 ALLOWED_EXTENSIONS = IMAGE_EXTENSIONS | VIDEO_EXTENSIONS | MUSIC_EXTENSIONS
@@ -655,7 +699,7 @@ def upload_chunk():
 
             dest_folder = _get_upload_folder(ext)
             os.makedirs(dest_folder, exist_ok=True)
-            final_name = datetime.now().strftime("%Y%m%d") + '-' + safe_name
+            final_name = datetime.now().strftime("%Y%m%d") + '-' + uuid.uuid4().hex[:12] + '-' + safe_name
             final_path = os.path.join(dest_folder, final_name)
             shutil.move(temp_path, final_path)
 
@@ -717,7 +761,7 @@ def upload():
                 'data': { 'error_code': 400 }
             }), 400
 
-        filename = datetime.now().strftime("%Y%m%d") + '-' + secure_filename(file.filename)
+        filename = datetime.now().strftime("%Y%m%d") + '-' + uuid.uuid4().hex[:12] + '-' + secure_filename(file.filename)
         if static_media_flag == 'true':
             dest_folder = os.path.join(basedir, '..', 'static', 'images')
         else:

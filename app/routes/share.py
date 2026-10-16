@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session, send_f
 from werkzeug.utils import secure_filename
 from app.db_queries import get_share_by_token, verify_share_password, increment_share_view_count, get_setting_by_name
 from app.logger import log
-from app.routes.api import _find_media_folder
+from app.routes.api import _find_media_folder, _ensure_heif_preview, HEIF_EXTENSIONS
 from datetime import datetime
 import os, subprocess, shutil
 
@@ -120,6 +120,13 @@ def share_media_thumb(token, filename):
     safe = secure_filename(filename)
     if not safe or safe != filename:
         abort(400)
+
+    if safe.rsplit('.', 1)[-1].lower() in HEIF_EXTENSIONS:
+        try:
+            return send_file(_ensure_heif_preview(safe), mimetype='image/jpeg')
+        except (OSError, ValueError) as e:
+            log('error', f'HEIF preview generation failed for {safe}: {e}')
+            abort(422)
 
     media_folder = os.path.abspath(_find_media_folder(filename))
     video_path = os.path.abspath(os.path.join(media_folder, safe))

@@ -47,7 +47,7 @@
       <main class="responsive" style="max-width: 700px; margin: 0 auto;">
          <article class="no-padding primary-container">
             {% if item.contentType == 'image' %}
-               <img class="responsive" src="/s/{{ token }}/media/{{ media_urls[0] }}">
+               <img class="responsive" src="/s/{{ token }}/media/{% if media_urls[0].lower().endswith(('.heic', '.heif')) %}thumb/{% endif %}{{ media_urls[0] }}">
             {% elif item.contentType in ['video', 'video-mov'] %}
                <div style="position:relative;cursor:pointer;" onclick="this.innerHTML='<video class=responsive controls autoplay playsinline><source src=/s/{{ token }}/media/{{ media_urls[0] }}></video>'">
                   <img class="responsive" src="/s/{{ token }}/media/thumb/{{ media_urls[0] }}">
@@ -76,6 +76,10 @@
                            </div>
                         </div>
                      </a>
+                     {% elif lower_url.endswith(('.heic', '.heif')) %}
+                        <a href="/s/{{ token }}/media/thumb/{{ url }}" data-lg-size="2000-2000">
+                           <img src="/s/{{ token }}/media/thumb/{{ url }}" style="border-radius:8px;">
+                        </a>
                      {% else %}
                         <a href="/s/{{ token }}/media/{{ url }}" data-lg-size="150-100">
                            <img src="/s/{{ token }}/media/{{ url }}" style="border-radius:8px;">

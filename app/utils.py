@@ -10,7 +10,10 @@ from pathlib import Path
 import json
 import base64
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageOps
+from pillow_heif import register_heif_opener
+
+register_heif_opener()
 
 
 def sanitize_identifier(text):
@@ -38,7 +41,8 @@ def generate_admin_filename(image_type, identifier, extension):
 def generate_lqip(image_path):
     """Generate a low-quality image placeholder (base64 data-URI) and return dimensions."""
     try:
-        with Image.open(image_path) as img:
+        with Image.open(image_path) as original:
+            img = ImageOps.exif_transpose(original)
             width, height = img.size
             img = img.convert('RGB')
             img.thumbnail((64, 64))
@@ -317,4 +321,3 @@ def export_data(mode, type, parameters):
 
             # Gib eine Erfolgsmeldung aus
             return file_name
-

@@ -71,6 +71,10 @@
                        </div>
                    </div>
                </a>
+                   {% elif lower_url.endswith(('.heic', '.heif')) %}
+                       <a href="/api/v2/media/thumb/{{ url }}" data-lg-size="2000-2000" data-download-url="/api/v2/media/{{ url }}">
+                           <img src="/api/v2/media/thumb/{{ url }}" alt="">
+                       </a>
                    {% else %}
                        <a href="/api/v2/media/{{ url }}" data-lg-size="150-100">
                            <img src="/api/v2/media/{{ url }}">
