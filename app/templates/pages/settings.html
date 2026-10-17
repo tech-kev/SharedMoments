@@ -305,6 +305,8 @@
                   <div id="{{user_setting.name}}-value">{{ user_setting.value }}</div>
                 </div>
               </a>
+              {% elif user_setting.name == 'date_format' %}
+              {# Rendered alongside the language selector above. #}
               {% elif user_setting.name == 'accent_color' %}
               {# Rendered in dedicated Appearance section below #}
               {% elif user_setting.name.startswith('pwa_') or user_setting.name.startswith('notification_') %}
@@ -319,6 +321,22 @@
               </a>
               {% endif %}
               {% endfor %}
+
+              <div class="row padding primary-container">
+                <i>event</i>
+                <div class="max">
+                  <h6 class="small">{{ _('Date format') }}</h6>
+                </div>
+                <div class="field suffix border" style="min-width:11rem; margin:0;">
+                  {% set chosen_format = session.get('date_format', 'locale') %}
+                  <select id="date-format-select" data-saved-value="{{ chosen_format }}" onchange="setDateFormat(this.value)">
+                    {% for value, label in [('locale', _('Language default')), ('dd/MM/yyyy', 'DD/MM/YYYY'), ('MM/dd/yyyy', 'MM/DD/YYYY'), ('dd MMM yyyy', 'DD MMM YYYY'), ('yyyy-MM-dd', 'YYYY-MM-DD')] %}
+                    <option value="{{ value }}" {% if chosen_format == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                  <i>arrow_drop_down</i>
+                </div>
+              </div>
 
               <!-- Appearance Section -->
               <legend>{{ _('Appearance') }}</legend>
@@ -659,6 +677,7 @@
     const currentEdition = '{{ settings.sm_edition.value }}';
     const settingsType = '{{ settings_type }}';
     const appLocale = '{{ session.get("lang", "en-US") }}';
+    const appDateFormat = '{{ session.get("date_format", "locale") }}';
     {% if settings_type == 'user-settings' %}
     {% set push_val = 'True' %}
     {% for s in user_settings if s.name == 'notification_push_enabled' %}{% set push_val = s.value %}{% endfor %}

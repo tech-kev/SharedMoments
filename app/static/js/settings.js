@@ -1,6 +1,6 @@
 // --- State ---
 // These are set from inline <script> in settings.html:
-// relationshipStatuses, supportedLanguages, editions, currentEdition, settingsType, appLocale
+// relationshipStatuses, supportedLanguages, editions, currentEdition, settingsType, appLocale, appDateFormat
 
 function isIsoDate(str) {
     return /^\d{4}-\d{2}-\d{2}$/.test(str);
@@ -13,7 +13,16 @@ function formatDateLocale(isoStr) {
     const [y, m, d] = parts;
     const date = new Date(+y, +m - 1, +d);
     const locale = (typeof appLocale !== 'undefined') ? appLocale : 'en-US';
-    return new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    const format = (typeof appDateFormat !== 'undefined') ? appDateFormat : 'locale';
+    if (format === 'yyyy-MM-dd') return isoStr;
+    const displayLocale = {
+        'dd/MM/yyyy': 'en-GB',
+        'MM/dd/yyyy': 'en-US',
+        'dd MMM yyyy': 'en-GB',
+    }[format] || locale;
+    return new Intl.DateTimeFormat(displayLocale, {
+        day: '2-digit', month: format === 'dd MMM yyyy' ? 'short' : '2-digit', year: 'numeric'
+    }).format(date);
 }
 
 let requiredDateMode = false;
@@ -342,6 +351,35 @@ function sendSettingUpdateWithCallback(setting, value, callback) {
             btnReset(btn);
             if (String(error) == "TypeError: Failed to fetch") error = _('Server not reachable');
             showSnackbar('settings', true, 'error', error, null, false);
+        });
+}
+
+// --- Date format ---
+function setDateFormat(value) {
+    const select = document.getElementById('date-format-select');
+    const reset = () => { select.value = select.dataset.savedValue; };
+    if (!navigator.onLine) {
+        reset();
+        showSnackbar('settings', true, 'error', _('You are offline'), null, false);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('setting', 'date_format');
+    formData.append('value', value);
+    fetch('/api/v2/user-settings', { method: 'PUT', body: formData })
+        .then(async response => {
+            const result = await response.json();
+            if (response.ok && result.status === 'success') {
+                location.reload();
+            } else {
+                reset();
+                showSnackbar('settings', true, 'error', result.message, result, true);
+            }
+        })
+        .catch(error => {
+            reset();
+            showSnackbar('settings', true, 'error', String(error), null, false);
         });
 }
 

@@ -358,6 +358,11 @@ def update_user_settings():
         setting = request.form['setting']
         value = request.form['value']
 
+        if setting == 'date_format':
+            from app.filters import DATE_FORMATS
+            if value != 'locale' and value not in DATE_FORMATS:
+                return jsonify({'status': 'error', 'message': _('Invalid date format')}), 400
+
         update_user_setting(g.user_id, setting, value)
 
         log('info', f'User-Setting updated: {setting} for user {g.user_id}')
@@ -1956,8 +1961,8 @@ def migration_set_language():
             else:
                 db_session.add(UserSetting(userID=user.id, name='language', value=language, icon='language', edition='all', category='about', type='text'))
 
-        # Set app-wide language
-        os.environ['LANG'] = language
+        # Apply the selected language to this request, not the whole process.
+        session['lang'] = language
 
         db_session.commit()
         return jsonify({'status': 'success', 'message': f'Language set to {language} for {len(users)} users'}), 200
@@ -1998,7 +2003,7 @@ def migration_review_complete():
         for user in users:
             for setting_name, default_value, icon in [
                 ('darkmode', 'FALSE', 'dark_mode'),
-                ('language', os.environ.get('LANG', 'en-US'), 'language'),
+                ('language', session.get('lang', 'en-US'), 'language'),
             ]:
                 existing = db_session.query(UserSetting).filter(
                     UserSetting.userID == user.id, UserSetting.name == setting_name

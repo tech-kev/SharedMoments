@@ -99,7 +99,7 @@ def offline():
 def inject_static_text():
     translations_json = '{}'
     try:
-        lang = session.get('lang', os.environ.get('LANG', 'en-US'))
+        lang = session.get('lang', 'en-US')
         translations = get_translations_by_language(lang)
         translations_json = json.dumps({
             t.fieldName: {'translatedText': t.translatedText}
@@ -145,7 +145,7 @@ def setup():
             relationship_statuses = get_all_relationship_statuses()
             relationship_statuses_translated = []
             for status in relationship_statuses:
-                translated_text = get_translation_for_entity('relationship_status', status, os.environ['LANG'])
+                translated_text = get_translation_for_entity('relationship_status', status, session.get('lang', 'en-US'))
                 relationship_statuses_translated.append({
                     'id': status,
                     'translatedText': translated_text
@@ -221,7 +221,7 @@ def settings():
         darkmode = get_user_setting(g.user_id, 'darkmode')
         user_data = get_user_by_id(g.user_id)
         settings_type = 'settings'
-        lang = os.environ.get('LANG', 'en')
+        lang = session.get('lang', 'en-US')
         relationship_statuses = get_relationship_statuses_with_names(lang)
         supported_languages = get_supported_languages()
 
