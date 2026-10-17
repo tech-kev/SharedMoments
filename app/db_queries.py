@@ -222,7 +222,7 @@ def get_user_by_id(user_id):
 def update_user_profile_picture(user_id, filename):
     session = SessionLocal()
     try:
-        user = session.query(User).filter(User.id == user_id).first()
+        user = session.query(User).filter(User.id == user_id, User.deletedAt.is_(None)).first()
         if user:
             user.profilePicture = filename
             session.commit()
@@ -234,7 +234,7 @@ def update_user_profile_picture(user_id, filename):
 def update_user_password(user_id, password_hash, password_salt):
     session = SessionLocal()
     try:
-        user = session.query(User).filter(User.id == user_id).first()
+        user = session.query(User).filter(User.id == user_id, User.deletedAt.is_(None)).first()
         if user:
             user.passwordHash = password_hash
             user.passwordSalt = password_salt
@@ -247,7 +247,7 @@ def update_user_password(user_id, password_hash, password_salt):
 def get_user_by_email(email):
     session = SessionLocal()
     try:
-        user = session.query(User).filter(User.email == email).first()
+        user = session.query(User).filter(User.email == email, User.deletedAt.is_(None)).first()
         if user:
             session.expunge(user)
         return user
@@ -260,7 +260,7 @@ def get_user_by_credential_id(credential_id):
         credentials = session.query(Passkey).filter(Passkey.credential_id == credential_id).first()
         if not credentials:
             return None, None
-        user = session.query(User).filter(User.id == credentials.userID).first()
+        user = session.query(User).filter(User.id == credentials.userID, User.deletedAt.is_(None)).first()
         session.expunge(credentials)
         if user:
             session.expunge(user)
@@ -396,7 +396,7 @@ def get_all_users():
     """Returns all users except the system user (id=1)."""
     session = SessionLocal()
     try:
-        users = session.query(User).filter(User.id != 1).all()
+        users = session.query(User).filter(User.id != 1, User.deletedAt.is_(None)).all()
         for user in users:
             session.expunge(user)
         return users

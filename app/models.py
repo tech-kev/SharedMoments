@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint, DateTime, event
+from sqlalchemy import create_engine, Column, Integer, String, Date, Boolean, Text, TIMESTAMP, ForeignKey, LargeBinary, func, Index, UniqueConstraint, DateTime, event, inspect
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from config import Config
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -20,6 +20,7 @@ class User(Base):
     passwordHash = Column(String(255))
     dateCreated = Column(TIMESTAMP, server_default=func.current_timestamp())
     dateModified = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+    deletedAt = Column(DateTime, nullable=True)
 
     roles = relationship('UserRole', back_populates='user')
     settings = relationship('UserSetting', back_populates='user')
@@ -263,6 +264,16 @@ def _set_sqlite_pragma(dbapi_conn, connection_record):
     cursor.execute('PRAGMA busy_timeout=5000')
     cursor.close()
 
+def _ensure_deleted_user_column(engine):
+    """Add the deleted-user marker without rebuilding existing user tables."""
+    inspector = inspect(engine)
+    if (inspector.has_table('users')
+            and 'deletedAt' not in {col['name'] for col in inspector.get_columns('users')}):
+        with engine.begin() as connection:
+            connection.exec_driver_sql('ALTER TABLE users ADD COLUMN deletedAt DATETIME')
+
+
+_ensure_deleted_user_column(_default_engine)
 Base.metadata.create_all(_default_engine)
 
 _DefaultSessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=_default_engine)
